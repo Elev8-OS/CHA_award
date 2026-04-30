@@ -24,14 +24,13 @@ export function LangProvider({ children, initialLocale = 'en' }: { children: Rea
     const saved = localStorage.getItem('cha-locale');
     if (saved === 'en' || saved === 'id') {
       setLocaleState(saved);
-      document.body.classList.toggle('lang-id', saved === 'id');
+      document.documentElement.lang = saved;
     }
   }, []);
 
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);
     localStorage.setItem('cha-locale', newLocale);
-    document.body.classList.toggle('lang-id', newLocale === 'id');
     document.documentElement.lang = newLocale;
   };
 
