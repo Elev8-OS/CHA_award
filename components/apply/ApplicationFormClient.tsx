@@ -541,7 +541,7 @@ function Step4Deep({ app, update, errors, locale }: StepProps) {
           }
         />
         <Textarea
-          label={locale === 'id' ? 'Apa yang akan Anda tangani pertama dengan elev8?' : 'What would you attack first with elev8?'}
+          label={locale === 'id' ? 'Apa yang akan Anda tangani pertama dengan Elev8 Suite OS?' : 'What would you attack first with Elev8 Suite OS?'}
           value={app.first_attack || ''}
           onChange={(v) => update('first_attack', v)}
           error={errors.first_attack}

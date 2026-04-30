@@ -66,8 +66,8 @@ function renderApplicationConfirmationHtml(
     ? 'Pertanyaan? Balas email ini, kami akan menjawab.'
     : 'Questions? Just reply to this email — we read every message.';
   const signature = isId
-    ? `Salam,<br><strong>Canggu Hospitality Association</strong><br><span style="color:#6B6055;">Powered by elev8 — Diamond Sponsor</span>`
-    : `Best,<br><strong>Canggu Hospitality Association</strong><br><span style="color:#6B6055;">Powered by elev8 — Diamond Sponsor</span>`;
+    ? `Salam,<br><strong>Canggu Hospitality Association</strong><br><span style="color:#6B6055;">Powered by Elev8 Suite OS — Diamond Sponsor</span>`
+    : `Best,<br><strong>Canggu Hospitality Association</strong><br><span style="color:#6B6055;">Powered by Elev8 Suite OS — Diamond Sponsor</span>`;
 
   return `<!doctype html>
 <html lang="${opts.locale}">
@@ -163,7 +163,7 @@ Pertanyaan? Balas email ini.
 
 Salam,
 Canggu Hospitality Association
-Powered by elev8 — Diamond Sponsor`;
+Powered by Elev8 Suite OS — Diamond Sponsor`;
   }
   return `Hi ${opts.applicantName},
 
@@ -183,7 +183,7 @@ Questions? Just reply to this email — we read every message.
 
 Best,
 Canggu Hospitality Association
-Powered by elev8 — Diamond Sponsor`;
+Powered by Elev8 Suite OS — Diamond Sponsor`;
 }
 
 // ---------- Save & Continue Email ----------
@@ -274,12 +274,12 @@ export async function sendShortlistEmail(opts: MilestoneEmailOpts) {
     rewardLabel: isId ? 'Apa yang Anda dapatkan' : 'What you get',
     rewardItems: isId
       ? [
-          'Sesi strategi 1:1 dengan founder elev8 (30 menit)',
+          'Sesi strategi 1:1 dengan founder Elev8 Suite OS (30 menit)',
           'Audit operasional yang dipersonalisasi',
           'Tetap berpeluang masuk Top 5 finalis (diumumkan 25 Mei)',
         ]
       : [
-          '1:1 strategy session with elev8 founders (30 min)',
+          '1:1 strategy session with Elev8 Suite OS founders (30 min)',
           'Personalized operational audit',
           'Still in the running for Top 5 finalists (revealed 25 May)',
         ],
@@ -325,13 +325,13 @@ export async function sendFinalistEmail(opts: MilestoneEmailOpts) {
           'Tiket gratis Bali Villa Connect 2026',
           'Tempat duduk khusus finalis di acara',
           'Disebut langsung di panggung',
-          'Kesempatan menang USD 2.155 dalam paket elev8',
+          'Kesempatan menang USD 2.155 dalam paket Elev8 Suite OS',
         ]
       : [
           'Free ticket to Bali Villa Connect 2026',
           'Reserved finalist seating at the event',
           'Named live on stage',
-          'Chance to win the USD 2,155 elev8 package',
+          'Chance to win the USD 2,155 Elev8 Suite OS package',
         ],
     nextSteps: isId
       ? '26-27 Mei — Bali Sunset Road Convention Center. Tiket dan info acara akan dikirim terpisah dalam 24 jam.'
@@ -372,20 +372,20 @@ export async function sendWinnerEmail(opts: MilestoneEmailOpts) {
     rewardLabel: isId ? 'Hadiah Anda' : 'Your prize',
     rewardItems: isId
       ? [
-          '1 tahun langganan elev8 untuk 2 villa',
-          'Onboarding personal dengan founder elev8',
+          '1 tahun langganan Elev8 Suite OS untuk 2 villa',
+          'Onboarding personal dengan founder Elev8 Suite OS',
           'Migrasi data langsung dari setup Anda saat ini',
           'Senilai total USD 2.155',
         ]
       : [
-          '1-year elev8 subscription for 2 villas',
-          'Personal onboarding with elev8 founders',
+          '1-year Elev8 Suite OS subscription for 2 villas',
+          'Personal onboarding with Elev8 Suite OS founders',
           'Live data migration from your current setup',
           'Total value: USD 2,155',
         ],
     nextSteps: isId
-      ? 'Tim kami akan menghubungi Anda dalam 24 jam untuk memulai onboarding. Sebagai pemenang Edisi 01, kisah Anda akan ditampilkan di kampanye CHA & elev8 ke depan.'
-      : 'Our team will be in touch within 24 hours to kick off onboarding. As an Edition 01 winner, your story will be featured in upcoming CHA & elev8 campaigns.',
+      ? 'Tim kami akan menghubungi Anda dalam 24 jam untuk memulai onboarding. Sebagai pemenang Edisi 01, kisah Anda akan ditampilkan di kampanye CHA & Elev8 Suite OS ke depan.'
+      : 'Our team will be in touch within 24 hours to kick off onboarding. As an Edition 01 winner, your story will be featured in upcoming CHA & Elev8 Suite OS campaigns.',
     ctaUrl: publicUrl,
     ctaLabel: isId ? 'Halaman pemenang Anda' : 'Your winner page',
   });
@@ -455,7 +455,7 @@ function renderMilestoneHtml(o: MilestoneTemplateOpts): string {
         </tr>
         <tr>
           <td style="background:${COLORS.navy};padding:28px 32px;text-align:center;color:${COLORS.cream};">
-            <div style="font-size:14px;line-height:1.6;"><strong>Canggu Hospitality Association</strong><br><span style="color:${COLORS.gold};">Powered by elev8 — Diamond Sponsor</span></div>
+            <div style="font-size:14px;line-height:1.6;"><strong>Canggu Hospitality Association</strong><br><span style="color:${COLORS.gold};">Powered by Elev8 Suite OS — Diamond Sponsor</span></div>
           </td>
         </tr>
       </table>

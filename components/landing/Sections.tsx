@@ -14,7 +14,7 @@ export function PartnershipStrip() {
     <div className="bg-navy px-4 py-7 text-cream md:px-8">
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-6 text-center md:grid-cols-3">
         <Partner tag={t('hero.presented_by')} name="Canggu Hospitality Association" />
-        <Partner tag={t('hero.powered_by')} name="elev8 — Diamond Sponsor" />
+        <Partner tag={t('hero.powered_by')} name="Elev8 Suite OS — Diamond Sponsor" />
         <Partner tag="Hosted at" name="Bali Villa Connect 2026" />
       </div>
     </div>
@@ -294,7 +294,7 @@ const JURORS = [
   },
   {
     initial: 'M',
-    photo: null,
+    photo: '/jury/maya.jpg',
     name: 'Maya Susanti',
     role: 'GM, Lifestyle Residence Uluwatu',
     bio: '12 years across Marriott, Sheraton, Radisson, Soho House & Desa Potato Head. Specialist in scalable hospitality systems.',
@@ -302,7 +302,7 @@ const JURORS = [
   },
   {
     initial: 'F',
-    photo: null,
+    photo: '/jury/florian.jpg',
     name: 'Florian Holm',
     role: 'Founder & CEO, Grün Resorts',
     bio: 'Founder of Stilt Studios & Grün Resorts. Ex-Co-CEO Lazada Indonesia, ex-BCG. Building wellness-led hospitality across Bali.',
@@ -312,8 +312,8 @@ const JURORS = [
     initial: 'R',
     photo: '/jury/reto.jpg',
     name: 'Reto Wyss',
-    role: 'Co-Founder & CTO, elev8',
-    bio: 'Co-Founder of elev8 — the operating system for villa hosts and property managers. Diamond Sponsor of Villa Connect 2026.',
+    role: 'Co-Founder & CTO, Elev8 Suite OS',
+    bio: 'Co-Founder of Elev8 Suite OS — the platform for villa hosts and property managers. Diamond Sponsor of Villa Connect 2026.',
     color: 'gold',
   },
 ];
@@ -339,7 +339,7 @@ export function Jury() {
 
       <div className="mt-14 grid grid-cols-1 gap-10 rounded-3xl border border-line bg-white p-12 md:grid-cols-3">
         <Criterion color="coral" pct="50%" name="Story" desc="The most honest, specific account of where you are and what you're up against." />
-        <Criterion color="teal" pct="30%" name="Growth Potential" desc="What 1 year of elev8 could realistically unlock for your business." />
+        <Criterion color="teal" pct="30%" name="Growth Potential" desc="What 1 year of Elev8 Suite OS could realistically unlock for your business." />
         <Criterion color="gold" pct="20%" name="Community Wildcard" desc="One winner is chosen by a community vote within the CHA group." />
       </div>
     </section>
@@ -450,7 +450,7 @@ export function Footer() {
             uniting industry leaders.
           </p>
           <span className="inline-block rounded-full bg-gold px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-navy">
-            ⬥ Powered by elev8 — Diamond Sponsor
+            ⬥ Powered by Elev8 Suite OS — Diamond Sponsor
           </span>
         </div>
         <FooterCol heading="Awards" items={[['Categories', '#prize'], ['Apply', '/apply']]} />
@@ -458,7 +458,7 @@ export function Footer() {
       </div>
       <div className="mx-auto flex max-w-[1280px] flex-col justify-between gap-3 border-t border-cream/10 pt-7 text-xs text-cream/50 md:flex-row">
         <span>© 2026 Canggu Hospitality Association</span>
-        <span>Edition 01 — Canggu Host Awards · Powered by elev8</span>
+        <span>Edition 01 — Canggu Host Awards · Powered by Elev8 Suite OS</span>
       </div>
     </footer>
   );

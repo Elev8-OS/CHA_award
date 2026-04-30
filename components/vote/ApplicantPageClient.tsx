@@ -337,8 +337,8 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
           </div>
           <p className="mb-4 text-sm leading-relaxed text-navy/75">
             {locale === 'id'
-              ? 'Award tahunan yang menyoroti operator villa terbaik di Canggu. Diselenggarakan oleh Canggu Hospitality Association, didukung oleh elev8 sebagai Diamond Sponsor di Bali Villa Connect 2026.'
-              : 'An annual award celebrating the top villa operators in Canggu. Presented by the Canggu Hospitality Association, powered by elev8 as Diamond Sponsor of Bali Villa Connect 2026.'}
+              ? 'Award tahunan yang menyoroti operator villa terbaik di Canggu. Diselenggarakan oleh Canggu Hospitality Association, didukung oleh Elev8 Suite OS sebagai Diamond Sponsor di Bali Villa Connect 2026.'
+              : 'An annual award celebrating the top villa operators in Canggu. Presented by the Canggu Hospitality Association, powered by Elev8 Suite OS as Diamond Sponsor of Bali Villa Connect 2026.'}
           </p>
           <Link
             href="/"

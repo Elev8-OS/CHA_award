@@ -47,7 +47,7 @@ export const translations = {
 
     // ----- Tiers -----
     'tier.top.label': 'Top — Winners',
-    'tier.top.headline': '1 year elev8 + onboarding',
+    'tier.top.headline': '1 year Elev8 Suite OS + onboarding',
     'tier.top.desc':
       'Annual subscription for 2 villas plus personal onboarding & live data migration. Plus the stage moment at Villa Connect 2026.',
     'tier.top.value': 'USD 2,155 value',
@@ -58,7 +58,7 @@ export const translations = {
     'tier.recognized.label': 'Recognized',
     'tier.recognized.headline': '1:1 strategy session',
     'tier.recognized.desc':
-      '30-minute audit with elev8 founders. Tailored feedback on your operations. No sales pitch.',
+      '30-minute audit with Elev8 Suite OS founders. Tailored feedback on your operations. No sales pitch.',
 
     // ----- Stage -----
     'stage.eyebrow': 'The Showpiece',
@@ -83,7 +83,7 @@ export const translations = {
     'apply.deep.name': 'Make your case',
     'apply.deep.time': '~ 12 min',
     'apply.deep.desc':
-      'Quick Apply + your story, current setup, and what you\'d attack with elev8.',
+      'Quick Apply + your story, current setup, and what you\'d attack with Elev8 Suite OS.',
 
     // ----- Form Fields -----
     'form.step': 'Step',
@@ -108,7 +108,7 @@ export const translations = {
     'field.current_tools_pros': 'What works well?',
     'field.current_tools_cons': 'What doesn\'t?',
     'field.biggest_headache': 'Your biggest operational headache right now',
-    'field.first_attack': 'What would you attack first with elev8?',
+    'field.first_attack': 'What would you attack first with Elev8 Suite OS?',
     'field.twelve_month_vision': 'Where do you want to be in 12 months?',
     'field.why_you': 'Why you?',
 
@@ -126,7 +126,7 @@ export const translations = {
     'vote.link_copied': 'Link copied!',
     'vote.story_title': 'Their story',
     'vote.headache_label': 'Biggest headache',
-    'vote.attack_label': 'First move with elev8',
+    'vote.attack_label': 'First move with Elev8 Suite OS',
     'vote.vision_label': '12-month vision',
     'vote.discover_others': 'Discover other applicants',
     'vote.about_awards': 'About the Awards',
@@ -178,7 +178,7 @@ export const translations = {
 
     // ----- Tiers -----
     'tier.top.label': 'Top — Pemenang',
-    'tier.top.headline': '1 tahun elev8 + onboarding',
+    'tier.top.headline': '1 tahun Elev8 Suite OS + onboarding',
     'tier.top.desc':
       'Langganan tahunan untuk 2 villa plus onboarding personal & migrasi data langsung. Termasuk momen panggung di Villa Connect 2026.',
     'tier.top.value': 'Senilai USD 2.155',
@@ -189,7 +189,7 @@ export const translations = {
     'tier.recognized.label': 'Diakui',
     'tier.recognized.headline': 'Sesi strategi 1:1',
     'tier.recognized.desc':
-      'Audit 30 menit dengan founder elev8. Feedback yang disesuaikan dengan operasional Anda. Tanpa pitch penjualan.',
+      'Audit 30 menit dengan founder Elev8 Suite OS. Feedback yang disesuaikan dengan operasional Anda. Tanpa pitch penjualan.',
 
     // ----- Stage -----
     'stage.eyebrow': 'Sorotan Utama',
@@ -214,7 +214,7 @@ export const translations = {
     'apply.deep.name': 'Sampaikan cerita Anda',
     'apply.deep.time': '~ 12 menit',
     'apply.deep.desc':
-      'Quick Apply + cerita, setup saat ini, dan rencana Anda dengan elev8.',
+      'Quick Apply + cerita, setup saat ini, dan rencana Anda dengan Elev8 Suite OS.',
 
     // ----- Form Fields -----
     'form.step': 'Langkah',
@@ -239,7 +239,7 @@ export const translations = {
     'field.current_tools_pros': 'Apa yang berjalan baik?',
     'field.current_tools_cons': 'Apa yang tidak?',
     'field.biggest_headache': 'Masalah operasional terbesar Anda saat ini',
-    'field.first_attack': 'Apa yang akan Anda tangani pertama dengan elev8?',
+    'field.first_attack': 'Apa yang akan Anda tangani pertama dengan Elev8 Suite OS?',
     'field.twelve_month_vision': 'Di mana Anda ingin berada dalam 12 bulan?',
     'field.why_you': 'Mengapa Anda?',
 
@@ -257,7 +257,7 @@ export const translations = {
     'vote.link_copied': 'Tautan disalin!',
     'vote.story_title': 'Cerita mereka',
     'vote.headache_label': 'Tantangan terbesar',
-    'vote.attack_label': 'Langkah pertama dengan elev8',
+    'vote.attack_label': 'Langkah pertama dengan Elev8 Suite OS',
     'vote.vision_label': 'Visi 12 bulan',
     'vote.discover_others': 'Lihat pendaftar lain',
     'vote.about_awards': 'Tentang Awards',

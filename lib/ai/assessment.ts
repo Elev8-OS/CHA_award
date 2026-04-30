@@ -167,7 +167,7 @@ function buildUserPrompt(app: AssessmentInput): string {
     lines.push(`## Biggest operational headache`, app.biggest_headache, '');
   }
   if (app.first_attack) {
-    lines.push(`## First attack with elev8`, app.first_attack, '');
+    lines.push(`## First attack with Elev8 Suite OS`, app.first_attack, '');
   }
   if (app.twelve_month_vision) {
     lines.push(`## 12-month vision`, app.twelve_month_vision, '');

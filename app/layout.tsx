@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'The Canggu Host Awards 2026',
     description:
-      'Presented by the Canggu Hospitality Association, powered by elev8.',
+      'Presented by the Canggu Hospitality Association, powered by Elev8 Suite OS.',
     url: '/',
     siteName: 'CHA Host Awards',
     locale: 'en_US',
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'The Canggu Host Awards 2026',
     description:
-      'Presented by the Canggu Hospitality Association, powered by elev8.',
+      'Presented by the Canggu Hospitality Association, powered by Elev8 Suite OS.',
   },
 };
 

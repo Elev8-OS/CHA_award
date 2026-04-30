@@ -85,7 +85,7 @@ export default async function AdminApplicationDetailPage({
           {app.biggest_headache && (
             <Section title="Biggest headache" body={app.biggest_headache} />
           )}
-          {app.first_attack && <Section title="First attack with elev8" body={app.first_attack} />}
+          {app.first_attack && <Section title="First attack with Elev8 Suite OS" body={app.first_attack} />}
           {app.twelve_month_vision && (
             <Section title="12-month vision" body={app.twelve_month_vision} />
           )}

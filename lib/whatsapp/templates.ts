@@ -83,7 +83,7 @@ Pertanyaan? Balas pesan ini.
 
 Salam,
 *Canggu Hospitality Association*
-Powered by elev8`;
+Powered by Elev8 Suite OS`;
   }
 
   return `Hi ${name},
@@ -106,7 +106,7 @@ Questions? Just reply to this message.
 
 Best,
 *Canggu Hospitality Association*
-Powered by elev8`;
+Powered by Elev8 Suite OS`;
 }
 
 // ---------- Voting OTP ----------
@@ -367,7 +367,7 @@ export async function sendShortlistNotification(opts: ShortlistNotificationOpts)
 
 Anda terpilih dalam shortlist *${opts.category}* di Canggu Host Awards 2026.
 
-Anda mendapat *sesi strategi 1:1 dengan founder elev8* — kami akan menghubungi Anda untuk menjadwalkan.
+Anda mendapat *sesi strategi 1:1 dengan founder Elev8 Suite OS* — kami akan menghubungi Anda untuk menjadwalkan.
 
 Halaman Anda: ${publicUrl}
 
@@ -376,7 +376,7 @@ Top 5 finalis diumumkan 25 Mei.`
 
 You've been shortlisted in *${opts.category}* at the Canggu Host Awards 2026.
 
-You've earned a *1:1 strategy session with the elev8 founders* — we'll reach out to schedule.
+You've earned a *1:1 strategy session with the Elev8 Suite OS founders* — we'll reach out to schedule.
 
 Your page: ${publicUrl}
 
@@ -426,7 +426,7 @@ export async function sendWinnerNotification(opts: WinnerNotificationOpts) {
 Anda adalah pemenang kategori *${opts.category}* di Canggu Host Awards 2026!
 
 Hadiah Anda:
-🎯 1 tahun elev8 untuk 2 villa
+🎯 1 tahun Elev8 Suite OS untuk 2 villa
 🎯 Onboarding personal & migrasi data
 🎯 Senilai USD 2.155
 
@@ -440,7 +440,7 @@ Selamat! 🎉`
 You are the winner of the *${opts.category}* category at the Canggu Host Awards 2026!
 
 Your prize:
-🎯 1 year of elev8 for 2 villas
+🎯 1 year of Elev8 Suite OS for 2 villas
 🎯 Personal onboarding & data migration
 🎯 USD 2,155 value
 

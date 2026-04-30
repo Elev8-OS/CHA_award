@@ -42,7 +42,7 @@ export function Hero() {
           </span>
           <span className="text-warm-gray opacity-40">·</span>
           <span>
-            {t('hero.powered_by')} <strong className="font-bold">elev8</strong>
+            {t('hero.powered_by')} <strong className="font-bold">Elev8 Suite OS</strong>
           </span>
         </div>
 
