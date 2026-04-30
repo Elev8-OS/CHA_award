@@ -237,13 +237,27 @@ export function Endorsement() {
           }}
         />
 
-        <div
-          className="relative z-10 flex h-44 w-44 flex-shrink-0 items-center justify-center rounded-full border-4 border-gold font-serif text-6xl italic text-cream"
-          style={{
-            background: 'linear-gradient(135deg, #D4663F 0%, #7A2935 100%)',
-          }}
-        >
-          P
+        <div className="relative z-10 h-44 w-44 flex-shrink-0">
+          <img
+            src="/jury/prima.jpg"
+            alt="Pak Prima Hartawan"
+            className="h-44 w-44 rounded-full border-4 border-gold object-cover"
+            onError={(e) => {
+              // Fallback to initial if photo missing
+              const target = e.currentTarget;
+              target.style.display = 'none';
+              const fallback = target.nextElementSibling as HTMLElement;
+              if (fallback) fallback.style.display = 'flex';
+            }}
+          />
+          <div
+            className="absolute inset-0 hidden items-center justify-center rounded-full border-4 border-gold font-serif text-6xl italic text-cream"
+            style={{
+              background: 'linear-gradient(135deg, #D4663F 0%, #7A2935 100%)',
+            }}
+          >
+            P
+          </div>
         </div>
 
         <div className="relative z-10">
@@ -272,6 +286,7 @@ export function Endorsement() {
 const JURORS = [
   {
     initial: 'P',
+    photo: '/jury/prima.jpg',
     name: 'Pak Prima Hartawan',
     role: 'Founder, CHA',
     bio: 'Cluster GM at Small Luxury Hotels of the World. Founder of the Canggu Hospitality Association. 7+ years in Bali luxury hospitality.',
@@ -279,6 +294,7 @@ const JURORS = [
   },
   {
     initial: 'M',
+    photo: null,
     name: 'Maya Susanti',
     role: 'GM, Lifestyle Residence Uluwatu',
     bio: '12 years across Marriott, Sheraton, Radisson, Soho House & Desa Potato Head. Specialist in scalable hospitality systems.',
@@ -286,6 +302,7 @@ const JURORS = [
   },
   {
     initial: 'F',
+    photo: null,
     name: 'Florian Holm',
     role: 'Founder & CEO, Grün Resorts',
     bio: 'Founder of Stilt Studios & Grün Resorts. Ex-Co-CEO Lazada Indonesia, ex-BCG. Building wellness-led hospitality across Bali.',
@@ -293,6 +310,7 @@ const JURORS = [
   },
   {
     initial: 'R',
+    photo: '/jury/reto.jpg',
     name: 'Reto Wyss',
     role: 'Co-Founder & CTO, elev8',
     bio: 'Co-Founder of elev8 — the operating system for villa hosts and property managers. Diamond Sponsor of Villa Connect 2026.',
@@ -328,21 +346,29 @@ export function Jury() {
   );
 }
 
-function JuryCard({ initial, name, role, bio, color }: { initial: string; name: string; role: string; bio: string; color: string }) {
-  const colors: Record<string, { bg: string; text: string }> = {
-    coral: { bg: 'bg-coral', text: 'text-coral' },
-    teal: { bg: 'bg-teal', text: 'text-teal' },
-    burgundy: { bg: 'bg-burgundy', text: 'text-burgundy' },
-    gold: { bg: 'bg-gold', text: 'text-gold' },
+function JuryCard({ initial, photo, name, role, bio, color }: { initial: string; photo: string | null; name: string; role: string; bio: string; color: string }) {
+  const colors: Record<string, { bg: string; text: string; ring: string }> = {
+    coral: { bg: 'bg-coral', text: 'text-coral', ring: 'ring-coral' },
+    teal: { bg: 'bg-teal', text: 'text-teal', ring: 'ring-teal' },
+    burgundy: { bg: 'bg-burgundy', text: 'text-burgundy', ring: 'ring-burgundy' },
+    gold: { bg: 'bg-gold', text: 'text-gold', ring: 'ring-gold' },
   };
   const c = colors[color];
   const photoColor = color === 'gold' ? 'text-navy' : 'text-white';
 
   return (
     <div className="rounded-3xl border border-line bg-white p-8 text-center transition-all hover:-translate-y-1 hover:shadow-[0_20px_40px_-20px_rgba(31,58,79,0.15)]">
-      <div className={`mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full font-serif text-5xl italic ${c.bg} ${photoColor}`}>
-        {initial}
-      </div>
+      {photo ? (
+        <img
+          src={photo}
+          alt={name}
+          className={`mx-auto mb-4 h-24 w-24 rounded-full object-cover ring-4 ${c.ring}`}
+        />
+      ) : (
+        <div className={`mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full font-serif text-5xl italic ${c.bg} ${photoColor}`}>
+          {initial}
+        </div>
+      )}
       <h3 className="mb-1.5 font-serif text-xl leading-tight tracking-tight text-navy">{name}</h3>
       <div className={`mb-3.5 text-[11px] font-bold uppercase tracking-wider ${c.text}`}>{role}</div>
       <p className="text-[13px] leading-[1.5] text-warm-gray">{bio}</p>
