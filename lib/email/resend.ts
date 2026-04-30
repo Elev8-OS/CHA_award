@@ -465,3 +465,185 @@ function renderMilestoneHtml(o: MilestoneTemplateOpts): string {
 </table>
 </body></html>`;
 }
+
+// ============================================================================
+// Admin Notification — sent on every new submission
+// ============================================================================
+
+import type { ApplicationAssessment } from '@/lib/ai/assessment';
+
+interface AdminNotificationOpts {
+  applicantName: string;
+  businessName: string;
+  email: string;
+  whatsapp: string | null;
+  category: string;
+  location: string | null;
+  villaCount: number | null;
+  yearsHosting: number | null;
+  mode: string;
+  language: string;
+  publicSlug: string;
+  applicationId: string;
+  shortPitch: string | null;
+  assessment: ApplicationAssessment | null;
+}
+
+export async function sendAdminNotificationEmail(opts: AdminNotificationOpts) {
+  const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL;
+  if (!adminEmail) {
+    console.log('ADMIN_NOTIFICATION_EMAIL not set, skipping admin notification');
+    return null;
+  }
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com';
+  const adminUrl = `${siteUrl}/admin/applications/${opts.applicationId}`;
+  const publicUrl = `${siteUrl}/v/${opts.publicSlug}`;
+
+  const categoryEmoji =
+    opts.category === 'boutique' ? '⬥' : opts.category === 'growing' ? '⬢' : '⬣';
+  const categoryColor =
+    opts.category === 'boutique' ? COLORS.coral : opts.category === 'growing' ? COLORS.teal : COLORS.burgundy;
+
+  // Subject includes AI score hint if available
+  const a = opts.assessment;
+  const scoreHint = a ? ` · AI ${a.story_score}/${a.growth_score}` : '';
+  const subject = `🆕 ${opts.businessName} — ${opts.category} (${opts.villaCount || '?'} villas)${scoreHint}`;
+
+  const html = `<!doctype html>
+<html><body style="margin:0;padding:32px 16px;background:${COLORS.cream};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:${COLORS.navy};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+  <tr><td align="center">
+    <table role="presentation" width="540" cellpadding="0" cellspacing="0" style="max-width:540px;background:#FFFFFF;border-radius:12px;overflow:hidden;border:1px solid rgba(31,58,79,0.1);">
+      <tr><td style="padding:24px 28px 20px 28px;border-bottom:3px solid ${categoryColor};">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.14em;color:${categoryColor};margin-bottom:6px;text-transform:uppercase;">
+          ${categoryEmoji} New ${opts.category} application · ${opts.mode === 'deep' ? 'Deep Story' : 'Quick Apply'}
+        </div>
+        <div style="font-family:Georgia,serif;font-size:24px;line-height:1.2;color:${COLORS.navy};">
+          ${opts.businessName}
+        </div>
+        <div style="font-size:14px;color:${COLORS.warmGray};margin-top:4px;">
+          ${opts.applicantName}${opts.location ? ` · ${opts.location}` : ''}
+        </div>
+      </td></tr>
+
+      <tr><td style="padding:20px 28px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
+          <tr>
+            <td style="padding:8px 0;font-size:13px;color:${COLORS.warmGray};width:110px;">Villas</td>
+            <td style="padding:8px 0;font-size:13px;font-weight:600;color:${COLORS.navy};">${opts.villaCount || '—'}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0;font-size:13px;color:${COLORS.warmGray};">Years hosting</td>
+            <td style="padding:8px 0;font-size:13px;font-weight:600;color:${COLORS.navy};">${opts.yearsHosting || '—'}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0;font-size:13px;color:${COLORS.warmGray};">Email</td>
+            <td style="padding:8px 0;font-size:13px;color:${COLORS.navy};"><a href="mailto:${opts.email}" style="color:${COLORS.coral};text-decoration:none;">${opts.email}</a></td>
+          </tr>
+          ${opts.whatsapp ? `
+          <tr>
+            <td style="padding:8px 0;font-size:13px;color:${COLORS.warmGray};">WhatsApp</td>
+            <td style="padding:8px 0;font-size:13px;color:${COLORS.navy};font-family:monospace;">${opts.whatsapp}</td>
+          </tr>` : ''}
+          <tr>
+            <td style="padding:8px 0;font-size:13px;color:${COLORS.warmGray};">Language</td>
+            <td style="padding:8px 0;font-size:13px;color:${COLORS.navy};">${opts.language === 'id' ? 'Bahasa Indonesia' : 'English'}</td>
+          </tr>
+        </table>
+
+        ${opts.shortPitch ? `
+        <div style="background:${COLORS.cream};border-left:3px solid ${categoryColor};padding:14px 16px;border-radius:0 8px 8px 0;margin-bottom:20px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;color:${COLORS.warmGray};text-transform:uppercase;margin-bottom:4px;">Pitch</div>
+          <div style="font-size:14px;line-height:1.5;color:${COLORS.navy};font-style:italic;">"${opts.shortPitch}"</div>
+        </div>` : ''}
+
+        ${a ? `
+        <div style="background:#FFFFFF;border:1.5px solid ${COLORS.gold};border-radius:10px;padding:16px 18px;margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="background:${COLORS.gold};color:${COLORS.navy};font-size:9px;font-weight:800;letter-spacing:0.14em;padding:3px 8px;border-radius:100px;">🤖 AI ASSESSMENT</span>
+            <span style="font-size:10px;color:${COLORS.warmGray};">advisory · not jury-visible</span>
+          </div>
+
+          <div style="font-size:14px;line-height:1.55;color:${COLORS.navy};margin-bottom:14px;">${a.summary}</div>
+
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:14px;">
+            <tr>
+              <td style="padding:8px 12px;background:${COLORS.cream};border-radius:8px 0 0 8px;width:50%;text-align:center;border-right:2px solid #FFFFFF;">
+                <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;color:${COLORS.warmGray};text-transform:uppercase;">Story</div>
+                <div style="font-family:Georgia,serif;font-size:24px;color:${scoreColor(a.story_score)};line-height:1;margin-top:2px;">${a.story_score}<span style="font-size:13px;color:${COLORS.warmGray};">/10</span></div>
+              </td>
+              <td style="padding:8px 12px;background:${COLORS.cream};border-radius:0 8px 8px 0;width:50%;text-align:center;">
+                <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;color:${COLORS.warmGray};text-transform:uppercase;">Growth</div>
+                <div style="font-family:Georgia,serif;font-size:24px;color:${scoreColor(a.growth_score)};line-height:1;margin-top:2px;">${a.growth_score}<span style="font-size:13px;color:${COLORS.warmGray};">/10</span></div>
+              </td>
+            </tr>
+          </table>
+
+          <div style="font-size:13px;line-height:1.5;color:${COLORS.navy};padding:10px 12px;background:${COLORS.cream};border-radius:8px;margin-bottom:${a.red_flags ? '10px' : '0'};">
+            <strong style="color:${categoryFitColor(a.category_fit)};">→ </strong>${a.recommendation}
+          </div>
+
+          ${a.red_flags ? `
+          <div style="font-size:13px;line-height:1.5;color:${COLORS.burgundy};padding:10px 12px;background:rgba(122,41,53,0.08);border-radius:8px;border-left:3px solid ${COLORS.burgundy};">
+            <strong>⚠ Flag: </strong>${a.red_flags}
+          </div>` : ''}
+        </div>` : ''}
+
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="padding-right:6px;">
+              <a href="${adminUrl}" style="display:block;background:${COLORS.coral};color:#FFFFFF;font-weight:700;font-size:13px;padding:11px 16px;border-radius:8px;text-decoration:none;text-align:center;">Review in admin →</a>
+            </td>
+            <td style="padding-left:6px;">
+              <a href="${publicUrl}" style="display:block;background:#FFFFFF;color:${COLORS.navy};font-weight:600;font-size:13px;padding:10px 16px;border-radius:8px;text-decoration:none;text-align:center;border:1.5px solid rgba(31,58,79,0.15);">View public page</a>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+    </table>
+    <div style="margin-top:14px;font-size:11px;color:${COLORS.warmGray};text-align:center;">CHA Awards 2026 · Admin notification</div>
+  </td></tr>
+</table>
+</body></html>`;
+
+  const text = `New ${opts.category} application — ${opts.businessName}
+
+Applicant: ${opts.applicantName}
+Location: ${opts.location || '—'}
+Villas: ${opts.villaCount || '—'} · Years: ${opts.yearsHosting || '—'}
+Email: ${opts.email}
+${opts.whatsapp ? `WhatsApp: ${opts.whatsapp}\n` : ''}Mode: ${opts.mode === 'deep' ? 'Deep Story' : 'Quick Apply'}
+Language: ${opts.language === 'id' ? 'Bahasa Indonesia' : 'English'}
+${opts.shortPitch ? `\nPitch: "${opts.shortPitch}"\n` : ''}${a ? `
+🤖 AI ASSESSMENT (advisory)
+${a.summary}
+
+Story: ${a.story_score}/10  ·  Growth: ${a.growth_score}/10  ·  Fit: ${a.category_fit}
+→ ${a.recommendation}
+${a.red_flags ? `\n⚠ Flag: ${a.red_flags}\n` : ''}
+` : ''}
+Review in admin: ${adminUrl}
+Public page: ${publicUrl}`;
+
+  return await resend.emails.send({
+    from: FROM_EMAIL,
+    to: adminEmail,
+    subject,
+    html,
+    text,
+  });
+}
+
+function scoreColor(score: number): string {
+  if (score >= 8) return COLORS.teal;
+  if (score >= 6) return COLORS.navy;
+  if (score >= 4) return COLORS.warmGray;
+  return COLORS.burgundy;
+}
+
+function categoryFitColor(fit: 'strong' | 'borderline' | 'weak'): string {
+  if (fit === 'strong') return COLORS.teal;
+  if (fit === 'weak') return COLORS.burgundy;
+  return COLORS.warmGray;
+}
