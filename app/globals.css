@@ -47,18 +47,3 @@
     @apply inline-block h-2 w-2 animate-pulse rounded-full bg-green-600;
   }
 }
-
-@layer utilities {
-  .lang-id {
-    display: none;
-  }
-  body.lang-id .lang-en {
-    display: none;
-  }
-  body.lang-id .lang-id {
-    display: inline;
-  }
-  body.lang-id .lang-id.block {
-    display: block;
-  }
-}
