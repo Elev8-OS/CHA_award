@@ -7,7 +7,7 @@ import type { Locale } from '@/lib/i18n/translations';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'CHA Awards <awards@elev8-suite.com>';
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'CHA Hospitality Awards <awards@elev8-suite.com>';
 const REPLY_TO = process.env.RESEND_REPLY_TO || 'hello@elev8-suite.com';
 
 // ---------- Application Confirmation Email ----------
@@ -27,8 +27,8 @@ export async function sendApplicationConfirmationEmail(opts: ApplicationConfirma
 
   const subject =
     opts.locale === 'id'
-      ? `🏆 Pendaftaran ${opts.businessName} diterima — Canggu Host Awards 2026`
-      : `🏆 Your application for ${opts.businessName} is in — Canggu Host Awards 2026`;
+      ? `🏆 Pendaftaran ${opts.businessName} diterima — CHA Hospitality Awards 2026`
+      : `🏆 Your application for ${opts.businessName} is in — CHA Hospitality Awards 2026`;
 
   const html = renderApplicationConfirmationHtml(opts, publicUrl);
   const text = renderApplicationConfirmationText(opts, publicUrl);
@@ -51,8 +51,8 @@ function renderApplicationConfirmationHtml(
 
   const greeting = isId ? `Halo ${opts.applicantName},` : `Hi ${opts.applicantName},`;
   const intro = isId
-    ? `Terima kasih sudah mendaftarkan <strong>${opts.businessName}</strong> di Canggu Host Awards 2026.`
-    : `Thank you for entering <strong>${opts.businessName}</strong> into the Canggu Host Awards 2026.`;
+    ? `Terima kasih sudah mendaftarkan <strong>${opts.businessName}</strong> di CHA Hospitality Awards 2026.`
+    : `Thank you for entering <strong>${opts.businessName}</strong> into the CHA Hospitality Awards 2026.`;
   const yourPage = isId ? 'Halaman publik Anda' : 'Your public page';
   const shareCta = isId
     ? 'Bagikan halaman ini dengan jaringan Anda. Setiap suara membawa Anda lebih dekat ke panggung di Bali Villa Connect 2026.'
@@ -83,7 +83,7 @@ function renderApplicationConfirmationHtml(
         <!-- Header bar -->
         <tr>
           <td style="background:linear-gradient(135deg, #D4663F 0%, #7A2935 100%);padding:32px 32px 28px 32px;text-align:center;">
-            <div style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#E8A93C;margin-bottom:8px;">Canggu Host Awards 2026</div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#E8A93C;margin-bottom:8px;">CHA Hospitality Awards 2026</div>
             <div style="font-family:Georgia,serif;font-size:28px;color:#FFFFFF;line-height:1.2;">
               ${isId ? 'Pendaftaran diterima' : 'Application received'} 🏆
             </div>
@@ -147,7 +147,7 @@ function renderApplicationConfirmationText(
   if (isId) {
     return `Halo ${opts.applicantName},
 
-Terima kasih sudah mendaftarkan ${opts.businessName} di Canggu Host Awards 2026.
+Terima kasih sudah mendaftarkan ${opts.businessName} di CHA Hospitality Awards 2026.
 
 HALAMAN PUBLIK ANDA:
 ${publicUrl}
@@ -167,7 +167,7 @@ Powered by Elev8 Suite OS — Diamond Sponsor`;
   }
   return `Hi ${opts.applicantName},
 
-Thank you for entering ${opts.businessName} into the Canggu Host Awards 2026.
+Thank you for entering ${opts.businessName} into the CHA Hospitality Awards 2026.
 
 YOUR PUBLIC PAGE:
 ${publicUrl}
@@ -198,8 +198,8 @@ interface SaveContinueEmailOpts {
 export async function sendSaveContinueEmail(opts: SaveContinueEmailOpts) {
   const subject =
     opts.locale === 'id'
-      ? '✏️ Lanjutkan pendaftaran Anda — CHA Awards 2026'
-      : '✏️ Continue your application — CHA Awards 2026';
+      ? '✏️ Lanjutkan pendaftaran Anda — CHA Hospitality Awards 2026'
+      : '✏️ Continue your application — CHA Hospitality Awards 2026';
 
   const greeting = opts.locale === 'id' ? `Halo ${opts.applicantName},` : `Hi ${opts.applicantName},`;
   const intro = opts.locale === 'id'
@@ -259,8 +259,8 @@ export async function sendShortlistEmail(opts: MilestoneEmailOpts) {
   const isId = opts.locale === 'id';
 
   const subject = isId
-    ? `🌟 ${opts.businessName} di Top 10 — CHA Awards 2026`
-    : `🌟 ${opts.businessName} is in the Top 10 — CHA Awards 2026`;
+    ? `🌟 ${opts.businessName} di Top 10 — CHA Hospitality Awards 2026`
+    : `🌟 ${opts.businessName} is in the Top 10 — CHA Hospitality Awards 2026`;
 
   const html = renderMilestoneHtml({
     locale: opts.locale,
@@ -269,8 +269,8 @@ export async function sendShortlistEmail(opts: MilestoneEmailOpts) {
     title: isId ? 'Anda dalam Shortlist' : 'You\'re shortlisted',
     greeting: isId ? `Halo ${opts.applicantName},` : `Hi ${opts.applicantName},`,
     intro: isId
-      ? `Selamat. <strong>${opts.businessName}</strong> terpilih dalam Top 10 kategori <strong>${opts.category}</strong> di Canggu Host Awards 2026.`
-      : `Congratulations. <strong>${opts.businessName}</strong> has been shortlisted in the Top 10 of the <strong>${opts.category}</strong> category at the Canggu Host Awards 2026.`,
+      ? `Selamat. <strong>${opts.businessName}</strong> terpilih dalam Top 10 kategori <strong>${opts.category}</strong> di CHA Hospitality Awards 2026.`
+      : `Congratulations. <strong>${opts.businessName}</strong> has been shortlisted in the Top 10 of the <strong>${opts.category}</strong> category at the CHA Hospitality Awards 2026.`,
     rewardLabel: isId ? 'Apa yang Anda dapatkan' : 'What you get',
     rewardItems: isId
       ? [
@@ -307,8 +307,8 @@ export async function sendFinalistEmail(opts: MilestoneEmailOpts) {
   const isId = opts.locale === 'id';
 
   const subject = isId
-    ? `🏆 ${opts.businessName} adalah Finalis — CHA Awards 2026`
-    : `🏆 ${opts.businessName} is a Finalist — CHA Awards 2026`;
+    ? `🏆 ${opts.businessName} adalah Finalis — CHA Hospitality Awards 2026`
+    : `🏆 ${opts.businessName} is a Finalist — CHA Hospitality Awards 2026`;
 
   const html = renderMilestoneHtml({
     locale: opts.locale,
@@ -357,8 +357,8 @@ export async function sendWinnerEmail(opts: MilestoneEmailOpts) {
   const isId = opts.locale === 'id';
 
   const subject = isId
-    ? `🏆 ${opts.businessName} MENANG — CHA Awards 2026`
-    : `🏆 ${opts.businessName} WON — CHA Awards 2026`;
+    ? `🏆 ${opts.businessName} MENANG — CHA Hospitality Awards 2026`
+    : `🏆 ${opts.businessName} WON — CHA Hospitality Awards 2026`;
 
   const html = renderMilestoneHtml({
     locale: opts.locale,
@@ -367,8 +367,8 @@ export async function sendWinnerEmail(opts: MilestoneEmailOpts) {
     title: isId ? 'Anda Pemenangnya' : 'You won',
     greeting: isId ? `Halo ${opts.applicantName},` : `Hi ${opts.applicantName},`,
     intro: isId
-      ? `Selamat. <strong>${opts.businessName}</strong> adalah pemenang kategori <strong>${opts.category}</strong> di Canggu Host Awards 2026 — Edisi 01.`
-      : `Congratulations. <strong>${opts.businessName}</strong> is the winner of the <strong>${opts.category}</strong> category at the Canggu Host Awards 2026 — Edition 01.`,
+      ? `Selamat. <strong>${opts.businessName}</strong> adalah pemenang kategori <strong>${opts.category}</strong> di CHA Hospitality Awards 2026 — Edisi 01.`
+      : `Congratulations. <strong>${opts.businessName}</strong> is the winner of the <strong>${opts.category}</strong> category at the CHA Hospitality Awards 2026 — Edition 01.`,
     rewardLabel: isId ? 'Hadiah Anda' : 'Your prize',
     rewardItems: isId
       ? [
@@ -602,7 +602,7 @@ export async function sendAdminNotificationEmail(opts: AdminNotificationOpts) {
         </table>
       </td></tr>
     </table>
-    <div style="margin-top:14px;font-size:11px;color:${COLORS.warmGray};text-align:center;">CHA Awards 2026 · Admin notification</div>
+    <div style="margin-top:14px;font-size:11px;color:${COLORS.warmGray};text-align:center;">CHA Hospitality Awards 2026 · Admin notification</div>
   </td></tr>
 </table>
 </body></html>`;

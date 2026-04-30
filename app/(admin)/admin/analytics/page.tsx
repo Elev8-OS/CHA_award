@@ -59,7 +59,7 @@ export default async function AdminAnalyticsPage() {
     <div className="px-6 py-8 md:px-10">
       <h1 className="mb-2 font-serif text-3xl text-navy">Analytics</h1>
       <p className="mb-8 text-sm text-warm-gray">
-        Live funnel and engagement metrics for the Canggu Host Awards 2026.
+        Live funnel and engagement metrics for the CHA Hospitality Awards 2026.
       </p>
 
       {/* Top KPIs */}

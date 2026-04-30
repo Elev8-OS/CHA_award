@@ -66,7 +66,7 @@ export default async function WinnersPage() {
             </h1>
             <p className="mb-16 max-w-[640px] text-lg leading-relaxed text-navy/80">
               Three operators. Three categories. Selected by jury, decided by community. Edition 01
-              of the Canggu Host Awards.
+              of the CHA Hospitality Awards.
             </p>
 
             <div className="grid grid-cols-1 gap-7 md:grid-cols-3">
@@ -81,7 +81,7 @@ export default async function WinnersPage() {
               </div>
               <h2 className="mb-5 font-serif text-4xl">The tradition continues.</h2>
               <p className="mx-auto mb-9 max-w-xl text-base text-cream/80">
-                The Canggu Host Awards return next year. Bigger, with more categories, and the same
+                The CHA Hospitality Awards return next year. Bigger, with more categories, and the same
                 ethos: peers, not vendors.
               </p>
               <Link

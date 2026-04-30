@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const title = `Vote for ${applicant.business_name || applicant.full_name} — CHA Host Awards 2026`;
   const description =
     applicant.short_pitch ||
-    `${applicant.business_name} is competing in the ${applicant.category} category of the Canggu Host Awards 2026. Cast your vote now.`;
+    `${applicant.business_name} is competing in the ${applicant.category} category of the CHA Hospitality Awards 2026. Cast your vote now.`;
 
   return {
     title,

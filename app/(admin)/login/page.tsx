@@ -27,9 +27,14 @@ function LoginInner() {
     setErrorMsg('');
     try {
       const supabase = getSupabaseBrowser();
+      // Build callback URL: /auth/callback?next=/admin
+      // The callback route exchanges the code for a session cookie, then
+      // redirects to ?next= destination.
+      const redirectUrl = new URL('/auth/callback', window.location.origin);
+      redirectUrl.searchParams.set('next', '/admin');
       const { error } = await supabase.auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: `${window.location.origin}/admin/applications` },
+        options: { emailRedirectTo: redirectUrl.toString() },
       });
       if (error) throw error;
       setSent(true);
@@ -49,7 +54,7 @@ function LoginInner() {
               <CHALogo size={56} />
             </div>
             <h1 className="font-serif text-3xl text-navy">Admin sign in</h1>
-            <p className="mt-2 text-sm text-warm-gray">CHA Awards 2026 — Jury & Admin only</p>
+            <p className="mt-2 text-sm text-warm-gray">CHA Hospitality Awards 2026 — Jury & Admin only</p>
           </div>
 
           <div className="rounded-3xl border border-line bg-white p-8">

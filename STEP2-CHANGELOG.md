@@ -73,7 +73,7 @@ Submit these in Meta Business Manager (24-48h approval):
    - Variables: applicant name, public URL
 
 2. **`award_voting_otp`** (en + id)
-   - Body: `Your CHA Awards vote code for {{2}} is *{{1}}*. Valid 10 min.`
+   - Body: `Your CHA Hospitality Awards vote code for {{2}} is *{{1}}*. Valid 10 min.`
    - Variables: OTP code, applicant name
    - **Category: AUTHENTICATION** (faster approval, higher delivery)
 

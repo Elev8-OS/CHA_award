@@ -65,7 +65,7 @@ function buildApplicationConfirmationText(
   if (locale === 'id') {
     return `Halo ${name},
 
-Terima kasih sudah mendaftar di *Canggu Host Awards 2026* 🏆
+Terima kasih sudah mendaftar di *CHA Hospitality Awards 2026* 🏆
 
 Pendaftaran Anda sudah kami terima. Berikut langkah selanjutnya:
 
@@ -88,7 +88,7 @@ Powered by Elev8 Suite OS`;
 
   return `Hi ${name},
 
-Thank you for applying to the *Canggu Host Awards 2026* 🏆
+Thank you for applying to the *CHA Hospitality Awards 2026* 🏆
 
 Your application has been received. Here's what's next:
 
@@ -144,7 +144,7 @@ export async function sendVotingOtp(opts: VotingOtpOpts) {
 
 function buildVotingOtpText(locale: Locale, applicantName: string, otp: string): string {
   if (locale === 'id') {
-    return `*Canggu Host Awards 2026*
+    return `*CHA Hospitality Awards 2026*
 
 Kode konfirmasi suara Anda untuk *${applicantName}*:
 
@@ -153,7 +153,7 @@ Kode konfirmasi suara Anda untuk *${applicantName}*:
 Kode berlaku 10 menit. Jika Anda tidak meminta kode ini, abaikan pesan ini.`;
   }
 
-  return `*Canggu Host Awards 2026*
+  return `*CHA Hospitality Awards 2026*
 
 Your vote confirmation code for *${applicantName}*:
 
@@ -199,7 +199,7 @@ export async function sendFinalistNotification(opts: FinalistNotificationOpts) {
       opts.locale === 'id'
         ? `🎉 *${opts.applicantName}*, Anda finalis!
 
-Anda terpilih sebagai *5 finalis teratas* di kategori *${opts.category}* di Canggu Host Awards 2026.
+Anda terpilih sebagai *5 finalis teratas* di kategori *${opts.category}* di CHA Hospitality Awards 2026.
 
 Pengumuman pemenang akan dilakukan langsung di panggung pada 26-27 Mei di Bali Villa Connect 2026.
 
@@ -208,7 +208,7 @@ Tiket gratis Anda akan dikirim segera. Halaman Anda: ${publicUrl}
 Selamat! Sampai jumpa di panggung 🏆`
         : `🎉 *${opts.applicantName}*, you're a finalist!
 
-You've been selected as a *Top 5 finalist* in the *${opts.category}* category of the Canggu Host Awards 2026.
+You've been selected as a *Top 5 finalist* in the *${opts.category}* category of the CHA Hospitality Awards 2026.
 
 Winners will be announced live on stage on May 26-27 at Bali Villa Connect 2026.
 
@@ -258,7 +258,7 @@ export async function sendSubmissionReminder(opts: SubmissionReminderOpts) {
       opts.locale === 'id'
         ? `⏰ *${opts.applicantName}*, pendaftaran Anda belum selesai.
 
-Hanya *${opts.hoursLeft} jam tersisa* untuk Canggu Host Awards 2026.
+Hanya *${opts.hoursLeft} jam tersisa* untuk CHA Hospitality Awards 2026.
 
 Lanjutkan di sini:
 ${continueUrl}
@@ -266,7 +266,7 @@ ${continueUrl}
 Pendaftaran ditutup 22 Mei 23:59 WITA.`
         : `⏰ *${opts.applicantName}*, your application isn't finished yet.
 
-Only *${opts.hoursLeft} hours left* for the Canggu Host Awards 2026.
+Only *${opts.hoursLeft} hours left* for the CHA Hospitality Awards 2026.
 
 Continue here:
 ${continueUrl}
@@ -365,7 +365,7 @@ export async function sendShortlistNotification(opts: ShortlistNotificationOpts)
       opts.locale === 'id'
         ? `🌟 *${opts.applicantName}*, Anda di Top 10!
 
-Anda terpilih dalam shortlist *${opts.category}* di Canggu Host Awards 2026.
+Anda terpilih dalam shortlist *${opts.category}* di CHA Hospitality Awards 2026.
 
 Anda mendapat *sesi strategi 1:1 dengan founder Elev8 Suite OS* — kami akan menghubungi Anda untuk menjadwalkan.
 
@@ -374,7 +374,7 @@ Halaman Anda: ${publicUrl}
 Top 5 finalis diumumkan 25 Mei.`
         : `🌟 *${opts.applicantName}*, you're in the Top 10!
 
-You've been shortlisted in *${opts.category}* at the Canggu Host Awards 2026.
+You've been shortlisted in *${opts.category}* at the CHA Hospitality Awards 2026.
 
 You've earned a *1:1 strategy session with the Elev8 Suite OS founders* — we'll reach out to schedule.
 
@@ -423,7 +423,7 @@ export async function sendWinnerNotification(opts: WinnerNotificationOpts) {
       opts.locale === 'id'
         ? `🏆 *${opts.applicantName}*, ANDA MENANG!
 
-Anda adalah pemenang kategori *${opts.category}* di Canggu Host Awards 2026!
+Anda adalah pemenang kategori *${opts.category}* di CHA Hospitality Awards 2026!
 
 Hadiah Anda:
 🎯 1 tahun Elev8 Suite OS untuk 2 villa
@@ -437,7 +437,7 @@ Halaman Anda: ${publicUrl}
 Selamat! 🎉`
         : `🏆 *${opts.applicantName}*, YOU WON!
 
-You are the winner of the *${opts.category}* category at the Canggu Host Awards 2026!
+You are the winner of the *${opts.category}* category at the CHA Hospitality Awards 2026!
 
 Your prize:
 🎯 1 year of Elev8 Suite OS for 2 villas

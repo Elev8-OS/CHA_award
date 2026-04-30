@@ -32,8 +32,8 @@ function ThankYouInner() {
 
   const shareText =
     locale === 'id'
-      ? `Saya baru saja mendaftar di Canggu Host Awards 2026 🏆\n\nBerikan suara Anda di:\n${pageUrl}`
-      : `I just applied to the Canggu Host Awards 2026 🏆\n\nCast your vote here:\n${pageUrl}`;
+      ? `Saya baru saja mendaftar di CHA Hospitality Awards 2026 🏆\n\nBerikan suara Anda di:\n${pageUrl}`
+      : `I just applied to the CHA Hospitality Awards 2026 🏆\n\nCast your vote here:\n${pageUrl}`;
 
   return (
     <main className="min-h-screen bg-cream">

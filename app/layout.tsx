@@ -16,14 +16,14 @@ const dmSerif = DM_Serif_Display({
 });
 
 export const metadata: Metadata = {
-  title: 'The Canggu Host Awards 2026 — presented by CHA',
+  title: 'The CHA Hospitality Awards 2026 — Canggu Hospitality Association',
   description:
     'Three winners. One stage. The most ambitious villa operators in Canggu get called up at Bali Villa Connect 2026, in front of the entire industry. Apply by 22 May.',
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com'
   ),
   openGraph: {
-    title: 'The Canggu Host Awards 2026',
+    title: 'The CHA Hospitality Awards 2026',
     description:
       'Presented by the Canggu Hospitality Association, powered by Elev8 Suite OS.',
     url: '/',
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'The Canggu Host Awards 2026',
+    title: 'The CHA Hospitality Awards 2026',
     description:
       'Presented by the Canggu Hospitality Association, powered by Elev8 Suite OS.',
   },

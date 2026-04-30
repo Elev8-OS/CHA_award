@@ -1,6 +1,6 @@
-# CHA Awards 2026 — Web Application
+# CHA Hospitality Awards 2026 — Web Application
 
-The Canggu Host Awards 2026 — presented by CHA, powered by elev8.
+The CHA Hospitality Awards 2026 — presented by CHA, powered by elev8.
 
 A Next.js 14 application with Supabase backend and Meta WhatsApp Cloud API integration, deployed on Railway.
 

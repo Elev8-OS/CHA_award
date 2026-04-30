@@ -39,7 +39,7 @@ interface AssessmentInput {
   language: string;
 }
 
-const SYSTEM_PROMPT = `You are a pre-screening assistant for the Canggu Host Awards 2026, an annual award recognizing villa operators in Bali.
+const SYSTEM_PROMPT = `You are a pre-screening assistant for the CHA Hospitality Awards 2026, an annual award recognizing villa operators in Bali.
 
 You receive submitted applications and produce a concise pre-assessment for the admin.
 

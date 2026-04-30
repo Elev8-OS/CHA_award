@@ -85,8 +85,8 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
 
   const shareText =
     locale === 'id'
-      ? `Saya mendukung ${applicant.business_name} di Canggu Host Awards 2026 🏆\n\nBerikan suara Anda di:\n${shareUrl}`
-      : `I'm supporting ${applicant.business_name} in the Canggu Host Awards 2026 🏆\n\nCast your vote here:\n${shareUrl}`;
+      ? `Saya mendukung ${applicant.business_name} di CHA Hospitality Awards 2026 🏆\n\nBerikan suara Anda di:\n${shareUrl}`
+      : `I'm supporting ${applicant.business_name} in the CHA Hospitality Awards 2026 🏆\n\nCast your vote here:\n${shareUrl}`;
 
   return (
     <>
@@ -332,7 +332,7 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
               <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-coral">
                 {t('vote.about_awards')}
               </div>
-              <h3 className="font-serif text-xl text-navy">The Canggu Host Awards 2026</h3>
+              <h3 className="font-serif text-xl text-navy">The CHA Hospitality Awards 2026</h3>
             </div>
           </div>
           <p className="mb-4 text-sm leading-relaxed text-navy/75">

@@ -15,7 +15,7 @@ export default async function AdminWhatsappPage() {
     <div className="px-6 py-8 md:px-10">
       <h1 className="mb-2 font-serif text-3xl text-navy">WhatsApp</h1>
       <p className="mb-8 text-sm text-warm-gray">
-        Live inbox & outbound for the CHA Awards. All messages logged via Meta Cloud API.
+        Live inbox & outbound for the CHA Hospitality Awards. All messages logged via Meta Cloud API.
       </p>
       <WhatsAppInbox initialMessages={messages || []} />
     </div>

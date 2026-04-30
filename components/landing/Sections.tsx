@@ -458,7 +458,7 @@ export function Footer() {
       </div>
       <div className="mx-auto flex max-w-[1280px] flex-col justify-between gap-3 border-t border-cream/10 pt-7 text-xs text-cream/50 md:flex-row">
         <span>© 2026 Canggu Hospitality Association</span>
-        <span>Edition 01 — Canggu Host Awards · Powered by Elev8 Suite OS</span>
+        <span>Edition 01 — CHA Hospitality Awards · Powered by Elev8 Suite OS</span>
       </div>
     </footer>
   );
