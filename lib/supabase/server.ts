@@ -3,8 +3,10 @@
 // Use in server components and route handlers that need user context
 // ============================================================================
 
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+
+type CookieToSet = { name: string; value: string; options: CookieOptions };
 
 export function getSupabaseServer() {
   const cookieStore = cookies();
@@ -17,7 +19,7 @@ export function getSupabaseServer() {
         getAll() {
           return cookieStore.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: CookieToSet[]) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)

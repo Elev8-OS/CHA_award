@@ -13,6 +13,7 @@ const schema = z.object({
   application_id: z.string().uuid(),
   voter_whatsapp: z.string().min(8),
   voter_name: z.string().max(100).optional(),
+  referrer_slug: z.string().max(80).optional(),
 });
 
 function generateOtp(): string {
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: parsed.error.issues[0]?.message }, { status: 400 });
     }
 
-    const { application_id, voter_whatsapp, voter_name } = parsed.data;
+    const { application_id, voter_whatsapp, voter_name, referrer_slug } = parsed.data;
     const normalizedPhone = normalizePhoneNumber(voter_whatsapp);
 
     // Get applicant info for OTP message
@@ -78,6 +79,10 @@ export async function POST(req: NextRequest) {
     const ipHash = await hashIP(ip);
     const ua = req.headers.get('user-agent') || '';
 
+    // Don't credit a referrer if they're voting for themselves
+    const refSlug =
+      referrer_slug && referrer_slug !== applicant.public_slug ? referrer_slug : null;
+
     // Upsert vote event with new OTP (overwrites old unverified one)
     const { error: upsertError } = await supabaseAdmin
       .from('vote_events')
@@ -90,6 +95,7 @@ export async function POST(req: NextRequest) {
           user_agent_hash: ua.slice(0, 200),
           verification_code: otp,
           is_verified: false,
+          referrer_slug: refSlug,
           created_at: new Date().toISOString(),
         },
         { onConflict: 'application_id,voter_whatsapp' }

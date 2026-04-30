@@ -1,5 +1,6 @@
 import { LangProvider } from '@/components/common/LangProvider';
 import { Navigation } from '@/components/common/Navigation';
+import { CountdownBanner } from '@/components/common/CountdownBanner';
 import { Hero } from '@/components/landing/Hero';
 import {
   PartnershipStrip,
@@ -25,6 +26,7 @@ export default function HomePage() {
         <FinalCTA />
       </main>
       <Footer />
+      <CountdownBanner />
     </LangProvider>
   );
 }

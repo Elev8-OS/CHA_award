@@ -219,3 +219,237 @@ Congratulations! See you on stage 🏆`;
     return await sendText({ to: opts.to, body, applicationId: opts.applicationId });
   }
 }
+
+// ---------- Submission Deadline Reminder ----------
+
+interface SubmissionReminderOpts {
+  to: string;
+  locale: Locale;
+  applicantName: string;
+  continueToken: string;
+  hoursLeft: number;
+  applicationId: string;
+}
+
+export async function sendSubmissionReminder(opts: SubmissionReminderOpts) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com';
+  const continueUrl = `${siteUrl}/apply/${opts.continueToken}`;
+
+  // Try template first
+  try {
+    return await sendTemplate({
+      to: opts.to,
+      templateName: 'award_submission_reminder',
+      languageCode: opts.locale,
+      components: [
+        {
+          type: 'body',
+          parameters: [
+            { type: 'text', text: opts.applicantName },
+            { type: 'text', text: opts.hoursLeft.toString() },
+            { type: 'text', text: continueUrl },
+          ],
+        },
+      ],
+      applicationId: opts.applicationId,
+    });
+  } catch (error) {
+    const body =
+      opts.locale === 'id'
+        ? `⏰ *${opts.applicantName}*, pendaftaran Anda belum selesai.
+
+Hanya *${opts.hoursLeft} jam tersisa* untuk Canggu Host Awards 2026.
+
+Lanjutkan di sini:
+${continueUrl}
+
+Pendaftaran ditutup 22 Mei 23:59 WITA.`
+        : `⏰ *${opts.applicantName}*, your application isn't finished yet.
+
+Only *${opts.hoursLeft} hours left* for the Canggu Host Awards 2026.
+
+Continue here:
+${continueUrl}
+
+Submissions close 22 May 23:59 WITA.`;
+
+    return await sendText({ to: opts.to, body, applicationId: opts.applicationId });
+  }
+}
+
+// ---------- Share Reminder (for applicants who submitted but haven't shared) ----------
+
+interface ShareReminderOpts {
+  to: string;
+  locale: Locale;
+  applicantName: string;
+  publicSlug: string;
+  voteCount: number;
+  applicationId: string;
+}
+
+export async function sendShareReminder(opts: ShareReminderOpts) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com';
+  const publicUrl = `${siteUrl}/v/${opts.publicSlug}`;
+
+  try {
+    return await sendTemplate({
+      to: opts.to,
+      templateName: 'award_share_reminder',
+      languageCode: opts.locale,
+      components: [
+        {
+          type: 'body',
+          parameters: [
+            { type: 'text', text: opts.applicantName },
+            { type: 'text', text: opts.voteCount.toString() },
+            { type: 'text', text: publicUrl },
+          ],
+        },
+      ],
+      applicationId: opts.applicationId,
+    });
+  } catch (error) {
+    const body =
+      opts.locale === 'id'
+        ? `🗳️ *${opts.applicantName}*, halaman Anda mendapat *${opts.voteCount} suara* sejauh ini.
+
+Bagikan dengan jaringan Anda untuk mendapatkan lebih banyak dukungan:
+${publicUrl}
+
+Voting ditutup 22 Mei 23:59 WITA.`
+        : `🗳️ *${opts.applicantName}*, your page has *${opts.voteCount} votes* so far.
+
+Share with your network to gather more support:
+${publicUrl}
+
+Voting closes 22 May 23:59 WITA.`;
+
+    return await sendText({ to: opts.to, body, applicationId: opts.applicationId });
+  }
+}
+
+// ---------- Shortlist Notification (Top 10) ----------
+
+interface ShortlistNotificationOpts {
+  to: string;
+  locale: Locale;
+  applicantName: string;
+  category: string;
+  publicSlug: string;
+  applicationId: string;
+}
+
+export async function sendShortlistNotification(opts: ShortlistNotificationOpts) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com';
+  const publicUrl = `${siteUrl}/v/${opts.publicSlug}`;
+
+  try {
+    return await sendTemplate({
+      to: opts.to,
+      templateName: 'award_shortlist_notification',
+      languageCode: opts.locale,
+      components: [
+        {
+          type: 'body',
+          parameters: [
+            { type: 'text', text: opts.applicantName },
+            { type: 'text', text: opts.category },
+          ],
+        },
+      ],
+      applicationId: opts.applicationId,
+    });
+  } catch (error) {
+    const body =
+      opts.locale === 'id'
+        ? `🌟 *${opts.applicantName}*, Anda di Top 10!
+
+Anda terpilih dalam shortlist *${opts.category}* di Canggu Host Awards 2026.
+
+Anda mendapat *sesi strategi 1:1 dengan founder elev8* — kami akan menghubungi Anda untuk menjadwalkan.
+
+Halaman Anda: ${publicUrl}
+
+Top 5 finalis diumumkan 25 Mei.`
+        : `🌟 *${opts.applicantName}*, you're in the Top 10!
+
+You've been shortlisted in *${opts.category}* at the Canggu Host Awards 2026.
+
+You've earned a *1:1 strategy session with the elev8 founders* — we'll reach out to schedule.
+
+Your page: ${publicUrl}
+
+Top 5 finalists revealed 25 May.`;
+
+    return await sendText({ to: opts.to, body, applicationId: opts.applicationId });
+  }
+}
+
+// ---------- Winner Notification ----------
+
+interface WinnerNotificationOpts {
+  to: string;
+  locale: Locale;
+  applicantName: string;
+  category: string;
+  publicSlug: string;
+  applicationId: string;
+}
+
+export async function sendWinnerNotification(opts: WinnerNotificationOpts) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com';
+  const publicUrl = `${siteUrl}/v/${opts.publicSlug}`;
+
+  try {
+    return await sendTemplate({
+      to: opts.to,
+      templateName: 'award_winner_notification',
+      languageCode: opts.locale,
+      components: [
+        {
+          type: 'body',
+          parameters: [
+            { type: 'text', text: opts.applicantName },
+            { type: 'text', text: opts.category },
+            { type: 'text', text: publicUrl },
+          ],
+        },
+      ],
+      applicationId: opts.applicationId,
+    });
+  } catch (error) {
+    const body =
+      opts.locale === 'id'
+        ? `🏆 *${opts.applicantName}*, ANDA MENANG!
+
+Anda adalah pemenang kategori *${opts.category}* di Canggu Host Awards 2026!
+
+Hadiah Anda:
+🎯 1 tahun elev8 untuk 2 villa
+🎯 Onboarding personal & migrasi data
+🎯 Senilai USD 2.155
+
+Tim kami akan menghubungi Anda untuk onboarding.
+
+Halaman Anda: ${publicUrl}
+
+Selamat! 🎉`
+        : `🏆 *${opts.applicantName}*, YOU WON!
+
+You are the winner of the *${opts.category}* category at the Canggu Host Awards 2026!
+
+Your prize:
+🎯 1 year of elev8 for 2 villas
+🎯 Personal onboarding & data migration
+🎯 USD 2,155 value
+
+Our team will be in touch for onboarding.
+
+Your page: ${publicUrl}
+
+Congratulations! 🎉`;
+
+    return await sendText({ to: opts.to, body, applicationId: opts.applicationId });
+  }
+}

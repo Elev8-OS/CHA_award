@@ -227,3 +227,241 @@ export async function sendSaveContinueEmail(opts: SaveContinueEmailOpts) {
     html,
   });
 }
+
+// ============================================================================
+// Milestone Emails — Shortlist / Finalist / Winner
+// ============================================================================
+
+const COLORS = {
+  coral: '#D4663F',
+  teal: '#1F8A7A',
+  burgundy: '#7A2935',
+  gold: '#E8A93C',
+  navy: '#1F3A4F',
+  cream: '#F8F2E8',
+  warmGray: '#6B6055',
+};
+
+interface MilestoneEmailOpts {
+  to: string;
+  locale: Locale;
+  applicantName: string;
+  businessName: string;
+  category: string;
+  publicSlug: string;
+}
+
+// ---------- Shortlist (Top 10) ----------
+
+export async function sendShortlistEmail(opts: MilestoneEmailOpts) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com';
+  const publicUrl = `${siteUrl}/v/${opts.publicSlug}`;
+  const isId = opts.locale === 'id';
+
+  const subject = isId
+    ? `🌟 ${opts.businessName} di Top 10 — CHA Awards 2026`
+    : `🌟 ${opts.businessName} is in the Top 10 — CHA Awards 2026`;
+
+  const html = renderMilestoneHtml({
+    locale: opts.locale,
+    headerColor: COLORS.teal,
+    badge: isId ? 'TOP 10' : 'TOP 10',
+    title: isId ? 'Anda dalam Shortlist' : 'You\'re shortlisted',
+    greeting: isId ? `Halo ${opts.applicantName},` : `Hi ${opts.applicantName},`,
+    intro: isId
+      ? `Selamat. <strong>${opts.businessName}</strong> terpilih dalam Top 10 kategori <strong>${opts.category}</strong> di Canggu Host Awards 2026.`
+      : `Congratulations. <strong>${opts.businessName}</strong> has been shortlisted in the Top 10 of the <strong>${opts.category}</strong> category at the Canggu Host Awards 2026.`,
+    rewardLabel: isId ? 'Apa yang Anda dapatkan' : 'What you get',
+    rewardItems: isId
+      ? [
+          'Sesi strategi 1:1 dengan founder elev8 (30 menit)',
+          'Audit operasional yang dipersonalisasi',
+          'Tetap berpeluang masuk Top 5 finalis (diumumkan 25 Mei)',
+        ]
+      : [
+          '1:1 strategy session with elev8 founders (30 min)',
+          'Personalized operational audit',
+          'Still in the running for Top 5 finalists (revealed 25 May)',
+        ],
+    nextSteps: isId
+      ? 'Tim kami akan menghubungi Anda dalam 48 jam untuk menjadwalkan sesi strategi.'
+      : 'Our team will reach out within 48 hours to schedule your strategy session.',
+    ctaUrl: publicUrl,
+    ctaLabel: isId ? 'Lihat halaman publik Anda' : 'View your public page',
+  });
+
+  return await resend.emails.send({
+    from: FROM_EMAIL,
+    to: opts.to,
+    replyTo: REPLY_TO,
+    subject,
+    html,
+  });
+}
+
+// ---------- Finalist (Top 5) ----------
+
+export async function sendFinalistEmail(opts: MilestoneEmailOpts) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com';
+  const publicUrl = `${siteUrl}/v/${opts.publicSlug}`;
+  const isId = opts.locale === 'id';
+
+  const subject = isId
+    ? `🏆 ${opts.businessName} adalah Finalis — CHA Awards 2026`
+    : `🏆 ${opts.businessName} is a Finalist — CHA Awards 2026`;
+
+  const html = renderMilestoneHtml({
+    locale: opts.locale,
+    headerColor: COLORS.coral,
+    badge: isId ? 'FINALIS · TOP 5' : 'FINALIST · TOP 5',
+    title: isId ? 'Anda Finalis 🎉' : 'You\'re a Finalist 🎉',
+    greeting: isId ? `Halo ${opts.applicantName},` : `Hi ${opts.applicantName},`,
+    intro: isId
+      ? `Anda adalah <strong>Finalis Top 5</strong> di kategori <strong>${opts.category}</strong>. Pemenang akan diumumkan langsung di panggung Bali Villa Connect 2026.`
+      : `You are a <strong>Top 5 Finalist</strong> in the <strong>${opts.category}</strong> category. Winners will be announced live on stage at Bali Villa Connect 2026.`,
+    rewardLabel: isId ? 'Apa yang Anda dapatkan' : 'What you get',
+    rewardItems: isId
+      ? [
+          'Tiket gratis Bali Villa Connect 2026',
+          'Tempat duduk khusus finalis di acara',
+          'Disebut langsung di panggung',
+          'Kesempatan menang USD 2.155 dalam paket elev8',
+        ]
+      : [
+          'Free ticket to Bali Villa Connect 2026',
+          'Reserved finalist seating at the event',
+          'Named live on stage',
+          'Chance to win the USD 2,155 elev8 package',
+        ],
+    nextSteps: isId
+      ? '26-27 Mei — Bali Sunset Road Convention Center. Tiket dan info acara akan dikirim terpisah dalam 24 jam.'
+      : '26-27 May — Bali Sunset Road Convention Center. Ticket and event details follow within 24 hours.',
+    ctaUrl: publicUrl,
+    ctaLabel: isId ? 'Halaman Anda' : 'Your page',
+  });
+
+  return await resend.emails.send({
+    from: FROM_EMAIL,
+    to: opts.to,
+    replyTo: REPLY_TO,
+    subject,
+    html,
+  });
+}
+
+// ---------- Winner ----------
+
+export async function sendWinnerEmail(opts: MilestoneEmailOpts) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com';
+  const publicUrl = `${siteUrl}/v/${opts.publicSlug}`;
+  const isId = opts.locale === 'id';
+
+  const subject = isId
+    ? `🏆 ${opts.businessName} MENANG — CHA Awards 2026`
+    : `🏆 ${opts.businessName} WON — CHA Awards 2026`;
+
+  const html = renderMilestoneHtml({
+    locale: opts.locale,
+    headerColor: COLORS.gold,
+    badge: isId ? '🏆 PEMENANG' : '🏆 WINNER',
+    title: isId ? 'Anda Pemenangnya' : 'You won',
+    greeting: isId ? `Halo ${opts.applicantName},` : `Hi ${opts.applicantName},`,
+    intro: isId
+      ? `Selamat. <strong>${opts.businessName}</strong> adalah pemenang kategori <strong>${opts.category}</strong> di Canggu Host Awards 2026 — Edisi 01.`
+      : `Congratulations. <strong>${opts.businessName}</strong> is the winner of the <strong>${opts.category}</strong> category at the Canggu Host Awards 2026 — Edition 01.`,
+    rewardLabel: isId ? 'Hadiah Anda' : 'Your prize',
+    rewardItems: isId
+      ? [
+          '1 tahun langganan elev8 untuk 2 villa',
+          'Onboarding personal dengan founder elev8',
+          'Migrasi data langsung dari setup Anda saat ini',
+          'Senilai total USD 2.155',
+        ]
+      : [
+          '1-year elev8 subscription for 2 villas',
+          'Personal onboarding with elev8 founders',
+          'Live data migration from your current setup',
+          'Total value: USD 2,155',
+        ],
+    nextSteps: isId
+      ? 'Tim kami akan menghubungi Anda dalam 24 jam untuk memulai onboarding. Sebagai pemenang Edisi 01, kisah Anda akan ditampilkan di kampanye CHA & elev8 ke depan.'
+      : 'Our team will be in touch within 24 hours to kick off onboarding. As an Edition 01 winner, your story will be featured in upcoming CHA & elev8 campaigns.',
+    ctaUrl: publicUrl,
+    ctaLabel: isId ? 'Halaman pemenang Anda' : 'Your winner page',
+  });
+
+  return await resend.emails.send({
+    from: FROM_EMAIL,
+    to: opts.to,
+    replyTo: REPLY_TO,
+    subject,
+    html,
+  });
+}
+
+// ---------- Shared HTML renderer for milestone emails ----------
+
+interface MilestoneTemplateOpts {
+  locale: Locale;
+  headerColor: string;
+  badge: string;
+  title: string;
+  greeting: string;
+  intro: string;
+  rewardLabel: string;
+  rewardItems: string[];
+  nextSteps: string;
+  ctaUrl: string;
+  ctaLabel: string;
+}
+
+function renderMilestoneHtml(o: MilestoneTemplateOpts): string {
+  return `<!doctype html>
+<html lang="${o.locale}">
+<head><meta charset="utf-8"><title></title></head>
+<body style="margin:0;padding:0;background:${COLORS.cream};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:${COLORS.navy};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${COLORS.cream};padding:40px 20px;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#FFFFFF;border-radius:16px;overflow:hidden;">
+        <tr>
+          <td style="background:${o.headerColor};padding:48px 32px 40px 32px;text-align:center;color:#FFFFFF;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.18em;margin-bottom:14px;opacity:0.85;">${o.badge}</div>
+            <div style="font-family:Georgia,serif;font-size:36px;line-height:1.15;">${o.title}</div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:36px 32px;">
+            <p style="margin:0 0 16px 0;font-size:16px;line-height:1.6;">${o.greeting}</p>
+            <p style="margin:0 0 24px 0;font-size:16px;line-height:1.6;">${o.intro}</p>
+
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">
+              <tr>
+                <td style="background:${COLORS.cream};border-radius:12px;padding:24px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.14em;color:${o.headerColor};margin-bottom:14px;">${o.rewardLabel.toUpperCase()}</div>
+                  <ul style="margin:0;padding-left:20px;font-size:15px;line-height:1.8;color:${COLORS.navy};">
+                    ${o.rewardItems.map((item) => `<li>${item}</li>`).join('')}
+                  </ul>
+                </td>
+              </tr>
+            </table>
+
+            <p style="margin:24px 0;font-size:14px;line-height:1.6;color:${COLORS.warmGray};">${o.nextSteps}</p>
+
+            <p style="margin:32px 0 0 0;text-align:center;">
+              <a href="${o.ctaUrl}" style="display:inline-block;background:${COLORS.coral};color:#FFFFFF;font-weight:700;font-size:14px;padding:14px 28px;border-radius:100px;text-decoration:none;">${o.ctaLabel}</a>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:${COLORS.navy};padding:28px 32px;text-align:center;color:${COLORS.cream};">
+            <div style="font-size:14px;line-height:1.6;"><strong>Canggu Hospitality Association</strong><br><span style="color:${COLORS.gold};">Powered by elev8 — Diamond Sponsor</span></div>
+          </td>
+        </tr>
+      </table>
+      <div style="margin-top:16px;font-size:11px;color:${COLORS.warmGray};text-align:center;">© 2026 Canggu Hospitality Association · Edition 01</div>
+    </td>
+  </tr>
+</table>
+</body></html>`;
+}

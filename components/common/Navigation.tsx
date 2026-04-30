@@ -21,6 +21,12 @@ export function Navigation() {
       </Link>
 
       <div className="flex items-center gap-3">
+        <Link
+          href="/leaderboard"
+          className="hidden text-xs font-bold text-navy hover:text-coral md:inline-block"
+        >
+          Leaderboard →
+        </Link>
         <span className="hidden items-center gap-2 text-xs font-medium text-warm-gray md:flex">
           <LiveCount label={t('nav.applications')} />
           <span>{t('nav.applications')}</span>

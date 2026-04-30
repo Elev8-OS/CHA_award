@@ -7,7 +7,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseServer } from '@/lib/supabase/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
-import { sendFinalistNotification } from '@/lib/whatsapp/templates';
+import {
+  sendShortlistNotification,
+  sendFinalistNotification,
+  sendWinnerNotification,
+} from '@/lib/whatsapp/templates';
+import {
+  sendShortlistEmail,
+  sendFinalistEmail,
+  sendWinnerEmail,
+} from '@/lib/email/resend';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -59,7 +68,7 @@ export async function PATCH(
       .from('applications')
       .update(update)
       .eq('id', params.id)
-      .select('id, full_name, business_name, whatsapp, public_slug, language, category')
+      .select('id, full_name, business_name, whatsapp, email, public_slug, language, category')
       .single();
 
     if (error || !app) {
@@ -67,17 +76,79 @@ export async function PATCH(
       return NextResponse.json({ error: 'Update failed' }, { status: 500 });
     }
 
-    // Optional: notify applicant
-    if (notify && app.whatsapp && status === 'finalist') {
+    // ----- Notifications (non-blocking, fail-soft) -----
+    if (notify && (status === 'shortlisted' || status === 'finalist' || status === 'winner')) {
       const locale = (app.language === 'id' ? 'id' : 'en') as 'id' | 'en';
-      sendFinalistNotification({
-        to: app.whatsapp,
-        locale,
-        applicantName: app.full_name || 'there',
-        category: app.category || '',
-        publicSlug: app.public_slug || app.id,
-        applicationId: app.id,
-      }).catch((err) => console.error('Notify failed:', err));
+      const applicantName = app.full_name || 'there';
+      const businessName = app.business_name || 'your business';
+      const category = app.category || '';
+      const publicSlug = app.public_slug || app.id;
+
+      // WhatsApp
+      if (app.whatsapp) {
+        const waPromise =
+          status === 'shortlisted'
+            ? sendShortlistNotification({
+                to: app.whatsapp,
+                locale,
+                applicantName,
+                category,
+                publicSlug,
+                applicationId: app.id,
+              })
+            : status === 'finalist'
+            ? sendFinalistNotification({
+                to: app.whatsapp,
+                locale,
+                applicantName,
+                category,
+                publicSlug,
+                applicationId: app.id,
+              })
+            : sendWinnerNotification({
+                to: app.whatsapp,
+                locale,
+                applicantName,
+                category,
+                publicSlug,
+                applicationId: app.id,
+              });
+
+        waPromise.catch((err) => console.error(`WA notify (${status}) failed:`, err));
+      }
+
+      // Email
+      if (app.email) {
+        const emailPromise =
+          status === 'shortlisted'
+            ? sendShortlistEmail({
+                to: app.email,
+                locale,
+                applicantName,
+                businessName,
+                category,
+                publicSlug,
+              })
+            : status === 'finalist'
+            ? sendFinalistEmail({
+                to: app.email,
+                locale,
+                applicantName,
+                businessName,
+                category,
+                publicSlug,
+              })
+            : sendWinnerEmail({
+                to: app.email,
+                locale,
+                applicantName,
+                businessName,
+                category,
+                publicSlug,
+              });
+
+        emailPromise.catch((err) => console.error(`Email notify (${status}) failed:`, err));
+      }
     }
 
     return NextResponse.json({ success: true, status: app });

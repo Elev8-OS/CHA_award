@@ -9,14 +9,25 @@ import { getSupabaseServer } from '@/lib/supabase/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import {
   sendApplicationConfirmation,
+  sendShortlistNotification,
   sendFinalistNotification,
+  sendWinnerNotification,
+  sendSubmissionReminder,
 } from '@/lib/whatsapp/templates';
 import { z } from 'zod';
 
 const schema = z.object({
   application_ids: z.array(z.string().uuid()).min(1).max(100),
-  template: z.enum(['finalist_notification', 'application_confirmation', 'custom']),
-  custom_body: z.string().optional(),  // for 'custom' template (only works in 24h window)
+  template: z.enum([
+    'application_confirmation',
+    'shortlist_notification',
+    'finalist_notification',
+    'winner_notification',
+    'submission_reminder',
+    'custom',
+  ]),
+  custom_body: z.string().optional(),
+  hours_left: z.number().int().optional(),  // for submission_reminder
 });
 
 export async function POST(req: NextRequest) {
@@ -43,12 +54,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: parsed.error.issues[0]?.message }, { status: 400 });
     }
 
-    const { application_ids, template, custom_body } = parsed.data;
+    const { application_ids, template, custom_body, hours_left } = parsed.data;
 
-    // Fetch all target applications
+    // Fetch all target applications (include continue_token for reminders)
     const { data: apps } = await supabaseAdmin
       .from('applications')
-      .select('id, full_name, whatsapp, public_slug, language, category')
+      .select('id, full_name, whatsapp, public_slug, language, category, continue_token, status')
       .in('id', application_ids);
 
     if (!apps || apps.length === 0) {
@@ -62,30 +73,68 @@ export async function POST(req: NextRequest) {
           throw new Error(`No WhatsApp for ${app.id}`);
         }
         const locale = (app.language === 'id' ? 'id' : 'en') as 'id' | 'en';
-
-        if (template === 'finalist_notification') {
-          return await sendFinalistNotification({
-            to: app.whatsapp,
-            locale,
-            applicantName: app.full_name || 'there',
-            category: app.category || '',
-            publicSlug: app.public_slug || app.id,
-            applicationId: app.id,
-          });
-        }
+        const applicantName = app.full_name || 'there';
+        const category = app.category || '';
+        const publicSlug = app.public_slug || app.id;
 
         if (template === 'application_confirmation') {
           return await sendApplicationConfirmation({
             to: app.whatsapp,
             locale,
-            applicantName: app.full_name || 'there',
-            publicSlug: app.public_slug || app.id,
+            applicantName,
+            publicSlug,
+            applicationId: app.id,
+          });
+        }
+
+        if (template === 'shortlist_notification') {
+          return await sendShortlistNotification({
+            to: app.whatsapp,
+            locale,
+            applicantName,
+            category,
+            publicSlug,
+            applicationId: app.id,
+          });
+        }
+
+        if (template === 'finalist_notification') {
+          return await sendFinalistNotification({
+            to: app.whatsapp,
+            locale,
+            applicantName,
+            category,
+            publicSlug,
+            applicationId: app.id,
+          });
+        }
+
+        if (template === 'winner_notification') {
+          return await sendWinnerNotification({
+            to: app.whatsapp,
+            locale,
+            applicantName,
+            category,
+            publicSlug,
+            applicationId: app.id,
+          });
+        }
+
+        if (template === 'submission_reminder') {
+          if (app.status !== 'draft') {
+            throw new Error(`${app.id} is not a draft, skipping reminder`);
+          }
+          return await sendSubmissionReminder({
+            to: app.whatsapp,
+            locale,
+            applicantName,
+            continueToken: app.continue_token,
+            hoursLeft: hours_left || 24,
             applicationId: app.id,
           });
         }
 
         if (template === 'custom' && custom_body) {
-          // Custom uses sendText from client (only works within 24h window)
           const { sendText } = await import('@/lib/whatsapp/client');
           return await sendText({
             to: app.whatsapp,

@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { CHALogo } from '@/components/common/CHALogo';
 import { LangProvider, LangToggle, useLang } from '@/components/common/LangProvider';
+import { CountdownBanner } from '@/components/common/CountdownBanner';
 import { categoryColors, getInitials, generateWhatsAppShareUrl, generateLinkedInShareUrl } from '@/lib/utils';
+import { AnimatedVoteCount } from '@/components/vote/LiveVoteCount';
 
 interface Applicant {
   id: string;
@@ -59,10 +61,32 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
   const displayName = applicant.full_name || applicant.business_name || 'Applicant';
   const initials = getInitials(displayName);
 
+  // Read referrer slug from URL ?ref=... and persist for the vote
+  const [referrerSlug, setReferrerSlug] = useState<string | null>(null);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    if (ref && ref !== applicant.public_slug) {
+      setReferrerSlug(ref);
+      // Persist so the credit holds even if they navigate within the page
+      try {
+        sessionStorage.setItem(`ref-${applicant.id}`, ref);
+      } catch {}
+    } else {
+      try {
+        const stored = sessionStorage.getItem(`ref-${applicant.id}`);
+        if (stored) setReferrerSlug(stored);
+      } catch {}
+    }
+  }, [applicant.id, applicant.public_slug]);
+
+  // Share URL — appends ?ref=THIS_APPLICANT so we can attribute conversions
+  const shareUrl = pageUrl ? `${pageUrl}?ref=${applicant.public_slug}` : '';
+
   const shareText =
     locale === 'id'
-      ? `Saya mendukung ${applicant.business_name} di Canggu Host Awards 2026 🏆\n\nBerikan suara Anda di:\n${pageUrl}`
-      : `I'm supporting ${applicant.business_name} in the Canggu Host Awards 2026 🏆\n\nCast your vote here:\n${pageUrl}`;
+      ? `Saya mendukung ${applicant.business_name} di Canggu Host Awards 2026 🏆\n\nBerikan suara Anda di:\n${shareUrl}`
+      : `I'm supporting ${applicant.business_name} in the Canggu Host Awards 2026 🏆\n\nCast your vote here:\n${shareUrl}`;
 
   return (
     <>
@@ -165,7 +189,9 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
               <div className="mb-1 text-[11px] font-bold uppercase tracking-[0.16em] text-white/70">
                 Community Votes
               </div>
-              <div className="mb-1 font-serif text-6xl leading-none tracking-tight">{voteCount}</div>
+              <div className="mb-1 font-serif text-6xl leading-none tracking-tight">
+                <AnimatedVoteCount applicationId={applicant.id} initialCount={voteCount} />
+              </div>
               <div className="mb-5 text-sm text-white/80">
                 {locale === 'id' ? 'orang sudah memilih' : 'people have voted'}
               </div>
@@ -240,14 +266,14 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
                 label="WhatsApp"
               />
               <ShareButton
-                href={generateLinkedInShareUrl(pageUrl)}
+                href={generateLinkedInShareUrl(shareUrl)}
                 onClick={() => trackShare(applicant.id, 'linkedin')}
                 color="bg-[#0077B5] text-white"
                 icon="in"
                 label="LinkedIn"
               />
               <CopyLinkButton
-                url={pageUrl}
+                url={shareUrl}
                 onClick={() => trackShare(applicant.id, 'copy')}
                 label={t('vote.copy_link')}
                 copiedLabel={t('vote.link_copied')}
@@ -344,6 +370,7 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
       {showVoteModal && (
         <VoteModal
           applicant={applicant}
+          referrerSlug={referrerSlug}
           onClose={() => setShowVoteModal(false)}
           onSuccess={() => {
             setHasVoted(true);
@@ -353,6 +380,8 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
           }}
         />
       )}
+
+      <CountdownBanner />
     </>
   );
 }
@@ -471,10 +500,12 @@ function StoryCard({
 
 function VoteModal({
   applicant,
+  referrerSlug,
   onClose,
   onSuccess,
 }: {
   applicant: Applicant;
+  referrerSlug: string | null;
   onClose: () => void;
   onSuccess: () => void;
 }) {
@@ -497,6 +528,7 @@ function VoteModal({
           application_id: applicant.id,
           voter_whatsapp: phone,
           voter_name: name,
+          referrer_slug: referrerSlug,
         }),
       });
       const data = await res.json();
