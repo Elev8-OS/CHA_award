@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { ScoringPanel } from '@/components/admin/ScoringPanel';
+import { StatusTransition } from '@/components/admin/StatusTransition';
 import { categoryColors, formatDate } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
@@ -136,13 +137,21 @@ export default async function AdminApplicationDetailPage({
         <div className="space-y-5">
           <ScoringPanel applicationId={app.id} existingScores={scores || []} />
 
+          <StatusTransition
+            applicationId={app.id}
+            currentStatus={app.status}
+            hasWhatsApp={!!app.whatsapp}
+          />
+
           <div className="rounded-2xl border border-line bg-white p-5">
             <h3 className="mb-3 text-[11px] font-bold uppercase tracking-wider text-warm-gray">
-              Status
+              Timeline
             </h3>
-            <div className="text-sm font-semibold text-navy capitalize">{app.status}</div>
-            <div className="mt-1 text-xs text-warm-gray">
-              Submitted {app.submitted_at ? formatDate(app.submitted_at) : '—'}
+            <div className="space-y-1 text-xs text-warm-gray">
+              <div>Submitted: {app.submitted_at ? formatDate(app.submitted_at) : '—'}</div>
+              <div>Shortlisted: {app.shortlisted_at ? formatDate(app.shortlisted_at) : '—'}</div>
+              <div>Finalist: {app.finalist_at ? formatDate(app.finalist_at) : '—'}</div>
+              <div>Winner: {app.winner_at ? formatDate(app.winner_at) : '—'}</div>
             </div>
           </div>
         </div>

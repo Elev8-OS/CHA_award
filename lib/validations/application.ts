@@ -64,6 +64,9 @@ export const step4Schema = z.object({
 // ----------------------------------------------------------------------------
 
 export const step5Schema = z.object({
+  hero_photo_url: z.string().url().optional().or(z.literal('')).or(z.null()),
+  share_voice_message_url: z.string().url().optional().or(z.literal('')).or(z.null()),
+  short_pitch: z.string().max(280).optional(),
   video_pitch_url: z.string().url().optional().or(z.literal('')),
   willing_for_case_study: z.boolean(),
   consent_to_publish_name: z.boolean(),

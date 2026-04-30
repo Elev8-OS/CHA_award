@@ -204,6 +204,27 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
               </span>
             </div>
 
+            {/* Voice plea — if recorded */}
+            {applicant.share_voice_message_url && (
+              <div className="mb-5 rounded-2xl border-l-4 border-coral bg-coral/5 p-4">
+                <div className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-coral">
+                  <span>🎙️</span>
+                  <span>
+                    {locale === 'id'
+                      ? `Pesan dari ${applicant.full_name || applicant.business_name}`
+                      : `A message from ${applicant.full_name || applicant.business_name}`}
+                  </span>
+                </div>
+                <audio
+                  src={applicant.share_voice_message_url}
+                  controls
+                  preload="metadata"
+                  className="w-full"
+                  style={{ height: '38px' }}
+                />
+              </div>
+            )}
+
             <p className="mb-5 text-sm leading-relaxed text-navy/75">
               {locale === 'id'
                 ? 'Bagikan halaman ini dengan jaringan Anda. Setiap suara membantu mereka maju ke panggung di Villa Connect 2026.'

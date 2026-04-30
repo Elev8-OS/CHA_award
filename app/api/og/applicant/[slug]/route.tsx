@@ -86,26 +86,44 @@ export async function GET(
 
         {/* Body: Avatar + Name */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '40px', flex: 1 }}>
-          <div
-            style={{
-              width: '200px',
-              height: '200px',
-              borderRadius: '50%',
-              background: CATEGORY_GRADIENTS[cat],
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '90px',
-              fontWeight: 700,
-              color: '#FFFFFF',
-              fontStyle: 'italic',
-              fontFamily: 'serif',
-              flexShrink: 0,
-              boxShadow: '0 20px 50px -10px rgba(31, 58, 79, 0.25)',
-            }}
-          >
-            {initials}
-          </div>
+          {applicant.hero_photo_url ? (
+            <img
+              src={applicant.hero_photo_url}
+              alt=""
+              width={200}
+              height={200}
+              style={{
+                width: '200px',
+                height: '200px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+                border: `8px solid ${cat === 'boutique' ? '#D4663F' : cat === 'growing' ? '#1F8A7A' : '#7A2935'}`,
+                boxShadow: '0 20px 50px -10px rgba(31, 58, 79, 0.25)',
+                flexShrink: 0,
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: '200px',
+                height: '200px',
+                borderRadius: '50%',
+                background: CATEGORY_GRADIENTS[cat],
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '90px',
+                fontWeight: 700,
+                color: '#FFFFFF',
+                fontStyle: 'italic',
+                fontFamily: 'serif',
+                flexShrink: 0,
+                boxShadow: '0 20px 50px -10px rgba(31, 58, 79, 0.25)',
+              }}
+            >
+              {initials}
+            </div>
+          )}
 
           <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
             <span

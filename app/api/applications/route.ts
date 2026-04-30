@@ -35,8 +35,9 @@ const updateSchema = z.object({
   twelve_month_vision: z.string().optional(),
   why_you: z.string().optional(),
   short_pitch: z.string().max(280).optional(),
-  hero_photo_url: z.string().url().optional().or(z.literal('')),
-  video_pitch_url: z.string().url().optional().or(z.literal('')),
+  hero_photo_url: z.string().url().optional().or(z.literal('')).or(z.null()),
+  share_voice_message_url: z.string().url().optional().or(z.literal('')).or(z.null()),
+  video_pitch_url: z.string().url().optional().or(z.literal('')).or(z.null()),
   willing_for_case_study: z.boolean().optional(),
   consent_to_publish_name: z.boolean().optional(),
   language: z.enum(['en', 'id']).optional(),
@@ -117,6 +118,7 @@ export async function PATCH(req: NextRequest) {
     // Filter out empty strings for URL fields
     const cleanUpdates: Record<string, unknown> = { ...updates };
     if (cleanUpdates.hero_photo_url === '') delete cleanUpdates.hero_photo_url;
+    if (cleanUpdates.share_voice_message_url === '') delete cleanUpdates.share_voice_message_url;
     if (cleanUpdates.video_pitch_url === '') delete cleanUpdates.video_pitch_url;
 
     const { error: updateError } = await supabaseAdmin

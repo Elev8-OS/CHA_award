@@ -21,6 +21,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <nav className="flex-1 px-3 py-5">
           <NavLink href="/admin/applications" icon="📋" label="Applications" />
           <NavLink href="/admin/jury" icon="⚖️" label="Jury Scoring" />
+          <NavLink href="/admin/finalists" icon="🏆" label="Finalists" />
           <NavLink href="/admin/whatsapp" icon="💬" label="WhatsApp" />
           <NavLink href="/admin/analytics" icon="📊" label="Analytics" />
         </nav>

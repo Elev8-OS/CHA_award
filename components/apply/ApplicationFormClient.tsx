@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CHALogo } from '@/components/common/CHALogo';
 import { LangProvider, LangToggle, useLang } from '@/components/common/LangProvider';
+import { PhotoUpload } from '@/components/apply/PhotoUpload';
+import { VoiceRecorder } from '@/components/apply/VoiceRecorder';
 import type { Locale } from '@/lib/i18n/translations';
 
 interface Application {
@@ -32,6 +34,8 @@ interface Application {
   twelve_month_vision?: string | null;
   why_you?: string | null;
   short_pitch?: string | null;
+  hero_photo_url?: string | null;
+  share_voice_message_url?: string | null;
   willing_for_case_study?: boolean;
   consent_to_publish_name?: boolean;
 }
@@ -422,38 +426,48 @@ function Step3Quick({ app, update, locale }: StepProps) {
           : 'One sentence that appears on your public page.'}
       </p>
 
-      <Textarea
-        label={locale === 'id' ? 'Pitch Anda (maks 280 karakter)' : 'Your pitch (max 280 chars)'}
-        value={app.short_pitch || ''}
-        onChange={(v) => update('short_pitch', v)}
-        max={280}
-        placeholder={
-          locale === 'id'
-            ? 'Cth. Kami mengelola 3 villa boutique di Pererenan dengan fokus pada pengalaman tamu...'
-            : 'e.g. We run 3 boutique villas in Pererenan with a focus on guest experience...'
-        }
-        rows={4}
-      />
+      <div className="space-y-7">
+        <Textarea
+          label={locale === 'id' ? 'Pitch Anda (maks 280 karakter)' : 'Your pitch (max 280 chars)'}
+          value={app.short_pitch || ''}
+          onChange={(v) => update('short_pitch', v)}
+          max={280}
+          placeholder={
+            locale === 'id'
+              ? 'Cth. Kami mengelola 3 villa boutique di Pererenan dengan fokus pada pengalaman tamu...'
+              : 'e.g. We run 3 boutique villas in Pererenan with a focus on guest experience...'
+          }
+          rows={4}
+        />
 
-      <div className="mt-6 space-y-3">
-        <CheckboxField
-          label={
-            locale === 'id'
-              ? 'Saya bersedia menjadi case study'
-              : "I'm open to being featured as a case study"
-          }
-          checked={app.willing_for_case_study || false}
-          onChange={(v) => update('willing_for_case_study', v)}
+        <PhotoUpload
+          continueToken={app.continue_token}
+          currentUrl={app.hero_photo_url}
+          onUploaded={(url) => update('hero_photo_url', url)}
+          onRemoved={() => update('hero_photo_url', null)}
+          locale={locale}
         />
-        <CheckboxField
-          label={
-            locale === 'id'
-              ? 'Saya setuju nama saya ditampilkan di halaman publik'
-              : 'I consent to my name being shown on the public page'
-          }
-          checked={app.consent_to_publish_name || false}
-          onChange={(v) => update('consent_to_publish_name', v)}
-        />
+
+        <div className="space-y-3 border-t border-line pt-6">
+          <CheckboxField
+            label={
+              locale === 'id'
+                ? 'Saya bersedia menjadi case study'
+                : "I'm open to being featured as a case study"
+            }
+            checked={app.willing_for_case_study || false}
+            onChange={(v) => update('willing_for_case_study', v)}
+          />
+          <CheckboxField
+            label={
+              locale === 'id'
+                ? 'Saya setuju nama saya ditampilkan di halaman publik'
+                : 'I consent to my name being shown on the public page'
+            }
+            checked={app.consent_to_publish_name || false}
+            onChange={(v) => update('consent_to_publish_name', v)}
+          />
+        </div>
       </div>
     </div>
   );
@@ -564,7 +578,7 @@ function Step5Deep({ app, update, locale }: StepProps) {
         {locale === 'id' ? 'Untuk halaman publik dan share preview.' : 'For your public page and share preview.'}
       </p>
 
-      <div className="space-y-5">
+      <div className="space-y-7">
         <Textarea
           label={locale === 'id' ? 'Pitch singkat (untuk share preview)' : 'Short pitch (for share preview)'}
           value={app.short_pitch || ''}
@@ -576,7 +590,23 @@ function Step5Deep({ app, update, locale }: StepProps) {
           rows={3}
         />
 
-        <div className="space-y-3">
+        <PhotoUpload
+          continueToken={app.continue_token}
+          currentUrl={app.hero_photo_url}
+          onUploaded={(url) => update('hero_photo_url', url)}
+          onRemoved={() => update('hero_photo_url', null)}
+          locale={locale}
+        />
+
+        <VoiceRecorder
+          continueToken={app.continue_token}
+          currentUrl={app.share_voice_message_url}
+          onUploaded={(url) => update('share_voice_message_url', url)}
+          onRemoved={() => update('share_voice_message_url', null)}
+          locale={locale}
+        />
+
+        <div className="space-y-3 border-t border-line pt-6">
           <CheckboxField
             label={
               locale === 'id'

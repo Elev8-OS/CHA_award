@@ -68,6 +68,11 @@ export interface Application {
 
   // Step 5
   video_pitch_url: string | null;
+  hero_photo_url: string | null;
+  hero_photo_path: string | null;
+  share_voice_message_url: string | null;
+  share_voice_path: string | null;
+  short_pitch: string | null;
   willing_for_case_study: boolean;
   consent_to_publish_name: boolean;
 
