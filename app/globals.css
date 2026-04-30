@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-coral: #d4663f;
+    --color-teal: #1f8a7a;
+    --color-burgundy: #7a2935;
+    --color-gold: #e8a93c;
+    --color-navy: #1f3a4f;
+    --color-cream: #f8f2e8;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-manrope), system-ui, sans-serif;
+    line-height: 1.55;
+  }
+
+  .font-serif,
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-dm-serif), Georgia, serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center gap-2.5 rounded-full bg-coral px-9 py-[18px]
+           text-[15px] font-bold text-white transition-all
+           hover:-translate-y-0.5 hover:bg-burgundy
+           hover:shadow-[0_12px_30px_-10px_rgba(122,41,53,0.4)];
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center rounded-full border-[1.5px] border-navy
+           bg-transparent px-7 py-[18px] text-[15px] font-semibold text-navy
+           transition-all hover:bg-navy hover:text-cream;
+  }
+
+  .pulse-dot {
+    @apply inline-block h-2 w-2 animate-pulse rounded-full bg-green-600;
+  }
+}
+
+@layer utilities {
+  .lang-id {
+    display: none;
+  }
+  body.lang-id .lang-en {
+    display: none;
+  }
+  body.lang-id .lang-id {
+    display: inline;
+  }
+  body.lang-id .lang-id.block {
+    display: block;
+  }
+}
