@@ -1,0 +1,456 @@
+'use client';
+
+import Link from 'next/link';
+import { useLang } from '@/components/common/LangProvider';
+import { CHALogo } from '@/components/common/CHALogo';
+
+// ============================================================================
+// PARTNERSHIP STRIP
+// ============================================================================
+
+export function PartnershipStrip() {
+  const { t } = useLang();
+  return (
+    <div className="bg-navy px-4 py-7 text-cream md:px-8">
+      <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-6 text-center md:grid-cols-3">
+        <Partner tag={t('hero.presented_by')} name="Canggu Hospitality Association" />
+        <Partner tag={t('hero.powered_by')} name="elev8 — Diamond Sponsor" />
+        <Partner tag="Hosted at" name="Bali Villa Connect 2026" />
+      </div>
+    </div>
+  );
+}
+
+function Partner({ tag, name }: { tag: string; name: string }) {
+  return (
+    <div className="text-base font-semibold">
+      <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">
+        {tag}
+      </div>
+      {name}
+    </div>
+  );
+}
+
+// ============================================================================
+// CATEGORIES
+// ============================================================================
+
+export function Categories() {
+  const { t } = useLang();
+  return (
+    <section id="prize" className="mx-auto max-w-[1280px] px-4 py-24 md:px-8 md:py-28">
+      <span className="mb-5 inline-block text-xs font-bold uppercase tracking-[0.16em] text-coral">
+        {t('cat.section_eyebrow')}
+      </span>
+      <h2 className="mb-7 font-serif text-display-md leading-[0.98] tracking-[-0.02em] text-navy">
+        {t('cat.title.line1')}
+        <br />
+        {t('cat.title.line2')} <span className="italic text-coral">{t('cat.title.winners')}</span>.
+      </h2>
+      <p className="mb-16 max-w-[720px] text-lg leading-[1.55] text-navy/80">{t('cat.lede')}</p>
+
+      <div className="mb-14 grid grid-cols-1 gap-5 md:grid-cols-3">
+        <CategoryCard
+          color="coral"
+          tag="⬥ Boutique"
+          range={t('cat.boutique.range')}
+          name={t('cat.boutique.name')}
+          desc={t('cat.boutique.desc')}
+        />
+        <CategoryCard
+          color="teal"
+          tag="⬥ Growing"
+          range={t('cat.growing.range')}
+          name={t('cat.growing.name')}
+          desc={t('cat.growing.desc')}
+        />
+        <CategoryCard
+          color="burgundy"
+          tag="⬥ Scaled"
+          range={t('cat.scaled.range')}
+          name={t('cat.scaled.name')}
+          desc={t('cat.scaled.desc')}
+        />
+      </div>
+
+      <Tiers />
+    </section>
+  );
+}
+
+function CategoryCard({
+  color,
+  tag,
+  range,
+  name,
+  desc,
+}: {
+  color: 'coral' | 'teal' | 'burgundy';
+  tag: string;
+  range: string;
+  name: string;
+  desc: string;
+}) {
+  const colors = {
+    coral: { bar: 'bg-coral', tagBg: 'bg-coral/10 text-coral', dot: 'bg-coral' },
+    teal: { bar: 'bg-teal', tagBg: 'bg-teal/10 text-teal', dot: 'bg-teal' },
+    burgundy: { bar: 'bg-burgundy', tagBg: 'bg-burgundy/10 text-burgundy', dot: 'bg-burgundy' },
+  }[color];
+
+  return (
+    <div className="relative overflow-hidden rounded-3xl border border-line bg-white p-9 transition-all hover:-translate-y-1 hover:shadow-[0_24px_50px_-20px_rgba(31,58,79,0.15)]">
+      <div className={`absolute left-0 right-0 top-0 h-1.5 ${colors.bar}`} />
+      <span
+        className={`mb-6 inline-block rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] ${colors.tagBg}`}
+      >
+        {tag}
+      </span>
+      <div className="mb-2 text-sm font-semibold tracking-wide text-warm-gray">{range}</div>
+      <h3 className="mb-1.5 font-serif text-3xl leading-[1.05] tracking-tight text-navy">{name}</h3>
+      <p className="text-base italic leading-snug text-warm-gray">{desc}</p>
+    </div>
+  );
+}
+
+function Tiers() {
+  const { t } = useLang();
+  return (
+    <div className="relative grid grid-cols-1 gap-12 overflow-hidden rounded-3xl bg-navy px-12 py-14 text-cream md:grid-cols-3 md:px-12">
+      <div
+        className="pointer-events-none absolute -right-32 -top-32 h-[360px] w-[360px]"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(232, 169, 60, 0.18) 0%, transparent 70%)',
+        }}
+      />
+
+      <Tier
+        num="3"
+        suffix="×"
+        label={t('tier.top.label')}
+        headline={t('tier.top.headline')}
+        desc={t('tier.top.desc')}
+        value={t('tier.top.value')}
+      />
+      <Tier
+        num="5"
+        label={t('tier.finalists.label')}
+        headline={t('tier.finalists.headline')}
+        desc={t('tier.finalists.desc')}
+      />
+      <Tier
+        num="10"
+        label={t('tier.recognized.label')}
+        headline={t('tier.recognized.headline')}
+        desc={t('tier.recognized.desc')}
+      />
+    </div>
+  );
+}
+
+function Tier({
+  num,
+  suffix,
+  label,
+  headline,
+  desc,
+  value,
+}: {
+  num: string;
+  suffix?: string;
+  label: string;
+  headline: string;
+  desc: string;
+  value?: string;
+}) {
+  return (
+    <div className="relative z-10">
+      <div className="mb-2 font-serif text-[110px] leading-[0.85] tracking-tight text-gold">
+        {num}
+        {suffix && <span className="italic text-coral">{suffix}</span>}
+      </div>
+      <div className="mb-3.5 text-xs font-bold uppercase tracking-[0.16em] text-gold">{label}</div>
+      <div className="mb-3.5 font-serif text-2xl italic leading-tight text-cream">{headline}</div>
+      <p className="text-sm leading-[1.55] text-cream/75">{desc}</p>
+      {value && (
+        <span className="mt-4 inline-block rounded-full bg-gold px-3 py-1 text-[11px] font-bold tracking-wide text-navy">
+          {value}
+        </span>
+      )}
+    </div>
+  );
+}
+
+// ============================================================================
+// STAGE
+// ============================================================================
+
+export function StageSection() {
+  const { t } = useLang();
+  return (
+    <div
+      className="relative overflow-hidden px-4 py-32 text-cream md:px-8"
+      style={{
+        background:
+          'radial-gradient(ellipse at 50% 100%, rgba(232, 169, 60, 0.15) 0%, transparent 60%), radial-gradient(ellipse at 30% 0%, rgba(212, 102, 63, 0.1) 0%, transparent 50%), #1F3A4F',
+      }}
+    >
+      <div className="relative z-10 mx-auto max-w-[1080px] text-center">
+        <span className="mb-8 inline-block text-xs font-bold uppercase tracking-[0.16em] text-gold">
+          {t('stage.eyebrow')}
+        </span>
+        <h2 className="mb-9 font-serif text-display-lg leading-[0.95] tracking-[-0.02em]">
+          {t('stage.title.line1')}
+          <br />
+          <span className="italic text-gold">{t('stage.title.stage')}</span>.
+        </h2>
+        <p className="mx-auto mb-12 max-w-[720px] text-xl leading-[1.6] text-cream/80">
+          {t('stage.text')}
+        </p>
+        <div className="inline-flex flex-wrap items-center justify-center gap-4 rounded-full border-[1.5px] border-gold px-9 py-[18px] text-[13px] font-semibold uppercase tracking-wider text-gold md:gap-7">
+          <span>26 — 27 May 2026</span>
+          <span className="text-gold/35">·</span>
+          <span>Bali Sunset Road Convention Center</span>
+          <span className="text-gold/35">·</span>
+          <span>Live Reveal</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// ENDORSEMENT (Pak Prima)
+// ============================================================================
+
+export function Endorsement() {
+  const { t } = useLang();
+  return (
+    <div className="px-4 py-28 md:px-8">
+      <div className="relative mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-12 overflow-hidden rounded-3xl border border-line bg-white p-14 shadow-[0_24px_60px_-20px_rgba(31,58,79,0.1)] md:grid-cols-[auto_1fr]">
+        <div
+          className="absolute -right-16 -top-16 h-56 w-56"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle at 30% 30%, rgba(212, 102, 63, 0.08) 0%, transparent 40%), radial-gradient(circle at 70% 30%, rgba(31, 138, 122, 0.08) 0%, transparent 40%), radial-gradient(circle at 30% 70%, rgba(122, 41, 53, 0.08) 0%, transparent 40%), radial-gradient(circle at 70% 70%, rgba(232, 169, 60, 0.1) 0%, transparent 40%)',
+          }}
+        />
+
+        <div
+          className="relative z-10 flex h-44 w-44 flex-shrink-0 items-center justify-center rounded-full border-4 border-gold font-serif text-6xl italic text-cream"
+          style={{
+            background: 'linear-gradient(135deg, #D4663F 0%, #7A2935 100%)',
+          }}
+        >
+          P
+        </div>
+
+        <div className="relative z-10">
+          <div className="mb-5 text-[11px] font-bold uppercase tracking-[0.16em] text-coral">
+            {/* "A note from the CHA Founder" */}
+            A note from the CHA Founder
+          </div>
+          <p className="mb-6 font-serif text-3xl italic leading-snug tracking-tight text-navy">
+            "Building connection, one conversation at a time. These awards are how we recognize
+            the operators raising the standard of hospitality across Canggu."
+          </p>
+          <div className="mb-1 text-base font-bold text-navy">Pak Prima Hartawan, CHA</div>
+          <div className="text-sm leading-[1.5] text-warm-gray">
+            Founder, Canggu Hospitality Association · Cluster GM, Small Luxury Hotels of the World
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// JURY
+// ============================================================================
+
+const JURORS = [
+  {
+    initial: 'P',
+    name: 'Pak Prima Hartawan',
+    role: 'Founder, CHA',
+    bio: 'Cluster GM at Small Luxury Hotels of the World. Founder of the Canggu Hospitality Association. 7+ years in Bali luxury hospitality.',
+    color: 'coral',
+  },
+  {
+    initial: 'M',
+    name: 'Maya Susanti',
+    role: 'GM, Lifestyle Residence Uluwatu',
+    bio: '12 years across Marriott, Sheraton, Radisson, Soho House & Desa Potato Head. Specialist in scalable hospitality systems.',
+    color: 'teal',
+  },
+  {
+    initial: 'F',
+    name: 'Florian Holm',
+    role: 'Founder & CEO, Grün Resorts',
+    bio: 'Founder of Stilt Studios & Grün Resorts. Ex-Co-CEO Lazada Indonesia, ex-BCG. Building wellness-led hospitality across Bali.',
+    color: 'burgundy',
+  },
+  {
+    initial: 'R',
+    name: 'Reto Wyss',
+    role: 'Co-Founder & CTO, elev8',
+    bio: 'Co-Founder of elev8 — the operating system for villa hosts and property managers. Diamond Sponsor of Villa Connect 2026.',
+    color: 'gold',
+  },
+];
+
+export function Jury() {
+  return (
+    <section className="mx-auto max-w-[1280px] px-4 py-28 md:px-8">
+      <span className="mb-5 inline-block text-xs font-bold uppercase tracking-[0.16em] text-coral">
+        02 — The Jury
+      </span>
+      <h2 className="mb-7 font-serif text-display-md leading-[0.98] tracking-[-0.02em] text-navy">
+        Selected by <span className="italic text-coral">peers</span>,<br />not vendors.
+      </h2>
+      <p className="mb-14 max-w-[720px] text-lg leading-[1.55] text-navy/80">
+        A four-person jury of senior hospitality leaders. Public criteria, public weights, public process.
+      </p>
+
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        {JURORS.map((j) => (
+          <JuryCard key={j.name} {...j} />
+        ))}
+      </div>
+
+      <div className="mt-14 grid grid-cols-1 gap-10 rounded-3xl border border-line bg-white p-12 md:grid-cols-3">
+        <Criterion color="coral" pct="50%" name="Story" desc="The most honest, specific account of where you are and what you're up against." />
+        <Criterion color="teal" pct="30%" name="Growth Potential" desc="What 1 year of elev8 could realistically unlock for your business." />
+        <Criterion color="gold" pct="20%" name="Community Wildcard" desc="One winner is chosen by a community vote within the CHA group." />
+      </div>
+    </section>
+  );
+}
+
+function JuryCard({ initial, name, role, bio, color }: { initial: string; name: string; role: string; bio: string; color: string }) {
+  const colors: Record<string, { bg: string; text: string }> = {
+    coral: { bg: 'bg-coral', text: 'text-coral' },
+    teal: { bg: 'bg-teal', text: 'text-teal' },
+    burgundy: { bg: 'bg-burgundy', text: 'text-burgundy' },
+    gold: { bg: 'bg-gold', text: 'text-gold' },
+  };
+  const c = colors[color];
+  const photoColor = color === 'gold' ? 'text-navy' : 'text-white';
+
+  return (
+    <div className="rounded-3xl border border-line bg-white p-8 text-center transition-all hover:-translate-y-1 hover:shadow-[0_20px_40px_-20px_rgba(31,58,79,0.15)]">
+      <div className={`mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full font-serif text-5xl italic ${c.bg} ${photoColor}`}>
+        {initial}
+      </div>
+      <h3 className="mb-1.5 font-serif text-xl leading-tight tracking-tight text-navy">{name}</h3>
+      <div className={`mb-3.5 text-[11px] font-bold uppercase tracking-wider ${c.text}`}>{role}</div>
+      <p className="text-[13px] leading-[1.5] text-warm-gray">{bio}</p>
+    </div>
+  );
+}
+
+function Criterion({ color, pct, name, desc }: { color: string; pct: string; name: string; desc: string }) {
+  const colors: Record<string, { bar: string; text: string }> = {
+    coral: { bar: 'bg-coral', text: 'text-coral' },
+    teal: { bar: 'bg-teal', text: 'text-teal' },
+    gold: { bar: 'bg-gold', text: 'text-gold' },
+  };
+  const c = colors[color];
+
+  return (
+    <div className="relative pl-5">
+      <div className={`absolute bottom-1.5 left-0 top-1.5 w-[3px] rounded ${c.bar}`} />
+      <div className={`mb-1.5 font-serif text-[56px] leading-none tracking-tight ${c.text}`}>{pct}</div>
+      <div className="mb-2 font-serif text-2xl italic text-navy">{name}</div>
+      <p className="text-sm leading-[1.5] text-warm-gray">{desc}</p>
+    </div>
+  );
+}
+
+// ============================================================================
+// FINAL CTA
+// ============================================================================
+
+export function FinalCTA() {
+  const { t } = useLang();
+  return (
+    <div className="mx-auto my-20 max-w-[1280px] px-4 md:px-8">
+      <div
+        className="relative overflow-hidden rounded-3xl px-8 py-24 text-center text-white"
+        style={{ background: 'linear-gradient(135deg, #D4663F 0%, #7A2935 100%)' }}
+      >
+        <div
+          className="pointer-events-none absolute -right-36 -top-36 h-[400px] w-[400px]"
+          style={{ background: 'radial-gradient(circle, rgba(232, 169, 60, 0.25) 0%, transparent 70%)' }}
+        />
+        <h2 className="relative z-10 mb-7 font-serif text-display-md leading-[0.98] tracking-tight">
+          Ready to make<br />your <span className="italic text-gold">case</span>?
+        </h2>
+        <p className="relative z-10 mx-auto mb-11 max-w-[600px] text-lg leading-[1.55] text-white/90">
+          Three minutes for Quick Apply. Twelve for the full story. Either way, you're in.
+        </p>
+        <Link
+          href="/apply"
+          className="relative z-10 inline-flex items-center gap-2.5 rounded-full bg-white px-9 py-[18px] text-[15px] font-bold text-burgundy transition-all hover:-translate-y-0.5 hover:bg-gold hover:text-navy"
+        >
+          {t('hero.cta_apply')}
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// FOOTER
+// ============================================================================
+
+export function Footer() {
+  return (
+    <footer className="bg-navy-dark px-4 py-20 text-cream md:px-8">
+      <div className="mx-auto mb-12 grid max-w-[1280px] grid-cols-1 gap-12 md:grid-cols-4">
+        <div className="md:col-span-2">
+          <div className="mb-4 flex items-center gap-3.5">
+            <CHALogo size={44} />
+            <div>
+              <div className="font-serif text-xl leading-none text-cream">CANGGU</div>
+              <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">
+                Hospitality Association
+              </div>
+            </div>
+          </div>
+          <p className="mb-5 max-w-[340px] text-sm leading-[1.55] text-cream/55">
+            Dedicated to fostering collaboration and excellence in Canggu's hospitality sector by
+            uniting industry leaders.
+          </p>
+          <span className="inline-block rounded-full bg-gold px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-navy">
+            ⬥ Powered by elev8 — Diamond Sponsor
+          </span>
+        </div>
+        <FooterCol heading="Awards" items={[['Categories', '#prize'], ['Apply', '/apply']]} />
+        <FooterCol heading="Connect" items={[['WhatsApp', '#'], ['LinkedIn', '#'], ['Instagram', '#']]} />
+      </div>
+      <div className="mx-auto flex max-w-[1280px] flex-col justify-between gap-3 border-t border-cream/10 pt-7 text-xs text-cream/50 md:flex-row">
+        <span>© 2026 Canggu Hospitality Association</span>
+        <span>Edition 01 — Canggu Host Awards · Powered by elev8</span>
+      </div>
+    </footer>
+  );
+}
+
+function FooterCol({ heading, items }: { heading: string; items: [string, string][] }) {
+  return (
+    <div>
+      <h4 className="mb-4 text-[11px] font-bold uppercase tracking-[0.16em] text-gold">{heading}</h4>
+      {items.map(([label, href]) => (
+        <Link
+          key={label}
+          href={href}
+          className="block py-1.5 text-sm text-cream/70 transition-colors hover:text-gold"
+        >
+          {label}
+        </Link>
+      ))}
+    </div>
+  );
+}
