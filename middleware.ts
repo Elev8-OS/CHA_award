@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
+
+type CookieToSet = { name: string; value: string; options: CookieOptions };
 
 export async function middleware(req: NextRequest) {
   // Only protect admin routes
@@ -20,8 +22,8 @@ export async function middleware(req: NextRequest) {
     {
       cookies: {
         getAll: () => req.cookies.getAll(),
-        setAll: (cookies) => {
-          cookies.forEach(({ name, value, options }) =>
+        setAll: (cookiesToSet: CookieToSet[]) => {
+          cookiesToSet.forEach(({ name, value, options }) =>
             res.cookies.set({ name, value, ...options })
           );
         },
