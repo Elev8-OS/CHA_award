@@ -12,14 +12,40 @@ type CookieToSet = { name: string; value: string; options: CookieOptions };
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * Determine the public origin of this app, working correctly behind
+ * reverse proxies (Railway, Vercel, etc.) where req.nextUrl.origin gives
+ * the internal container origin (localhost:8080).
+ *
+ * Priority:
+ * 1. NEXT_PUBLIC_SITE_URL env var (most reliable)
+ * 2. X-Forwarded-Host + X-Forwarded-Proto (set by Railway/proxies)
+ * 3. Host header
+ * 4. req.nextUrl.origin (last resort, may be wrong behind proxy)
+ */
+function getPublicOrigin(req: NextRequest): string {
+  const envUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (envUrl) return envUrl.replace(/\/$/, '');
+
+  const forwardedHost = req.headers.get('x-forwarded-host');
+  const forwardedProto = req.headers.get('x-forwarded-proto') || 'https';
+  if (forwardedHost) return `${forwardedProto}://${forwardedHost}`;
+
+  const host = req.headers.get('host');
+  if (host) {
+    const proto = host.includes('localhost') ? 'http' : 'https';
+    return `${proto}://${host}`;
+  }
+
+  return req.nextUrl.origin;
+}
+
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const code = url.searchParams.get('code');
   const next = url.searchParams.get('next') || '/admin';
 
-  // Build absolute redirect URL using the request's origin so it works
-  // behind proxies/load balancers (Railway/Vercel/etc.)
-  const origin = req.nextUrl.origin;
+  const origin = getPublicOrigin(req);
 
   if (!code) {
     return NextResponse.redirect(`${origin}/login?error=missing_code`);
@@ -38,12 +64,10 @@ export async function GET(req: NextRequest) {
         },
         setAll(cookiesToSet: CookieToSet[]) {
           cookiesToSet.forEach(({ name, value, options }) => {
-            // Set on both the cookieStore (for SSR reads in this request)
-            // and the NextResponse (for the client to receive)
             try {
               cookieStore.set(name, value, options);
             } catch {
-              // Server component may have read-only cookieStore; that's fine
+              // read-only cookieStore in some contexts; ok
             }
             response.cookies.set({ name, value, ...options });
           });
