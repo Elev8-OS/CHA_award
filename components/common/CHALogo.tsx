@@ -1,14 +1,51 @@
 // ============================================================================
-// CHA Logo — recreated as React SVG component
-// Replace the path data when official CHA SVG is available
+// CHA Logo — smart loader
+//
+// HOW TO REPLACE WITH OFFICIAL LOGO:
+// 1. Drop your logo file at: public/brand/logo.svg
+//    (Also supports logo.png — but SVG is preferred for crisp rendering)
+// 2. That's it. No code changes needed.
+//
+// The component will automatically:
+// - Use your file if it exists (preferred)
+// - Fall back to the inline SVG if file missing or fails to load
+//
+// Recommended logo specs:
+// - SVG with transparent background
+// - Square or near-square aspect ratio (will be displayed in square containers)
+// - Optimized (run through SVGO or similar)
 // ============================================================================
+
+'use client';
+
+import { useState } from 'react';
 
 interface CHALogoProps {
   className?: string;
   size?: number;
 }
 
+const LOGO_PATH = '/brand/logo.svg'; // Change to .png if using PNG
+
 export function CHALogo({ className = '', size = 40 }: CHALogoProps) {
+  const [useExternal, setUseExternal] = useState(true);
+
+  // Try to use external logo file
+  if (useExternal) {
+    return (
+      <img
+        src={LOGO_PATH}
+        alt="CHA"
+        width={size}
+        height={size}
+        className={className}
+        style={{ width: size, height: size, objectFit: 'contain' }}
+        onError={() => setUseExternal(false)}
+      />
+    );
+  }
+
+  // Fallback: inline SVG (4 colored heart-pills)
   return (
     <svg
       width={size}
