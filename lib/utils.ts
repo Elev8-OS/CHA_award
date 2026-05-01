@@ -98,3 +98,27 @@ export function generateWhatsAppShareUrl(text: string): string {
 export function generateLinkedInShareUrl(url: string): string {
   return `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
 }
+
+// ============================================================================
+// Sponsor link helpers — Elev8 Suite OS attribution
+// ============================================================================
+
+const ELEV8_BASE_URL = 'https://elev8-suite.com';
+
+/**
+ * Build a UTM-tagged link to elev8-suite.com.
+ * Usage: <a href={elev8Link('hero')}>Elev8 Suite OS</a>
+ *
+ * Adds utm_source=cha-awards and utm_medium=<medium> automatically.
+ *
+ * @param medium — placement identifier (e.g. 'hero', 'footer', 'jury-card')
+ * @param campaign — optional campaign tag (defaults to 'edition01')
+ */
+export function elev8Link(medium: string, campaign: string = 'edition01'): string {
+  const params = new URLSearchParams({
+    utm_source: 'cha-awards',
+    utm_medium: medium,
+    utm_campaign: campaign,
+  });
+  return `${ELEV8_BASE_URL}?${params.toString()}`;
+}

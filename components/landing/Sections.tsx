@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useLang } from '@/components/common/LangProvider';
 import { CHALogo } from '@/components/common/CHALogo';
+import { elev8Link } from '@/lib/utils';
 
 // ============================================================================
 // PARTNERSHIP STRIP
@@ -14,20 +15,35 @@ export function PartnershipStrip() {
     <div className="bg-navy px-4 py-7 text-cream md:px-8">
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-6 text-center md:grid-cols-3">
         <Partner tag={t('hero.presented_by')} name="Canggu Hospitality Association" />
-        <Partner tag={t('hero.powered_by')} name="Elev8 Suite OS — Diamond Sponsor" />
+        <Partner
+          tag={t('hero.powered_by')}
+          name="Elev8 Suite OS — Diamond Sponsor"
+          href={elev8Link('partnership-strip')}
+        />
         <Partner tag="Hosted at" name="Bali Villa Connect 2026" />
       </div>
     </div>
   );
 }
 
-function Partner({ tag, name }: { tag: string; name: string }) {
+function Partner({ tag, name, href }: { tag: string; name: string; href?: string }) {
   return (
     <div className="text-base font-semibold">
       <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">
         {tag}
       </div>
-      {name}
+      {href ? (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener"
+          className="underline decoration-gold/0 underline-offset-4 transition-all hover:decoration-gold"
+        >
+          {name}
+        </a>
+      ) : (
+        name
+      )}
     </div>
   );
 }
@@ -291,6 +307,7 @@ const JURORS = [
     role: 'Founder, CHA',
     bio: 'Cluster GM at Small Luxury Hotels of the World. Founder of the Canggu Hospitality Association. 7+ years in Bali luxury hospitality.',
     color: 'coral',
+    linkedin: 'https://www.linkedin.com/in/primahartawanmanguninghotels/',
   },
   {
     initial: 'M',
@@ -299,6 +316,7 @@ const JURORS = [
     role: 'GM, Lifestyle Residence Uluwatu',
     bio: '12 years across Marriott, Sheraton, Radisson, Soho House & Desa Potato Head. Specialist in scalable hospitality systems.',
     color: 'teal',
+    linkedin: 'https://www.linkedin.com/in/maya-susanti-84239611b/',
   },
   {
     initial: 'F',
@@ -307,6 +325,7 @@ const JURORS = [
     role: 'Founder & CEO, Grün Resorts',
     bio: 'Founder of Stilt Studios & Grün Resorts. Ex-Co-CEO Lazada Indonesia, ex-BCG. Building wellness-led hospitality across Bali.',
     color: 'burgundy',
+    linkedin: 'https://www.linkedin.com/in/florianholm/',
   },
   {
     initial: 'R',
@@ -315,6 +334,7 @@ const JURORS = [
     role: 'Co-Founder & CTO, Elev8 Suite OS',
     bio: 'Co-Founder of Elev8 Suite OS — the platform for villa hosts and property managers. Diamond Sponsor of Villa Connect 2026.',
     color: 'gold',
+    linkedin: 'https://www.linkedin.com/in/retowyss/',
   },
 ];
 
@@ -339,14 +359,32 @@ export function Jury() {
 
       <div className="mt-14 grid grid-cols-1 gap-10 rounded-3xl border border-line bg-white p-12 md:grid-cols-3">
         <Criterion color="coral" pct="50%" name="Story" desc="The most honest, specific account of where you are and what you're up against." />
-        <Criterion color="teal" pct="30%" name="Growth Potential" desc="What 1 year of Elev8 Suite OS could realistically unlock for your business." />
+        <Criterion
+          color="teal"
+          pct="30%"
+          name="Growth Potential"
+          desc={
+            <>
+              What 1 year of{' '}
+              <a
+                href={elev8Link('criteria')}
+                target="_blank"
+                rel="noopener"
+                className="font-semibold text-teal underline decoration-teal/30 underline-offset-2 hover:decoration-teal"
+              >
+                Elev8 Suite OS
+              </a>{' '}
+              could realistically unlock for your business.
+            </>
+          }
+        />
         <Criterion color="gold" pct="20%" name="Community Wildcard" desc="One winner is chosen by a community vote within the CHA group." />
       </div>
     </section>
   );
 }
 
-function JuryCard({ initial, photo, name, role, bio, color }: { initial: string; photo: string | null; name: string; role: string; bio: string; color: string }) {
+function JuryCard({ initial, photo, name, role, bio, color, linkedin }: { initial: string; photo: string | null; name: string; role: string; bio: string; color: string; linkedin?: string }) {
   const colors: Record<string, { bg: string; text: string; ring: string }> = {
     coral: { bg: 'bg-coral', text: 'text-coral', ring: 'ring-coral' },
     teal: { bg: 'bg-teal', text: 'text-teal', ring: 'ring-teal' },
@@ -371,12 +409,25 @@ function JuryCard({ initial, photo, name, role, bio, color }: { initial: string;
       )}
       <h3 className="mb-1.5 font-serif text-xl leading-tight tracking-tight text-navy">{name}</h3>
       <div className={`mb-3.5 text-[11px] font-bold uppercase tracking-wider ${c.text}`}>{role}</div>
-      <p className="text-[13px] leading-[1.5] text-warm-gray">{bio}</p>
+      <p className="mb-4 text-[13px] leading-[1.5] text-warm-gray">{bio}</p>
+      {linkedin && (
+        <a
+          href={linkedin}
+          target="_blank"
+          rel="noopener"
+          aria-label={`${name} on LinkedIn`}
+          className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#0A66C2] text-white transition-all hover:-translate-y-0.5 hover:shadow-md"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+        </a>
+      )}
     </div>
   );
 }
 
-function Criterion({ color, pct, name, desc }: { color: string; pct: string; name: string; desc: string }) {
+function Criterion({ color, pct, name, desc }: { color: string; pct: string; name: string; desc: React.ReactNode }) {
   const colors: Record<string, { bar: string; text: string }> = {
     coral: { bar: 'bg-coral', text: 'text-coral' },
     teal: { bar: 'bg-teal', text: 'text-teal' },
@@ -449,16 +500,31 @@ export function Footer() {
             Dedicated to fostering collaboration and excellence in Canggu's hospitality sector by
             uniting industry leaders.
           </p>
-          <span className="inline-block rounded-full bg-gold px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-navy">
+          <a
+            href={elev8Link('footer-badge')}
+            target="_blank"
+            rel="noopener"
+            className="inline-block rounded-full bg-gold px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-navy transition-all hover:-translate-y-0.5 hover:shadow-md"
+          >
             ⬥ Powered by Elev8 Suite OS — Diamond Sponsor
-          </span>
+          </a>
         </div>
         <FooterCol heading="Awards" items={[['Categories', '#prize'], ['Apply', '/apply']]} />
         <FooterCol heading="Connect" items={[['WhatsApp', '#'], ['LinkedIn', '#'], ['Instagram', '#']]} />
       </div>
       <div className="mx-auto flex max-w-[1280px] flex-col justify-between gap-3 border-t border-cream/10 pt-7 text-xs text-cream/50 md:flex-row">
         <span>© 2026 Canggu Hospitality Association</span>
-        <span>Edition 01 — CHA Hospitality Awards · Powered by Elev8 Suite OS</span>
+        <span>
+          Edition 01 — CHA Hospitality Awards · Powered by{' '}
+          <a
+            href={elev8Link('footer-copyright')}
+            target="_blank"
+            rel="noopener"
+            className="text-gold underline decoration-gold/30 underline-offset-2 hover:decoration-gold"
+          >
+            Elev8 Suite OS
+          </a>
+        </span>
       </div>
     </footer>
   );

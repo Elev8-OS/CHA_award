@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { CHALogo } from '@/components/common/CHALogo';
 import { useLang } from '@/components/common/LangProvider';
 import { LiveCount } from '@/components/common/LiveCount';
+import { elev8Link } from '@/lib/utils';
 
 export function Hero() {
   const { t } = useLang();
@@ -42,7 +43,15 @@ export function Hero() {
           </span>
           <span className="text-warm-gray opacity-40">·</span>
           <span>
-            {t('hero.powered_by')} <strong className="font-bold">Elev8 Suite OS</strong>
+            {t('hero.powered_by')}{' '}
+            <a
+              href={elev8Link('hero')}
+              target="_blank"
+              rel="noopener"
+              className="font-bold underline decoration-gold/0 underline-offset-4 transition-all hover:decoration-gold"
+            >
+              Elev8 Suite OS
+            </a>
           </span>
         </div>
 

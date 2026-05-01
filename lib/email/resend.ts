@@ -65,9 +65,10 @@ function renderApplicationConfirmationHtml(
   const questions = isId
     ? 'Pertanyaan? Balas email ini, kami akan menjawab.'
     : 'Questions? Just reply to this email — we read every message.';
+  const elev8Url = `https://elev8-suite.com/?utm_source=cha-awards&utm_medium=email-confirmation&utm_campaign=edition01`;
   const signature = isId
-    ? `Salam,<br><strong>Canggu Hospitality Association</strong><br><span style="color:#6B6055;">Powered by Elev8 Suite OS — Diamond Sponsor</span>`
-    : `Best,<br><strong>Canggu Hospitality Association</strong><br><span style="color:#6B6055;">Powered by Elev8 Suite OS — Diamond Sponsor</span>`;
+    ? `Salam,<br><strong>Canggu Hospitality Association</strong><br><span style="color:#6B6055;">Powered by <a href="${elev8Url}" style="color:#6B6055;text-decoration:underline;">Elev8 Suite OS</a> — Diamond Sponsor</span>`
+    : `Best,<br><strong>Canggu Hospitality Association</strong><br><span style="color:#6B6055;">Powered by <a href="${elev8Url}" style="color:#6B6055;text-decoration:underline;">Elev8 Suite OS</a> — Diamond Sponsor</span>`;
 
   return `<!doctype html>
 <html lang="${opts.locale}">
@@ -455,7 +456,7 @@ function renderMilestoneHtml(o: MilestoneTemplateOpts): string {
         </tr>
         <tr>
           <td style="background:${COLORS.navy};padding:28px 32px;text-align:center;color:${COLORS.cream};">
-            <div style="font-size:14px;line-height:1.6;"><strong>Canggu Hospitality Association</strong><br><span style="color:${COLORS.gold};">Powered by Elev8 Suite OS — Diamond Sponsor</span></div>
+            <div style="font-size:14px;line-height:1.6;"><strong>Canggu Hospitality Association</strong><br><span style="color:${COLORS.gold};">Powered by <a href="https://elev8-suite.com/?utm_source=cha-awards&utm_medium=milestone-email&utm_campaign=edition01" style="color:${COLORS.gold};text-decoration:underline;">Elev8 Suite OS</a> — Diamond Sponsor</span></div>
           </td>
         </tr>
       </table>

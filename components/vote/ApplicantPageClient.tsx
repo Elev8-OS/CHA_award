@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { CHALogo } from '@/components/common/CHALogo';
 import { LangProvider, LangToggle, useLang } from '@/components/common/LangProvider';
 import { CountdownBanner } from '@/components/common/CountdownBanner';
-import { categoryColors, getInitials, generateWhatsAppShareUrl, generateLinkedInShareUrl } from '@/lib/utils';
+import { categoryColors, getInitials, generateWhatsAppShareUrl, generateLinkedInShareUrl, elev8Link } from '@/lib/utils';
 import { AnimatedVoteCount } from '@/components/vote/LiveVoteCount';
 
 interface Applicant {
@@ -336,9 +336,33 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
             </div>
           </div>
           <p className="mb-4 text-sm leading-relaxed text-navy/75">
-            {locale === 'id'
-              ? 'Award tahunan yang menyoroti operator villa terbaik di Canggu. Diselenggarakan oleh Canggu Hospitality Association, didukung oleh Elev8 Suite OS sebagai Diamond Sponsor di Bali Villa Connect 2026.'
-              : 'An annual award celebrating the top villa operators in Canggu. Presented by the Canggu Hospitality Association, powered by Elev8 Suite OS as Diamond Sponsor of Bali Villa Connect 2026.'}
+            {locale === 'id' ? (
+              <>
+                Award tahunan yang menyoroti operator villa terbaik di Canggu. Diselenggarakan oleh Canggu Hospitality Association, didukung oleh{' '}
+                <a
+                  href={elev8Link('applicant-page-about')}
+                  target="_blank"
+                  rel="noopener"
+                  className="font-semibold text-navy underline decoration-coral/30 underline-offset-2 hover:decoration-coral"
+                >
+                  Elev8 Suite OS
+                </a>{' '}
+                sebagai Diamond Sponsor di Bali Villa Connect 2026.
+              </>
+            ) : (
+              <>
+                An annual award celebrating the top villa operators in Canggu. Presented by the Canggu Hospitality Association, powered by{' '}
+                <a
+                  href={elev8Link('applicant-page-about')}
+                  target="_blank"
+                  rel="noopener"
+                  className="font-semibold text-navy underline decoration-coral/30 underline-offset-2 hover:decoration-coral"
+                >
+                  Elev8 Suite OS
+                </a>{' '}
+                as Diamond Sponsor of Bali Villa Connect 2026.
+              </>
+            )}
           </p>
           <Link
             href="/"
