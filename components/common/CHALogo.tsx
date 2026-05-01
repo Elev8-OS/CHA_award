@@ -1,19 +1,19 @@
 // ============================================================================
-// CHA Logo — smart loader
+// CHA Logo — smart loader with multi-format support
 //
-// HOW TO REPLACE WITH OFFICIAL LOGO:
-// 1. Drop your logo file at: public/brand/logo.svg
-//    (Also supports logo.png — but SVG is preferred for crisp rendering)
-// 2. That's it. No code changes needed.
+// HOW TO REPLACE WITH YOUR LOGO:
+// Drop ANY of these files in public/brand/ — first match wins:
+//   1. logo.svg  ← preferred (scales crisply, smallest filesize)
+//   2. logo.png  ← good for raster logos with transparent background
+//   3. logo.jpg  ← OK for photographic logos
 //
-// The component will automatically:
-// - Use your file if it exists (preferred)
-// - Fall back to the inline SVG if file missing or fails to load
+// No code changes needed. Component tries each format in order, falls back
+// to inline SVG (4-heart fallback) if none found.
 //
-// Recommended logo specs:
-// - SVG with transparent background
-// - Square or near-square aspect ratio (will be displayed in square containers)
-// - Optimized (run through SVGO or similar)
+// Recommended specs:
+// - Square or near-square aspect ratio
+// - At least 400x400px for PNG/JPG (will be displayed up to 380px)
+// - Transparent background preferred (PNG/SVG only — JPG cannot have transparency)
 // ============================================================================
 
 'use client';
@@ -25,22 +25,31 @@ interface CHALogoProps {
   size?: number;
 }
 
-const LOGO_PATH = '/brand/logo.svg'; // Change to .png if using PNG
+// Order matters: tried left-to-right, first that loads wins.
+const LOGO_PATHS = ['/brand/logo.svg', '/brand/logo.png', '/brand/logo.jpg'];
 
 export function CHALogo({ className = '', size = 40 }: CHALogoProps) {
-  const [useExternal, setUseExternal] = useState(true);
+  const [pathIndex, setPathIndex] = useState(0);
+  const [showFallback, setShowFallback] = useState(false);
 
-  // Try to use external logo file
-  if (useExternal) {
+  // Try external logos first
+  if (!showFallback && pathIndex < LOGO_PATHS.length) {
     return (
       <img
-        src={LOGO_PATH}
+        src={LOGO_PATHS[pathIndex]}
         alt="CHA"
         width={size}
         height={size}
         className={className}
         style={{ width: size, height: size, objectFit: 'contain' }}
-        onError={() => setUseExternal(false)}
+        onError={() => {
+          // Try next format; if exhausted, show inline SVG fallback
+          if (pathIndex + 1 < LOGO_PATHS.length) {
+            setPathIndex(pathIndex + 1);
+          } else {
+            setShowFallback(true);
+          }
+        }}
       />
     );
   }
