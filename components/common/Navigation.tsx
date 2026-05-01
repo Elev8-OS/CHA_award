@@ -11,7 +11,7 @@ export function Navigation() {
   return (
     <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between border-b border-line bg-cream/90 px-4 py-3 backdrop-blur-xl md:px-8">
       <Link href="/" className="flex items-center gap-3.5">
-        <CHALogo size={40} />
+        <CHALogo size={56} />
         <div className="hidden flex-col leading-tight sm:flex">
           <span className="text-sm font-extrabold tracking-wider text-navy">CANGGU</span>
           <span className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-warm-gray">

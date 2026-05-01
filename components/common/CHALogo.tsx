@@ -10,10 +10,13 @@
 // No code changes needed. Component tries each format in order, falls back
 // to inline SVG (4-heart fallback) if none found.
 //
-// Recommended specs:
-// - Square or near-square aspect ratio
-// - At least 400x400px for PNG/JPG (will be displayed up to 380px)
-// - Transparent background preferred (PNG/SVG only — JPG cannot have transparency)
+// FINE-TUNING:
+// If your logo has whitespace/padding around the content (very common!),
+// adjust LOGO_SCALE below. Examples:
+//   LOGO_SCALE = 1.0  ← logo fills the file edge to edge (default)
+//   LOGO_SCALE = 1.3  ← small bit of padding in the file
+//   LOGO_SCALE = 1.6  ← lots of padding (typical exported logos)
+//   LOGO_SCALE = 2.0  ← logo is tiny in the center of huge file
 // ============================================================================
 
 'use client';
@@ -28,29 +31,47 @@ interface CHALogoProps {
 // Order matters: tried left-to-right, first that loads wins.
 const LOGO_PATHS = ['/brand/logo.svg', '/brand/logo.png', '/brand/logo.jpg'];
 
+// Scale factor — bumps logo display size if your file has whitespace padding.
+// 1.0 = file is tightly cropped. 1.5 = bit of padding. 2.0 = lots of padding.
+const LOGO_SCALE = 1.5;
+
 export function CHALogo({ className = '', size = 40 }: CHALogoProps) {
   const [pathIndex, setPathIndex] = useState(0);
   const [showFallback, setShowFallback] = useState(false);
 
   // Try external logos first
   if (!showFallback && pathIndex < LOGO_PATHS.length) {
+    const renderSize = Math.round(size * LOGO_SCALE);
     return (
-      <img
-        src={LOGO_PATHS[pathIndex]}
-        alt="CHA"
-        width={size}
-        height={size}
+      // Container keeps the layout slot at `size`, but the inner img scales up
+      // by LOGO_SCALE and overflows visually — this avoids breaking adjacent
+      // elements while making the logo look bigger.
+      <span
         className={className}
-        style={{ width: size, height: size, objectFit: 'contain' }}
-        onError={() => {
-          // Try next format; if exhausted, show inline SVG fallback
-          if (pathIndex + 1 < LOGO_PATHS.length) {
-            setPathIndex(pathIndex + 1);
-          } else {
-            setShowFallback(true);
-          }
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: size,
+          height: size,
+          flexShrink: 0,
         }}
-      />
+      >
+        <img
+          src={LOGO_PATHS[pathIndex]}
+          alt="CHA"
+          width={renderSize}
+          height={renderSize}
+          style={{ width: renderSize, height: renderSize, objectFit: 'contain' }}
+          onError={() => {
+            if (pathIndex + 1 < LOGO_PATHS.length) {
+              setPathIndex(pathIndex + 1);
+            } else {
+              setShowFallback(true);
+            }
+          }}
+        />
+      </span>
     );
   }
 

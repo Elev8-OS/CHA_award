@@ -25,7 +25,7 @@ export default async function LeaderboardPage() {
       <header className="sticky top-0 z-40 border-b border-line bg-cream/95 px-4 py-3 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <CHALogo size={36} />
+            <CHALogo size={48} />
             <div className="flex flex-col leading-tight">
               <span className="text-xs font-extrabold tracking-wider text-navy">CANGGU</span>
               <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-warm-gray">

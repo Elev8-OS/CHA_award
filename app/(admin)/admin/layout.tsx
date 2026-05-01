@@ -9,7 +9,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="flex min-h-screen bg-cream">
       <aside className="hidden w-64 flex-shrink-0 flex-col border-r border-line bg-white md:flex">
         <Link href="/admin" className="flex items-center gap-3 border-b border-line px-6 py-5">
-          <CHALogo size={32} />
+          <CHALogo size={44} />
           <div className="flex flex-col leading-tight">
             <span className="text-xs font-extrabold tracking-wider text-navy">CHA AWARDS</span>
             <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-warm-gray">

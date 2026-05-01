@@ -94,7 +94,7 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
       <header className="sticky top-0 z-40 border-b border-line bg-cream/95 px-4 py-3 backdrop-blur-xl">
         <div className="mx-auto flex max-w-2xl items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <CHALogo size={32} />
+            <CHALogo size={44} />
             <div className="flex flex-col leading-tight">
               <span className="text-[11px] font-extrabold tracking-wider text-navy">CHA AWARDS</span>
               <span className="text-[9px] font-semibold uppercase tracking-[0.14em] text-warm-gray">
@@ -327,7 +327,7 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
       <section className="px-5 pb-12">
         <div className="mx-auto max-w-2xl rounded-3xl border border-line bg-white p-7">
           <div className="mb-3 flex items-center gap-3">
-            <CHALogo size={36} />
+            <CHALogo size={48} />
             <div>
               <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-coral">
                 {t('vote.about_awards')}

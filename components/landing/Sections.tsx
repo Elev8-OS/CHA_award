@@ -502,7 +502,7 @@ export function Footer() {
       <div className="mx-auto mb-12 grid max-w-[1280px] grid-cols-1 gap-12 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="mb-4 flex items-center gap-3.5">
-            <CHALogo size={44} />
+            <CHALogo size={60} />
             <div>
               <div className="font-serif text-xl leading-none text-cream">CANGGU</div>
               <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">

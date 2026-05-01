@@ -19,8 +19,8 @@ export function Hero() {
       }}
     >
       {/* Decorative CHA logo */}
-      <div className="pointer-events-none absolute -right-20 top-24 hidden -rotate-12 opacity-[0.08] md:block">
-        <CHALogo size={380} />
+      <div className="pointer-events-none absolute -right-20 top-24 hidden -rotate-12 opacity-[0.18] md:block">
+        <CHALogo size={420} />
       </div>
 
       <div className="relative z-10 mx-auto max-w-[1280px]">
@@ -37,7 +37,7 @@ export function Hero() {
         </h1>
 
         <div className="mb-9 inline-flex flex-wrap items-center gap-4 rounded-full bg-white px-5 py-3 text-sm text-navy shadow-[0_1px_0_var(--color-line)]">
-          <CHALogo size={24} />
+          <CHALogo size={32} />
           <span>
             <strong className="font-bold">{t('hero.presented_by')}</strong> Canggu Hospitality
             Association

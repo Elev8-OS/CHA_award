@@ -166,7 +166,7 @@ function FormShell({ app: initialApp }: { app: Application }) {
       <header className="sticky top-0 z-40 border-b border-line bg-cream/95 px-4 py-3 backdrop-blur-xl">
         <div className="mx-auto flex max-w-3xl items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <CHALogo size={32} />
+            <CHALogo size={44} />
             <span className="text-xs font-extrabold tracking-wider text-navy">CHA AWARDS</span>
           </Link>
           <div className="flex items-center gap-3">

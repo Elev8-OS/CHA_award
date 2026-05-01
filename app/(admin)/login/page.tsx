@@ -51,7 +51,7 @@ function LoginInner() {
         <div className="w-full max-w-md">
           <div className="mb-8 text-center">
             <div className="mb-5 inline-block">
-              <CHALogo size={56} />
+              <CHALogo size={64} />
             </div>
             <h1 className="font-serif text-3xl text-navy">Admin sign in</h1>
             <p className="mt-2 text-sm text-warm-gray">CHA Hospitality Awards 2026 — Jury & Admin only</p>
