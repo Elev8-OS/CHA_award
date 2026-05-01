@@ -6,8 +6,12 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
-import { sendApplicationConfirmationEmail } from '@/lib/email/resend';
+import {
+  sendApplicationConfirmationEmail,
+  sendAdminNotificationEmail,
+} from '@/lib/email/resend';
 import { sendApplicationConfirmation } from '@/lib/whatsapp/templates';
+import { generateApplicationAssessment } from '@/lib/ai/assessment';
 import { z } from 'zod';
 
 const submitSchema = z.object({
@@ -60,7 +64,9 @@ export async function POST(
         submitted_at: now,
       })
       .eq('id', params.id)
-      .select('id, public_slug, full_name, business_name, email, whatsapp, language')
+      .select(
+        'id, public_slug, full_name, business_name, email, whatsapp, language, mode, category, location, villa_count, years_hosting, team_size, occupancy_pct, channels, short_pitch, current_tools, current_tools_pros, current_tools_cons, biggest_headache, first_attack, twelve_month_vision, why_you'
+      )
       .single();
 
     if (updateError || !updated) {
@@ -72,7 +78,7 @@ export async function POST(
     const applicantName = updated.full_name || 'there';
     const businessName = updated.business_name || 'your business';
 
-    // Send email confirmation (non-blocking; log errors but don't fail submit)
+    // Send email confirmation to applicant (non-blocking)
     if (updated.email) {
       sendApplicationConfirmationEmail({
         to: updated.email,
@@ -83,7 +89,7 @@ export async function POST(
       }).catch((err) => console.error('Email send failed:', err));
     }
 
-    // Send WhatsApp confirmation (non-blocking)
+    // Send WhatsApp confirmation to applicant (non-blocking)
     if (updated.whatsapp) {
       sendApplicationConfirmation({
         to: updated.whatsapp,
@@ -93,6 +99,54 @@ export async function POST(
         applicationId: updated.id,
       }).catch((err) => console.error('WA send failed:', err));
     }
+
+    // Generate AI assessment + send admin notification (non-blocking, sequential)
+    // We await the assessment so the email includes it; this adds ~2-5s
+    // but happens after the response is being prepared, so user already gets thank-you redirect.
+    (async () => {
+      try {
+        const assessment = await generateApplicationAssessment({
+          business_name: businessName,
+          full_name: applicantName,
+          category: updated.category || 'unknown',
+          location: updated.location,
+          villa_count: updated.villa_count,
+          years_hosting: updated.years_hosting,
+          team_size: updated.team_size,
+          occupancy_pct: updated.occupancy_pct,
+          channels: updated.channels || [],
+          short_pitch: updated.short_pitch,
+          current_tools: updated.current_tools,
+          current_tools_pros: updated.current_tools_pros,
+          current_tools_cons: updated.current_tools_cons,
+          biggest_headache: updated.biggest_headache,
+          first_attack: updated.first_attack,
+          twelve_month_vision: updated.twelve_month_vision,
+          why_you: updated.why_you,
+          mode: updated.mode || 'quick',
+          language: updated.language || 'en',
+        });
+
+        await sendAdminNotificationEmail({
+          applicantName,
+          businessName,
+          email: updated.email || '—',
+          whatsapp: updated.whatsapp,
+          category: updated.category || 'unknown',
+          location: updated.location,
+          villaCount: updated.villa_count,
+          yearsHosting: updated.years_hosting,
+          mode: updated.mode || 'quick',
+          language: updated.language || 'en',
+          publicSlug: updated.public_slug || updated.id,
+          applicationId: updated.id,
+          shortPitch: updated.short_pitch,
+          assessment,
+        });
+      } catch (err) {
+        console.error('Admin notification flow failed:', err);
+      }
+    })();
 
     return NextResponse.json({
       success: true,

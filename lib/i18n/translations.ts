@@ -13,8 +13,8 @@ export const translations = {
 
     // ----- Hero -----
     'hero.eyebrow': 'Edition 01 · Bali Villa Connect 2026',
-    'hero.title.line1': 'The Canggu',
-    'hero.title.line2': 'Host',
+    'hero.title.line1': 'The CHA',
+    'hero.title.line2': 'Hospitality',
     'hero.title.awards': 'Awards',
     'hero.presented_by': 'Presented by',
     'hero.powered_by': 'Powered by',
@@ -144,8 +144,8 @@ export const translations = {
 
     // ----- Hero -----
     'hero.eyebrow': 'Edisi 01 · Bali Villa Connect 2026',
-    'hero.title.line1': 'Canggu',
-    'hero.title.line2': 'Host',
+    'hero.title.line1': 'CHA',
+    'hero.title.line2': 'Hospitality',
     'hero.title.awards': 'Awards',
     'hero.presented_by': 'Diselenggarakan oleh',
     'hero.powered_by': 'Didukung oleh',
