@@ -184,17 +184,21 @@ function FormShell({ app: initialApp }: { app: Application }) {
         <div className="mx-auto max-w-2xl">
           {/* Progress */}
           <div className="mb-7">
-            <div className="mb-3 flex justify-between text-[11px] font-bold uppercase tracking-[0.14em] text-warm-gray">
-              <span>
+            <div className="mb-3 flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.14em]">
+              <span className="text-warm-gray">
                 {t('form.step')} {step} {t('form.of')} {totalSteps}
+                <span className="ml-2 text-coral">— {getStepLabel(step, app.mode || 'quick', locale)}</span>
               </span>
-              <span>{Math.round((step / totalSteps) * 100)}%</span>
+              <span className="text-warm-gray">
+                <span className="text-navy">{Math.round((step / totalSteps) * 100)}%</span>
+                <span className="ml-2 hidden sm:inline">· {getTimeRemaining(step, totalSteps, app.mode || 'quick', locale)}</span>
+              </span>
             </div>
             <div className="flex gap-1.5">
               {Array.from({ length: totalSteps }, (_, i) => (
                 <div
                   key={i}
-                  className={`h-1 flex-1 rounded transition-all ${
+                  className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${
                     i + 1 < step
                       ? 'bg-coral'
                       : i + 1 === step
@@ -834,4 +838,28 @@ function extractUpdates(app: Application): Partial<Application> {
     if (v !== null && v !== undefined) cleaned[k] = v;
   }
   return cleaned;
+}
+
+// ============================================================================
+// Progress helper functions
+// ============================================================================
+
+function getStepLabel(step: number, mode: string, locale: string): string {
+  const labelsEn: Record<string, string[]> = {
+    quick: ['About you', 'Your business', 'Your story'],
+    deep: ['About you', 'Your business', 'Your story', 'The opportunity', 'Photo & voice'],
+  };
+  const labelsId: Record<string, string[]> = {
+    quick: ['Tentang Anda', 'Bisnis Anda', 'Kisah Anda'],
+    deep: ['Tentang Anda', 'Bisnis Anda', 'Kisah Anda', 'Peluang', 'Foto & suara'],
+  };
+  const labels = locale === 'id' ? labelsId[mode] : labelsEn[mode];
+  return labels?.[step - 1] || '';
+}
+
+function getTimeRemaining(step: number, totalSteps: number, mode: string, locale: string): string {
+  const totalMin = mode === 'deep' ? 12 : 4;
+  const remainingPct = (totalSteps - step + 1) / totalSteps;
+  const minLeft = Math.max(1, Math.round(totalMin * remainingPct));
+  return locale === 'id' ? `~${minLeft} menit lagi` : `~${minLeft} min left`;
 }

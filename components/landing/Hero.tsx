@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { CHALogo } from '@/components/common/CHALogo';
 import { useLang } from '@/components/common/LangProvider';
@@ -85,7 +86,7 @@ export function Hero() {
             5
           </StatCard>
           <StatCard color="gold" label={t('hero.stat.deadline')} small>
-            22 May
+            <CountdownDisplay />
           </StatCard>
         </div>
       </div>
@@ -125,6 +126,72 @@ function StatCard({
       >
         {children}
       </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// CountdownDisplay — live-updating time until deadline
+// ============================================================================
+
+const DEADLINE = process.env.NEXT_PUBLIC_APPLICATIONS_CLOSE_AT || '2026-05-22T23:59:59+08:00';
+
+function CountdownDisplay() {
+  const { locale } = useLang();
+  const [now, setNow] = useState<number | null>(null);
+
+  useEffect(() => {
+    setNow(Date.now());
+    const timer = setInterval(() => setNow(Date.now()), 1000 * 60); // refresh every minute
+    return () => clearInterval(timer);
+  }, []);
+
+  if (now === null) {
+    // SSR/initial render — show static fallback
+    return <span className="text-2xl">22 May</span>;
+  }
+
+  const target = new Date(DEADLINE).getTime();
+  const diff = target - now;
+
+  if (diff <= 0) {
+    return <span className="text-2xl text-coral">Closed</span>;
+  }
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
+  // Different layouts based on time remaining
+  if (days > 1) {
+    return (
+      <div className="flex items-baseline gap-1">
+        <span className="text-2xl font-bold text-navy">{days}</span>
+        <span className="text-xs text-warm-gray">{locale === 'id' ? 'hari' : 'days'}</span>
+        <span className="ml-1.5 text-2xl font-bold text-navy">{hours}</span>
+        <span className="text-xs text-warm-gray">{locale === 'id' ? 'jam' : 'h'}</span>
+      </div>
+    );
+  }
+
+  if (days === 1) {
+    return (
+      <div className="flex items-baseline gap-1">
+        <span className="text-2xl font-bold text-coral">{days}</span>
+        <span className="text-xs text-coral">{locale === 'id' ? 'hari' : 'day'}</span>
+        <span className="ml-1.5 text-2xl font-bold text-coral">{hours}</span>
+        <span className="text-xs text-coral">{locale === 'id' ? 'jam' : 'h'}</span>
+      </div>
+    );
+  }
+
+  // Last day
+  return (
+    <div className="flex items-baseline gap-1">
+      <span className="text-2xl font-bold text-burgundy">{hours}</span>
+      <span className="text-xs text-burgundy">h</span>
+      <span className="ml-1.5 text-2xl font-bold text-burgundy">{minutes}</span>
+      <span className="text-xs text-burgundy">m</span>
     </div>
   );
 }

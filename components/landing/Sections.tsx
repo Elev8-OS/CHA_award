@@ -240,8 +240,23 @@ export function StageSection() {
 // ENDORSEMENT (Pak Prima)
 // ============================================================================
 
+// ============================================================================
+// ENDORSEMENT — Pak Prima's quote
+// ============================================================================
+// TO UPDATE: change PRIMA_QUOTE below with the real statement from Pak Prima.
+// Both EN and ID versions can be set; if ID is empty string, EN shows for both.
+// ============================================================================
+
+const PRIMA_QUOTE = {
+  en: '"Building connection, one conversation at a time. These awards are how we recognize the operators raising the standard of hospitality across Canggu."',
+  id: '"Membangun koneksi, satu percakapan pada satu waktu. Award ini adalah cara kami mengenali para operator yang meningkatkan standar perhotelan di Canggu."',
+};
+
 export function Endorsement() {
-  const { t } = useLang();
+  const { t, locale } = useLang();
+  const quote = locale === 'id' && PRIMA_QUOTE.id ? PRIMA_QUOTE.id : PRIMA_QUOTE.en;
+  const eyebrow = locale === 'id' ? 'Pesan dari Pendiri CHA' : 'A note from the CHA Founder';
+
   return (
     <div className="px-4 py-28 md:px-8">
       <div className="relative mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-12 overflow-hidden rounded-3xl border border-line bg-white p-14 shadow-[0_24px_60px_-20px_rgba(31,58,79,0.1)] md:grid-cols-[auto_1fr]">
@@ -259,7 +274,6 @@ export function Endorsement() {
             alt="Pak Prima Hartawan"
             className="h-44 w-44 rounded-full border-4 border-gold object-cover"
             onError={(e) => {
-              // Fallback to initial if photo missing
               const target = e.currentTarget;
               target.style.display = 'none';
               const fallback = target.nextElementSibling as HTMLElement;
@@ -278,16 +292,16 @@ export function Endorsement() {
 
         <div className="relative z-10">
           <div className="mb-5 text-[11px] font-bold uppercase tracking-[0.16em] text-coral">
-            {/* "A note from the CHA Founder" */}
-            A note from the CHA Founder
+            {eyebrow}
           </div>
           <p className="mb-6 font-serif text-3xl italic leading-snug tracking-tight text-navy">
-            "Building connection, one conversation at a time. These awards are how we recognize
-            the operators raising the standard of hospitality across Canggu."
+            {quote}
           </p>
-          <div className="mb-1 text-base font-bold text-navy">Pak Prima Hartawan, CHA</div>
+          <div className="mb-1 text-base font-bold text-navy">Pak Prima Hartawan</div>
           <div className="text-sm leading-[1.5] text-warm-gray">
-            Founder, Canggu Hospitality Association · Cluster GM, Small Luxury Hotels of the World
+            {locale === 'id'
+              ? 'Pendiri Canggu Hospitality Association · Cluster GM, Small Luxury Hotels of the World'
+              : 'Founder, Canggu Hospitality Association · Cluster GM, Small Luxury Hotels of the World'}
           </div>
         </div>
       </div>
