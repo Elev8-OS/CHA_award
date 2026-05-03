@@ -27,11 +27,13 @@ const SEAT_COLORS: Record<string, string> = {
 export function ScoringPanel({
   applicationId,
   existingScores,
+  currentUserId: currentUserIdProp,
 }: {
   applicationId: string;
   existingScores: Score[];
+  currentUserId?: string | null;
 }) {
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(currentUserIdProp || null);
   const [storyScore, setStoryScore] = useState<number | null>(null);
   const [growthScore, setGrowthScore] = useState<number | null>(null);
   const [notes, setNotes] = useState('');
@@ -39,26 +41,48 @@ export function ScoringPanel({
   const [savedAt, setSavedAt] = useState<string | null>(null);
 
   useEffect(() => {
+    // If we got the user ID as a prop (from server-side), use it directly.
+    // Otherwise, try to fetch it client-side (legacy fallback).
+    if (currentUserIdProp) {
+      const myScore = existingScores.find((s) => s.juror_id === currentUserIdProp);
+      if (myScore) {
+        setStoryScore(myScore.story_score);
+        setGrowthScore(myScore.growth_potential_score);
+        setNotes(myScore.jury_notes || '');
+      }
+      return;
+    }
+
+    // Fallback: client-side auth lookup
     (async () => {
-      const supabase = getSupabaseBrowser();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data: admin } = await supabase
-        .from('admin_users')
-        .select('id')
-        .eq('email', user.email!)
-        .maybeSingle();
-      if (admin) {
-        setCurrentUserId(admin.id);
-        const myScore = existingScores.find((s) => s.juror_id === admin.id);
-        if (myScore) {
-          setStoryScore(myScore.story_score);
-          setGrowthScore(myScore.growth_potential_score);
-          setNotes(myScore.jury_notes || '');
+      try {
+        const supabase = getSupabaseBrowser();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          console.warn('ScoringPanel: no authenticated user');
+          return;
         }
+        const { data: admin } = await supabase
+          .from('admin_users')
+          .select('id')
+          .eq('email', user.email!)
+          .maybeSingle();
+        if (admin) {
+          setCurrentUserId(admin.id);
+          const myScore = existingScores.find((s) => s.juror_id === admin.id);
+          if (myScore) {
+            setStoryScore(myScore.story_score);
+            setGrowthScore(myScore.growth_potential_score);
+            setNotes(myScore.jury_notes || '');
+          }
+        } else {
+          console.warn('ScoringPanel: user not in admin_users:', user.email);
+        }
+      } catch (err) {
+        console.error('ScoringPanel auth lookup failed:', err);
       }
     })();
-  }, [existingScores]);
+  }, [existingScores, currentUserIdProp]);
 
   const save = async () => {
     if (!currentUserId) return;
@@ -135,6 +159,11 @@ export function ScoringPanel({
         >
           {saving ? 'Saving...' : 'Save scores'}
         </button>
+        {!currentUserId && (
+          <p className="mt-2 text-center text-[11px] text-burgundy">
+            ⚠ Could not identify your admin account. Try refreshing the page.
+          </p>
+        )}
         {savedAt && (
           <p className="mt-2 text-center text-[11px] text-warm-gray">Saved at {savedAt}</p>
         )}

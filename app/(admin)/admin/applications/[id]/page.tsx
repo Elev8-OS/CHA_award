@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { supabaseAdmin } from '@/lib/supabase/admin';
+import { getSupabaseServer } from '@/lib/supabase/server';
 import { ScoringPanel } from '@/components/admin/ScoringPanel';
 import { StatusTransition } from '@/components/admin/StatusTransition';
 import { categoryColors, formatDate } from '@/lib/utils';
@@ -24,6 +25,23 @@ export default async function AdminApplicationDetailPage({
     .from('jury_scores')
     .select('*, juror:admin_users(full_name, organization, jury_seat_color)')
     .eq('application_id', params.id);
+
+  // Resolve current admin user's ID (for ScoringPanel)
+  let currentAdminId: string | null = null;
+  try {
+    const supabase = getSupabaseServer();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user?.email) {
+      const { data: admin } = await supabaseAdmin
+        .from('admin_users')
+        .select('id')
+        .eq('email', user.email)
+        .maybeSingle();
+      currentAdminId = admin?.id || null;
+    }
+  } catch (err) {
+    console.error('Failed to resolve admin id:', err);
+  }
 
   const { count: voteCount } = await supabaseAdmin
     .from('vote_events')
@@ -214,7 +232,11 @@ export default async function AdminApplicationDetailPage({
 
         {/* Scoring column */}
         <div className="space-y-5">
-          <ScoringPanel applicationId={app.id} existingScores={scores || []} />
+          <ScoringPanel
+            applicationId={app.id}
+            existingScores={scores || []}
+            currentUserId={currentAdminId}
+          />
 
           <StatusTransition
             applicationId={app.id}
