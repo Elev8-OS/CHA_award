@@ -104,12 +104,14 @@ export async function generateApplicationAssessment(
 ): Promise<ApplicationAssessment | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    console.log('ANTHROPIC_API_KEY not set, skipping AI assessment');
+    console.log('[AI] ANTHROPIC_API_KEY not set, skipping AI assessment');
     return null;
   }
 
   const userPrompt = buildUserPrompt(app);
   const model = process.env.ANTHROPIC_ASSESSMENT_MODEL || DEFAULT_MODEL;
+
+  console.log(`[AI] Starting assessment with model=${model} for ${app.business_name}`);
 
   try {
     const res = await fetch(ANTHROPIC_API_URL, {
@@ -121,7 +123,7 @@ export async function generateApplicationAssessment(
       },
       body: JSON.stringify({
         model,
-        max_tokens: 800,
+        max_tokens: 2000, // Was 800 — too low when followup_questions are added
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: userPrompt }],
       }),
@@ -129,33 +131,56 @@ export async function generateApplicationAssessment(
 
     if (!res.ok) {
       const errorBody = await res.text();
-      console.error('Anthropic API error:', res.status, errorBody);
+      console.error(`[AI] Anthropic API HTTP error: status=${res.status}, body=${errorBody}`);
       return null;
     }
 
     const data = await res.json();
     const text = data.content?.[0]?.text;
     if (!text) {
-      console.error('Anthropic API: no text in response');
+      console.error('[AI] Anthropic API returned no text:', JSON.stringify(data).slice(0, 500));
       return null;
+    }
+
+    // Check stop_reason — if "max_tokens", JSON is likely truncated
+    const stopReason = data.stop_reason;
+    if (stopReason !== 'end_turn') {
+      console.warn(`[AI] Unexpected stop_reason: ${stopReason}. Response may be truncated.`);
     }
 
     // Parse JSON — be tolerant of code-fence wrapping
     const cleaned = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
-    const assessment = JSON.parse(cleaned) as ApplicationAssessment;
 
-    // Validate ranges
+    let assessment: ApplicationAssessment;
+    try {
+      assessment = JSON.parse(cleaned) as ApplicationAssessment;
+    } catch (parseError: any) {
+      console.error(`[AI] JSON parse failed. stop_reason=${stopReason}, response_length=${text.length}`);
+      console.error(`[AI] Raw response (first 300 chars): ${cleaned.slice(0, 300)}`);
+      console.error(`[AI] Parse error: ${parseError.message}`);
+      return null;
+    }
+
+    // Validate + sanitize
     assessment.story_score = clamp(Math.round(assessment.story_score || 0), 0, 10);
     assessment.growth_score = clamp(Math.round(assessment.growth_score || 0), 0, 10);
+    assessment.summary = assessment.summary || '(no summary)';
+    assessment.recommendation = assessment.recommendation || '(no recommendation)';
+    assessment.category_fit = assessment.category_fit || 'borderline';
 
     // Default to empty array if AI omits the field
     if (!Array.isArray(assessment.followup_questions)) {
       assessment.followup_questions = [];
     }
 
+    console.log(
+      `[AI] Assessment complete: story=${assessment.story_score}/10, growth=${assessment.growth_score}/10, fit=${assessment.category_fit}, followups=${assessment.followup_questions.length}`
+    );
+
     return assessment;
   } catch (error: any) {
-    console.error('AI assessment failed:', error.message);
+    console.error('[AI] Assessment threw exception:', error?.message || error);
+    console.error('[AI] Stack:', error?.stack);
     return null;
   }
 }
