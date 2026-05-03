@@ -669,10 +669,11 @@ interface FollowupEmailOpts {
 export async function sendFollowupQuestionEmail(opts: FollowupEmailOpts) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com';
 
-  // Build edit URL — uses continue_token if available, otherwise public slug fallback
+  // Build edit URL — uses path-based continue_token format (matches existing /apply/[token] route)
+  // Falls back to root /apply if no token (rare — would lose context but won't 404)
   const editUrl = opts.continueToken
-    ? `${siteUrl}/apply?token=${opts.continueToken}&focus=${opts.fieldFocus}`
-    : `${siteUrl}/apply?app=${opts.applicationId}&focus=${opts.fieldFocus}`;
+    ? `${siteUrl}/apply/${opts.continueToken}?focus=${opts.fieldFocus}`
+    : `${siteUrl}/apply?focus=${opts.fieldFocus}`;
 
   const isId = opts.locale === 'id';
   const question = isId ? opts.questionId : opts.questionEn;
