@@ -648,3 +648,143 @@ function categoryFitColor(fit: 'strong' | 'borderline' | 'weak'): string {
   if (fit === 'weak') return COLORS.burgundy;
   return COLORS.warmGray;
 }
+
+// ============================================================================
+// AI Follow-up Question Email
+// Sent (parallel to WhatsApp, or as fallback) when AI flags weak scores
+// and wants the applicant to expand on a specific field.
+// ============================================================================
+
+interface FollowupEmailOpts {
+  to: string;
+  locale: Locale;
+  applicantName: string;
+  questionEn: string;
+  questionId: string;
+  continueToken: string | null;
+  fieldFocus: string;
+  applicationId: string;
+}
+
+export async function sendFollowupQuestionEmail(opts: FollowupEmailOpts) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com';
+
+  // Build edit URL — uses continue_token if available, otherwise public slug fallback
+  const editUrl = opts.continueToken
+    ? `${siteUrl}/apply?token=${opts.continueToken}&focus=${opts.fieldFocus}`
+    : `${siteUrl}/apply?app=${opts.applicationId}&focus=${opts.fieldFocus}`;
+
+  const isId = opts.locale === 'id';
+  const question = isId ? opts.questionId : opts.questionEn;
+
+  const subject = isId
+    ? `💬 Pertanyaan singkat dari juri — CHA Hospitality Awards 2026`
+    : `💬 A quick question from the jury — CHA Hospitality Awards 2026`;
+
+  const greeting = isId ? `Halo ${opts.applicantName},` : `Hi ${opts.applicantName},`;
+
+  const intro = isId
+    ? 'Terima kasih atas pendaftaran Anda. Tim juri membaca cerita Anda dan ingin memahami lebih dalam.'
+    : 'Thank you for your application. Our jury read your story and wants to understand it more deeply.';
+
+  const subIntro = isId
+    ? 'Ada satu pertanyaan singkat — jawaban Anda akan ditambahkan ke pendaftaran Anda dan dilihat oleh juri saat penilaian akhir:'
+    : 'One quick question — your answer will be added to your application and seen by the jury during final scoring:';
+
+  const ctaLabel = isId ? 'Tambahkan jawaban →' : 'Add my answer →';
+
+  const closingNote = isId
+    ? 'Tidak wajib, tetapi sangat membantu kami memahami kekuatan unik Anda.'
+    : 'Not required, but it helps us understand your unique strength.';
+
+  const signature = isId
+    ? 'Sampai jumpa di panggung,<br><strong>Tim CHA Hospitality Awards</strong>'
+    : 'See you on stage,<br><strong>The CHA Hospitality Awards Team</strong>';
+
+  const html = `<!doctype html>
+<html><body style="margin:0;padding:32px 16px;background:${COLORS.cream};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:${COLORS.navy};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+  <tr><td align="center">
+    <table role="presentation" width="540" cellpadding="0" cellspacing="0" style="max-width:540px;background:#FFFFFF;border-radius:16px;overflow:hidden;box-shadow:0 8px 30px -10px rgba(31,58,79,0.12);">
+
+      <!-- Brand bar -->
+      <tr><td style="height:6px;background:linear-gradient(90deg,${COLORS.coral} 0%,${COLORS.teal} 33%,${COLORS.burgundy} 66%,${COLORS.gold} 100%);"></td></tr>
+
+      <!-- Header -->
+      <tr><td style="padding:32px 32px 8px 32px;text-align:center;">
+        <div style="font-size:11px;font-weight:800;letter-spacing:0.16em;color:${COLORS.navy};">CHA HOSPITALITY AWARDS 2026</div>
+        <div style="font-size:9px;font-weight:600;letter-spacing:0.14em;color:${COLORS.warmGray};margin-top:4px;">EDITION 01 · BALI VILLA CONNECT</div>
+      </td></tr>
+
+      <!-- Title -->
+      <tr><td style="padding:24px 32px 8px 32px;">
+        <div style="display:inline-block;background:${COLORS.gold};color:${COLORS.navy};font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;padding:5px 12px;border-radius:100px;margin-bottom:14px;">
+          💬 ${isId ? 'PERTANYAAN JURI' : 'JURY QUESTION'}
+        </div>
+        <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;line-height:1.2;color:${COLORS.navy};font-weight:normal;letter-spacing:-0.5px;">
+          ${greeting}
+        </h1>
+      </td></tr>
+
+      <!-- Body -->
+      <tr><td style="padding:16px 32px 8px 32px;">
+        <p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;color:${COLORS.navy};">${intro}</p>
+        <p style="margin:0 0 20px 0;font-size:14px;line-height:1.55;color:${COLORS.warmGray};">${subIntro}</p>
+      </td></tr>
+
+      <!-- Question Box -->
+      <tr><td style="padding:0 32px 24px 32px;">
+        <div style="background:${COLORS.cream};border-left:3px solid ${COLORS.coral};border-radius:8px;padding:18px 22px;">
+          <p style="margin:0;font-family:Georgia,serif;font-size:17px;line-height:1.5;color:${COLORS.navy};font-style:italic;">"${question}"</p>
+        </div>
+      </td></tr>
+
+      <!-- CTA -->
+      <tr><td style="padding:0 32px 24px 32px;text-align:center;">
+        <a href="${editUrl}" style="display:inline-block;background:${COLORS.coral};color:#FFFFFF;font-weight:700;font-size:14px;padding:14px 32px;border-radius:100px;text-decoration:none;letter-spacing:0.02em;">${ctaLabel}</a>
+        <p style="margin:14px 0 0 0;font-size:12px;color:${COLORS.warmGray};font-style:italic;">${closingNote}</p>
+      </td></tr>
+
+      <!-- Signature -->
+      <tr><td style="padding:8px 32px 28px 32px;border-top:1px solid rgba(31,58,79,0.08);">
+        <p style="margin:18px 0 0 0;font-size:14px;line-height:1.6;color:${COLORS.navy};">${signature}</p>
+      </td></tr>
+
+      <!-- Footer -->
+      <tr><td style="background:${COLORS.navy};padding:24px 32px;text-align:center;color:${COLORS.cream};">
+        <div style="font-size:13px;line-height:1.6;">
+          <strong>Canggu Hospitality Association</strong><br>
+          <span style="color:${COLORS.gold};font-size:11px;">Powered by <a href="https://elev8-suite.com/?utm_source=cha-awards&utm_medium=followup-email&utm_campaign=edition01" style="color:${COLORS.gold};text-decoration:underline;">Elev8 Suite OS</a> — Diamond Sponsor</span>
+        </div>
+      </td></tr>
+
+    </table>
+    <div style="margin-top:16px;font-size:11px;color:${COLORS.warmGray};text-align:center;">© 2026 Canggu Hospitality Association · Edition 01</div>
+  </td></tr>
+</table>
+</body></html>`;
+
+  const text = `${greeting}
+
+${intro}
+
+${subIntro}
+
+"${question}"
+
+${ctaLabel}: ${editUrl}
+
+${closingNote}
+
+— The CHA Hospitality Awards Team
+Powered by Elev8 Suite OS`;
+
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: opts.to,
+    replyTo: REPLY_TO,
+    subject,
+    html,
+    text,
+  });
+}

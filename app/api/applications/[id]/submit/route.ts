@@ -160,19 +160,20 @@ export async function POST(
           const minScore = Math.min(assessment.story_score, assessment.growth_score);
 
           if (minScore < 7) {
-            // Get continue_token + check if followup was already scheduled/sent
+            // Check if followup was already scheduled/sent
             const { data: appCheck } = await supabaseAdmin
               .from('applications')
-              .select('continue_token, followup_sent_at, followup_scheduled_at, whatsapp')
+              .select('followup_sent_at, followup_scheduled_at, email, whatsapp')
               .eq('id', updated.id)
               .single();
 
-            // Only schedule if not already scheduled AND not already sent
+            // Schedule if not already scheduled/sent AND we have at least one channel
+            const hasChannel = !!(appCheck?.email || appCheck?.whatsapp);
             if (
               appCheck &&
               !appCheck.followup_sent_at &&
               !appCheck.followup_scheduled_at &&
-              appCheck.whatsapp
+              hasChannel
             ) {
               const sendAt = new Date(Date.now() + 30 * 60 * 1000); // +30 min
 
@@ -185,7 +186,7 @@ export async function POST(
                 .eq('id', updated.id);
 
               console.log(
-                `Follow-up scheduled for ${sendAt.toISOString()} — ${assessment.followup_questions[0].field} (scores ${assessment.story_score}/${assessment.growth_score})`
+                `[FOLLOWUP] Scheduled for ${sendAt.toISOString()} — ${assessment.followup_questions[0].field} (scores ${assessment.story_score}/${assessment.growth_score})`
               );
             }
           }
