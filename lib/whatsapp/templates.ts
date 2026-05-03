@@ -456,22 +456,35 @@ Congratulations! 🎉`;
 
 // ---------- Follow-up Question (after AI pre-screening) ----------
 
+export interface FollowupQuestionItem {
+  questionEn: string;
+  questionId: string;
+  fieldFocus: string;
+}
+
 interface FollowupQuestionOpts {
   to: string;
   locale: Locale;
   applicantName: string;
-  questionEn: string;
-  questionId: string;
+  questions: FollowupQuestionItem[]; // ordered by priority — first is primary
   continueToken: string;
-  fieldFocus: string;
   applicationId: string;
 }
 
 export async function sendFollowupQuestion(opts: FollowupQuestionOpts) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com';
-  const editUrl = `${siteUrl}/apply/${opts.continueToken}?focus=${encodeURIComponent(opts.fieldFocus)}`;
 
-  // Try template first (Meta-approved version with variables)
+  if (!opts.questions || opts.questions.length === 0) {
+    throw new Error('sendFollowupQuestion: at least one question required');
+  }
+
+  const primary = opts.questions[0];
+  const editUrl = `${siteUrl}/apply/${opts.continueToken}?focus=${encodeURIComponent(primary.fieldFocus)}`;
+
+  // For Meta-approved templates we can only send the primary question
+  // (templates have fixed variables). Multi-question is delivered via
+  // session text fallback below.
+  // We try template first; if it fails, we send a richer multi-question text.
   try {
     return await sendTemplate({
       to: opts.to,
@@ -482,7 +495,7 @@ export async function sendFollowupQuestion(opts: FollowupQuestionOpts) {
           type: 'body',
           parameters: [
             { type: 'text', text: opts.applicantName },
-            { type: 'text', text: opts.locale === 'id' ? opts.questionId : opts.questionEn },
+            { type: 'text', text: opts.locale === 'id' ? primary.questionId : primary.questionEn },
             { type: 'text', text: editUrl },
           ],
         },
@@ -490,33 +503,46 @@ export async function sendFollowupQuestion(opts: FollowupQuestionOpts) {
       applicationId: opts.applicationId,
     });
   } catch (error) {
-    // Fall back to plain text (only works within 24h session)
-    const body =
-      opts.locale === 'id'
-        ? `Halo *${opts.applicantName}*,
+    // Fall back to plain text (works within 24h session) — supports multiple questions
+    const isId = opts.locale === 'id';
+    const numbered = opts.questions.length > 1;
+
+    const questionsBlock = opts.questions
+      .map((q, i) => {
+        const text = isId ? q.questionId : q.questionEn;
+        return numbered ? `${i + 1}. *${text}*` : `*${text}*`;
+      })
+      .join('\n\n');
+
+    const body = isId
+      ? `Halo *${opts.applicantName}*,
 
 Terima kasih telah mendaftar untuk CHA Hospitality Awards 2026 🏆
 
-Untuk membantu juri menilai dengan lebih baik, kami ingin meminta Anda menambahkan sedikit detail:
+Untuk membantu juri menilai dengan lebih baik, kami ingin meminta Anda menambahkan sedikit detail${
+          numbered ? ` pada ${opts.questions.length} hal berikut` : ''
+        }:
 
-*${opts.questionId}*
+${questionsBlock}
 
 Anda dapat memperbarui profil Anda di sini:
 ${editUrl}
 
-(Cukup 2-3 kalimat — tidak perlu panjang)`
-        : `Hi *${opts.applicantName}*,
+(Cukup 2-3 kalimat per pertanyaan — tidak perlu panjang)`
+      : `Hi *${opts.applicantName}*,
 
 Thanks for applying to the CHA Hospitality Awards 2026 🏆
 
-To help our jury evaluate your application better, we'd love a bit more detail on one thing:
+To help our jury evaluate your application better, we'd love a bit more detail on ${
+          numbered ? `${opts.questions.length} things` : 'one thing'
+        }:
 
-*${opts.questionEn}*
+${questionsBlock}
 
 You can update your profile here:
 ${editUrl}
 
-(Just 2-3 sentences — no need for an essay)`;
+(Just 2-3 sentences per question — no need for an essay)`;
 
     return await sendText({ to: opts.to, body, applicationId: opts.applicationId });
   }

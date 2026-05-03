@@ -655,32 +655,47 @@ function categoryFitColor(fit: 'strong' | 'borderline' | 'weak'): string {
 // and wants the applicant to expand on a specific field.
 // ============================================================================
 
+// ============================================================================
+// Follow-Up Question Email
+// Sent when AI/jury is unsure on certain submission fields
+// and wants the applicant to expand on them. Supports 1+ questions.
+// ============================================================================
+
+export interface FollowupQuestionItem {
+  questionEn: string;
+  questionId: string;
+  fieldFocus: string;
+}
+
 interface FollowupEmailOpts {
   to: string;
   locale: Locale;
   applicantName: string;
-  questionEn: string;
-  questionId: string;
+  questions: FollowupQuestionItem[]; // ordered by priority — first is primary
   continueToken: string | null;
-  fieldFocus: string;
   applicationId: string;
 }
 
 export async function sendFollowupQuestionEmail(opts: FollowupEmailOpts) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com';
-
-  // Build edit URL — uses path-based continue_token format (matches existing /apply/[token] route)
-  // Falls back to root /apply if no token (rare — would lose context but won't 404)
-  const editUrl = opts.continueToken
-    ? `${siteUrl}/apply/${opts.continueToken}?focus=${opts.fieldFocus}`
-    : `${siteUrl}/apply?focus=${opts.fieldFocus}`;
-
   const isId = opts.locale === 'id';
-  const question = isId ? opts.questionId : opts.questionEn;
+
+  if (!opts.questions || opts.questions.length === 0) {
+    throw new Error('sendFollowupQuestionEmail: at least one question required');
+  }
+
+  const primary = opts.questions[0];
+  const additionalQuestions = opts.questions.slice(1);
+
+  // CTA URL focuses on the FIRST (primary) question's field — applicant lands
+  // there with the gold pulse. Other questions are read in the email body.
+  const editUrl = opts.continueToken
+    ? `${siteUrl}/apply/${opts.continueToken}?focus=${primary.fieldFocus}`
+    : `${siteUrl}/apply?focus=${primary.fieldFocus}`;
 
   const subject = isId
-    ? `💬 Pertanyaan singkat dari juri — CHA Hospitality Awards 2026`
-    : `💬 A quick question from the jury — CHA Hospitality Awards 2026`;
+    ? `💬 ${opts.questions.length === 1 ? 'Pertanyaan singkat' : 'Beberapa pertanyaan singkat'} dari juri — CHA Hospitality Awards 2026`
+    : `💬 ${opts.questions.length === 1 ? 'A quick question' : 'A few quick questions'} from the jury — CHA Hospitality Awards 2026`;
 
   const greeting = isId ? `Halo ${opts.applicantName},` : `Hi ${opts.applicantName},`;
 
@@ -689,10 +704,14 @@ export async function sendFollowupQuestionEmail(opts: FollowupEmailOpts) {
     : 'Thank you for your application. Our jury read your story and wants to understand it more deeply.';
 
   const subIntro = isId
-    ? 'Ada satu pertanyaan singkat — jawaban Anda akan ditambahkan ke pendaftaran Anda dan dilihat oleh juri saat penilaian akhir:'
-    : 'One quick question — your answer will be added to your application and seen by the jury during final scoring:';
+    ? opts.questions.length === 1
+      ? 'Ada satu pertanyaan singkat — jawaban Anda akan ditambahkan ke pendaftaran Anda dan dilihat oleh juri saat penilaian akhir:'
+      : `Ada ${opts.questions.length} pertanyaan singkat — jawaban Anda akan ditambahkan ke pendaftaran Anda dan dilihat oleh juri saat penilaian akhir:`
+    : opts.questions.length === 1
+    ? 'One quick question — your answer will be added to your application and seen by the jury during final scoring:'
+    : `${opts.questions.length} quick questions — your answers will be added to your application and seen by the jury during final scoring:`;
 
-  const ctaLabel = isId ? 'Tambahkan jawaban →' : 'Add my answer →';
+  const ctaLabel = isId ? 'Tambahkan jawaban →' : 'Add my answers →';
 
   const closingNote = isId
     ? 'Tidak wajib, tetapi sangat membantu kami memahami kekuatan unik Anda.'
@@ -701,6 +720,19 @@ export async function sendFollowupQuestionEmail(opts: FollowupEmailOpts) {
   const signature = isId
     ? 'Sampai jumpa di panggung,<br><strong>Tim CHA Hospitality Awards</strong>'
     : 'See you on stage,<br><strong>The CHA Hospitality Awards Team</strong>';
+
+  // Render each question as its own bordered box.
+  const questionsHtml = opts.questions
+    .map((q, i) => {
+      const text = isId ? q.questionId : q.questionEn;
+      const number = opts.questions.length > 1 ? `<div style="font-family:'SF Mono',Menlo,monospace;font-size:10px;font-weight:800;letter-spacing:0.18em;color:${COLORS.coral};margin-bottom:6px;">${String(i + 1).padStart(2, '0')}</div>` : '';
+      return `
+        <div style="background:${COLORS.cream};border-left:3px solid ${COLORS.coral};border-radius:8px;padding:16px 20px;margin-bottom:${i < opts.questions.length - 1 ? '10px' : '0'};">
+          ${number}
+          <p style="margin:0;font-family:Georgia,serif;font-size:16px;line-height:1.5;color:${COLORS.navy};font-style:italic;">"${text}"</p>
+        </div>`;
+    })
+    .join('');
 
   const html = `<!doctype html>
 <html><body style="margin:0;padding:32px 16px;background:${COLORS.cream};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:${COLORS.navy};">
@@ -720,7 +752,7 @@ export async function sendFollowupQuestionEmail(opts: FollowupEmailOpts) {
       <!-- Title -->
       <tr><td style="padding:24px 32px 8px 32px;">
         <div style="display:inline-block;background:${COLORS.gold};color:${COLORS.navy};font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;padding:5px 12px;border-radius:100px;margin-bottom:14px;">
-          💬 ${isId ? 'PERTANYAAN JURI' : 'JURY QUESTION'}
+          💬 ${isId ? (opts.questions.length === 1 ? 'PERTANYAAN JURI' : 'PERTANYAAN JURI') : (opts.questions.length === 1 ? 'JURY QUESTION' : 'JURY QUESTIONS')}
         </div>
         <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;line-height:1.2;color:${COLORS.navy};font-weight:normal;letter-spacing:-0.5px;">
           ${greeting}
@@ -733,11 +765,9 @@ export async function sendFollowupQuestionEmail(opts: FollowupEmailOpts) {
         <p style="margin:0 0 20px 0;font-size:14px;line-height:1.55;color:${COLORS.warmGray};">${subIntro}</p>
       </td></tr>
 
-      <!-- Question Box -->
+      <!-- Questions -->
       <tr><td style="padding:0 32px 24px 32px;">
-        <div style="background:${COLORS.cream};border-left:3px solid ${COLORS.coral};border-radius:8px;padding:18px 22px;">
-          <p style="margin:0;font-family:Georgia,serif;font-size:17px;line-height:1.5;color:${COLORS.navy};font-style:italic;">"${question}"</p>
-        </div>
+        ${questionsHtml}
       </td></tr>
 
       <!-- CTA -->
@@ -765,13 +795,23 @@ export async function sendFollowupQuestionEmail(opts: FollowupEmailOpts) {
 </table>
 </body></html>`;
 
+  // Plain-text version
+  const textQuestions = opts.questions
+    .map((q, i) => {
+      const text = isId ? q.questionId : q.questionEn;
+      return opts.questions.length > 1
+        ? `${String(i + 1).padStart(2, '0')}. "${text}"`
+        : `"${text}"`;
+    })
+    .join('\n\n');
+
   const text = `${greeting}
 
 ${intro}
 
 ${subIntro}
 
-"${question}"
+${textQuestions}
 
 ${ctaLabel}: ${editUrl}
 

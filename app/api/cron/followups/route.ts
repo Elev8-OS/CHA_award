@@ -68,7 +68,14 @@ export async function GET(req: NextRequest) {
         continue;
       }
 
-      const q = questions[0]; // first question = highest priority
+      // Build full list of questions (was: just first question)
+      // Email + WhatsApp now include ALL questions; primary one focused via URL.
+      const questionItems = questions.map((q) => ({
+        questionEn: q.question,
+        questionId: q.question_id,
+        fieldFocus: q.field,
+      }));
+
       const locale = app.language === 'id' ? 'id' : 'en';
       const applicantName = app.full_name || 'there';
 
@@ -84,14 +91,12 @@ export async function GET(req: NextRequest) {
             to: app.email,
             locale,
             applicantName,
-            questionEn: q.question,
-            questionId: q.question_id,
+            questions: questionItems,
             continueToken: app.continue_token,
-            fieldFocus: q.field,
             applicationId: app.id,
           });
           emailOk = true;
-          console.log(`[CRON] ✓ Followup email sent to ${app.email} (${app.id})`);
+          console.log(`[CRON] ✓ Followup email sent to ${app.email} (${app.id}) — ${questions.length} question(s)`);
         } catch (err: any) {
           channelErrors.push(`email: ${err?.message || 'unknown'}`);
           console.error(`[CRON] ✗ Followup email failed for ${app.id}:`, err?.message);
@@ -105,14 +110,12 @@ export async function GET(req: NextRequest) {
             to: app.whatsapp,
             locale,
             applicantName,
-            questionEn: q.question,
-            questionId: q.question_id,
+            questions: questionItems,
             continueToken: app.continue_token,
-            fieldFocus: q.field,
             applicationId: app.id,
           });
           whatsappOk = true;
-          console.log(`[CRON] ✓ Followup WhatsApp sent to ${app.whatsapp} (${app.id})`);
+          console.log(`[CRON] ✓ Followup WhatsApp sent to ${app.whatsapp} (${app.id}) — ${questions.length} question(s)`);
         } catch (err: any) {
           channelErrors.push(`whatsapp: ${err?.message || 'unknown'}`);
           console.error(`[CRON] ✗ Followup WhatsApp failed for ${app.id}:`, err?.message);
