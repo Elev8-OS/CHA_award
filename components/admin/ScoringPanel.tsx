@@ -39,6 +39,7 @@ export function ScoringPanel({
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     // If we got the user ID as a prop (from server-side), use it directly.
@@ -86,10 +87,15 @@ export function ScoringPanel({
 
   const save = async () => {
     if (!currentUserId) return;
+    if (storyScore === null || growthScore === null) {
+      setSaveError('Please set both Story and Growth scores before saving.');
+      return;
+    }
     setSaving(true);
+    setSaveError(null);
     try {
       const supabase = getSupabaseBrowser();
-      await supabase.from('jury_scores').upsert(
+      const { error } = await supabase.from('jury_scores').upsert(
         {
           application_id: applicationId,
           juror_id: currentUserId,
@@ -99,9 +105,21 @@ export function ScoringPanel({
         },
         { onConflict: 'application_id,juror_id' }
       );
+
+      if (error) {
+        console.error('Save score error:', error);
+        setSaveError(`Save failed: ${error.message}`);
+        return;
+      }
+
       setSavedAt(new Date().toLocaleTimeString());
-    } catch (e) {
+      // Reload page to refresh aggregates and "other jurors" panel
+      setTimeout(() => {
+        window.location.reload();
+      }, 800);
+    } catch (e: any) {
       console.error(e);
+      setSaveError(`Save failed: ${e.message || 'Unknown error'}`);
     } finally {
       setSaving(false);
     }
@@ -154,8 +172,13 @@ export function ScoringPanel({
 
         <button
           onClick={save}
-          disabled={saving || !currentUserId}
-          className="mt-4 w-full rounded-full bg-coral px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-burgundy disabled:opacity-50"
+          disabled={
+            saving ||
+            !currentUserId ||
+            storyScore === null ||
+            growthScore === null
+          }
+          className="mt-4 w-full rounded-full bg-coral px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-burgundy disabled:cursor-not-allowed disabled:opacity-40"
         >
           {saving ? 'Saving...' : 'Save scores'}
         </button>
@@ -164,8 +187,20 @@ export function ScoringPanel({
             ⚠ Could not identify your admin account. Try refreshing the page.
           </p>
         )}
-        {savedAt && (
-          <p className="mt-2 text-center text-[11px] text-warm-gray">Saved at {savedAt}</p>
+        {currentUserId && (storyScore === null || growthScore === null) && (
+          <p className="mt-2 text-center text-[11px] text-warm-gray">
+            Set both scores to enable saving.
+          </p>
+        )}
+        {saveError && (
+          <p className="mt-2 text-center text-[11px] text-burgundy">
+            {saveError}
+          </p>
+        )}
+        {savedAt && !saveError && (
+          <p className="mt-2 text-center text-[11px] text-teal">
+            ✓ Saved at {savedAt} — refreshing...
+          </p>
         )}
       </div>
 

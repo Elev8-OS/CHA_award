@@ -20,7 +20,7 @@ export function PartnershipStrip() {
           name="Elev8 Suite OS — Diamond Sponsor"
           href={elev8Link('partnership-strip')}
         />
-        <Partner tag="Hosted at" name="Bali Villa Connect 2026" />
+        <Partner tag={t('hero.hosted_at')} name="Bali Villa Connect 2026" />
       </div>
     </div>
   );
@@ -225,11 +225,11 @@ export function StageSection() {
           {t('stage.text')}
         </p>
         <div className="inline-flex flex-wrap items-center justify-center gap-4 rounded-full border-[1.5px] border-gold px-9 py-[18px] text-[13px] font-semibold uppercase tracking-wider text-gold md:gap-7">
-          <span>26 — 27 May 2026</span>
+          <span>{t('stage.dates')}</span>
           <span className="text-gold/35">·</span>
-          <span>Bali Sunset Road Convention Center</span>
+          <span>{t('stage.venue')}</span>
           <span className="text-gold/35">·</span>
-          <span>Live Reveal</span>
+          <span>{t('stage.live_reveal')}</span>
         </div>
       </div>
     </div>
@@ -487,10 +487,11 @@ export function FinalCTA() {
           style={{ background: 'radial-gradient(circle, rgba(232, 169, 60, 0.25) 0%, transparent 70%)' }}
         />
         <h2 className="relative z-10 mb-7 font-serif text-display-md leading-[0.98] tracking-tight">
-          Ready to make<br />your <span className="italic text-gold">case</span>?
+          {t('cta.title.before')}<br />{t('cta.title.your')}{' '}
+          <span className="italic text-gold">{t('cta.title.case')}</span>?
         </h2>
         <p className="relative z-10 mx-auto mb-11 max-w-[600px] text-lg leading-[1.55] text-white/90">
-          Three minutes for Quick Apply. Twelve for the full story. Either way, you're in.
+          {t('cta.lede')}
         </p>
         <Link
           href="/apply"

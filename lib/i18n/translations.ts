@@ -131,6 +131,20 @@ export const translations = {
     'vote.discover_others': 'Discover other applicants',
     'vote.about_awards': 'About the Awards',
 
+    // ----- Hero extra (PartnershipStrip) -----
+    'hero.hosted_at': 'Hosted at',
+
+    // ----- Stage Section -----
+    'stage.dates': '26 — 27 May 2026',
+    'stage.venue': 'Bali Sunset Road Convention Center',
+    'stage.live_reveal': 'Live Reveal',
+
+    // ----- Final CTA -----
+    'cta.title.before': 'Ready to make',
+    'cta.title.your': 'your',
+    'cta.title.case': 'case',
+    'cta.lede': 'Three minutes for Quick Apply. Twelve for the full story. Either way, you\'re in.',
+
     // ----- Jury Section -----
     'jury.eyebrow': '02 — The Jury',
     'jury.title.part1': 'Selected by',
@@ -284,6 +298,20 @@ export const translations = {
     'vote.vision_label': 'Visi 12 bulan',
     'vote.discover_others': 'Lihat pendaftar lain',
     'vote.about_awards': 'Tentang Awards',
+
+    // ----- Hero extra (PartnershipStrip) -----
+    'hero.hosted_at': 'Diadakan di',
+
+    // ----- Stage Section -----
+    'stage.dates': '26 — 27 Mei 2026',
+    'stage.venue': 'Bali Sunset Road Convention Center',
+    'stage.live_reveal': 'Pengumuman Langsung',
+
+    // ----- Final CTA -----
+    'cta.title.before': 'Siap menyampaikan',
+    'cta.title.your': 'kisah',
+    'cta.title.case': 'Anda',
+    'cta.lede': 'Tiga menit untuk Quick Apply. Dua belas menit untuk kisah lengkap. Apa pun pilihan Anda, Anda termasuk di dalamnya.',
 
     // ----- Jury Section -----
     'jury.eyebrow': '02 — Dewan Juri',
