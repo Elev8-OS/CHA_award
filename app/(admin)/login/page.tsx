@@ -57,8 +57,8 @@ function LoginInner() {
   // ---------- Step 2: Verify OTP ----------
   const verifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (code.length !== 6) {
-      setErrorMsg('Code must be 6 digits');
+    if (code.length !== 8) {
+      setErrorMsg('Code must be 6-8 digits');
       return;
     }
     setLoading(true);
@@ -125,7 +125,7 @@ function LoginInner() {
                   {loading ? 'Sending code...' : 'Send code →'}
                 </button>
                 <p className="mt-4 text-center text-[11px] text-warm-gray">
-                  We&apos;ll email you a 6-digit code to sign in.
+                  We&apos;ll email you a sign-in code to sign in.
                 </p>
               </form>
             )}
@@ -138,7 +138,7 @@ function LoginInner() {
                     Check your email
                   </h2>
                   <p className="text-sm text-warm-gray">
-                    We sent a 6-digit code to{' '}
+                    We sent a sign-in code to{' '}
                     <strong className="text-navy">{email}</strong>
                   </p>
                 </div>
@@ -149,22 +149,22 @@ function LoginInner() {
                 <input
                   type="text"
                   inputMode="numeric"
-                  pattern="[0-9]{6}"
-                  maxLength={6}
+                  pattern="[0-9]{6,8}"
+                  maxLength={8}
                   value={code}
                   onChange={(e) =>
-                    setCode(e.target.value.replace(/\D/g, '').slice(0, 6))
+                    setCode(e.target.value.replace(/\D/g, '').slice(0, 8))
                   }
-                  placeholder="000000"
+                  placeholder="00000000"
                   autoFocus
-                  className="w-full rounded-xl border-[1.5px] border-line bg-white px-4 py-3 text-center font-mono text-2xl tracking-[0.4em] focus:border-coral focus:outline-none"
+                  className="w-full rounded-xl border-[1.5px] border-line bg-white px-4 py-3 text-center font-mono text-2xl tracking-[0.25em] focus:border-coral focus:outline-none"
                 />
                 {errorMsg && (
                   <p className="mt-2 text-xs text-burgundy">{errorMsg}</p>
                 )}
                 <button
                   type="submit"
-                  disabled={loading || code.length !== 6}
+                  disabled={loading || code.length !== 8}
                   className="mt-4 w-full rounded-full bg-coral px-6 py-3 text-sm font-bold text-white transition-all hover:bg-burgundy disabled:opacity-50"
                 >
                   {loading ? 'Verifying...' : 'Sign in →'}
