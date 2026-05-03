@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 
 type CookieToSet = { name: string; value: string; options: CookieOptions };
 
@@ -41,15 +42,52 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Check user is an active admin in admin_users table
-  // (this replaces the older ADMIN_ALLOWED_EMAILS env var approach)
-  const { data: adminRow } = await supabase
-    .from('admin_users')
-    .select('id, is_active')
-    .eq('id', user.id)
-    .maybeSingle();
+  // Auth check uses TWO paths (either grants access):
+  //   1. User exists in admin_users with is_active=true (preferred, dynamic)
+  //   2. User email is in ADMIN_ALLOWED_EMAILS env var (legacy fallback)
 
-  if (!adminRow || !adminRow.is_active) {
+  let isAuthorized = false;
+
+  // Path 1: admin_users table check
+  // Uses SERVICE ROLE client to bypass RLS (admin_users RLS policy is
+  // self-referential and doesn't work for the user themselves checking
+  // their own row).
+  try {
+    const adminClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { persistSession: false, autoRefreshToken: false } }
+    );
+
+    const { data: adminRow } = await adminClient
+      .from('admin_users')
+      .select('is_active')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (adminRow?.is_active) {
+      isAuthorized = true;
+    }
+  } catch (err) {
+    console.error('[middleware] admin_users check failed:', err);
+    // Fall through to env var check
+  }
+
+  // Path 2: env var allowlist (legacy fallback)
+  if (!isAuthorized) {
+    const allowedEmails = (process.env.ADMIN_ALLOWED_EMAILS || '')
+      .split(',')
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean);
+    if (
+      allowedEmails.length > 0 &&
+      allowedEmails.includes(user.email?.toLowerCase() || '')
+    ) {
+      isAuthorized = true;
+    }
+  }
+
+  if (!isAuthorized) {
     return NextResponse.redirect(new URL('/login?error=unauthorized', req.url));
   }
 
