@@ -4,6 +4,8 @@ import { CountdownBanner } from '@/components/common/CountdownBanner';
 import { Hero } from '@/components/landing/Hero';
 import {
   PartnershipStrip,
+  WhatYouWin,
+  AboutElev8,
   Categories,
   StageSection,
   Endorsement,
@@ -19,6 +21,8 @@ export default function HomePage() {
       <main>
         <Hero />
         <PartnershipStrip />
+        <WhatYouWin />
+        <AboutElev8 />
         <Categories />
         <StageSection />
         <Endorsement />

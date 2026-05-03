@@ -49,6 +49,214 @@ function Partner({ tag, name, href }: { tag: string; name: string; href?: string
 }
 
 // ============================================================================
+// WHAT YOU WIN — Prize detail
+// Placed first after Hero/PartnershipStrip so applicants understand the
+// concrete outcome BEFORE they see categories or jury.
+// ============================================================================
+
+export function WhatYouWin() {
+  const { t } = useLang();
+  return (
+    <section id="what-you-win" className="bg-white">
+      <div className="mx-auto max-w-[1280px] px-4 py-24 md:px-8 md:py-28">
+        <span className="mb-5 inline-block text-xs font-bold uppercase tracking-[0.16em] text-coral">
+          {t('win.eyebrow')}
+        </span>
+        <h2 className="mb-7 font-serif text-display-md leading-[0.98] tracking-[-0.02em] text-navy">
+          {t('win.title.part1')}
+          <br />
+          {t('win.title.part2')} <span className="italic text-coral">{t('win.title.italic')}</span>
+        </h2>
+        <p className="mb-14 max-w-[720px] text-lg leading-[1.55] text-navy/80">
+          {t('win.lede')}
+        </p>
+
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <PrizeCard
+            color="coral"
+            icon="🏆"
+            label={t('win.trophy.label')}
+            desc={t('win.trophy.desc')}
+            highlight
+          />
+          <PrizeCard
+            color="teal"
+            icon="💻"
+            label={t('win.software.label')}
+            desc={t('win.software.desc')}
+            value="USD 2,155"
+          />
+          <PrizeCard
+            color="burgundy"
+            icon="🎯"
+            label={t('win.onboarding.label')}
+            desc={t('win.onboarding.desc')}
+          />
+          <PrizeCard
+            color="gold"
+            icon="🎤"
+            label={t('win.stage.label')}
+            desc={t('win.stage.desc')}
+          />
+          <PrizeCard
+            color="navy"
+            icon="📸"
+            label={t('win.assets.label')}
+            desc={t('win.assets.desc')}
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PrizeCard({
+  color,
+  icon,
+  label,
+  desc,
+  value,
+  highlight,
+}: {
+  color: 'coral' | 'teal' | 'burgundy' | 'gold' | 'navy';
+  icon: string;
+  label: string;
+  desc: string;
+  value?: string;
+  highlight?: boolean;
+}) {
+  const borderTop: Record<string, string> = {
+    coral: 'border-t-coral',
+    teal: 'border-t-teal',
+    burgundy: 'border-t-burgundy',
+    gold: 'border-t-gold',
+    navy: 'border-t-navy',
+  };
+  const valueColor: Record<string, string> = {
+    coral: 'text-coral',
+    teal: 'text-teal',
+    burgundy: 'text-burgundy',
+    gold: 'text-gold',
+    navy: 'text-navy',
+  };
+  return (
+    <div
+      className={`flex flex-col rounded-3xl border-t-4 bg-cream p-7 ${borderTop[color]} ${
+        highlight ? 'ring-1 ring-coral/30' : ''
+      }`}
+    >
+      <div className="mb-3 text-3xl">{icon}</div>
+      <h3 className="mb-1 font-serif text-xl text-navy">{label}</h3>
+      {value && (
+        <div className={`mb-2 font-mono text-xs font-bold tracking-wider ${valueColor[color]}`}>
+          {value}
+        </div>
+      )}
+      <p className="text-sm leading-relaxed text-navy/75">{desc}</p>
+    </div>
+  );
+}
+
+// ============================================================================
+// ABOUT ELEV8 — How it helps
+// Mid-funnel section: applicant has seen the prize, now they see the
+// software in concrete terms before committing to apply.
+// ============================================================================
+
+export function AboutElev8() {
+  const { t } = useLang();
+  return (
+    <section id="about-elev8" className="bg-cream">
+      <div className="mx-auto max-w-[1280px] px-4 py-24 md:px-8 md:py-28">
+        <span className="mb-5 inline-block text-xs font-bold uppercase tracking-[0.16em] text-teal">
+          {t('about.eyebrow')}{' '}
+          <a
+            href={elev8Link('landing-about-eyebrow')}
+            target="_blank"
+            rel="noopener"
+            className="underline decoration-teal/30 underline-offset-2 hover:decoration-teal"
+          >
+            Elev8 Suite OS
+          </a>
+        </span>
+        <h2 className="mb-7 font-serif text-display-md leading-[0.98] tracking-[-0.02em] text-navy">
+          {t('about.title.part1')} <span className="italic text-teal">{t('about.title.italic')}</span>{' '}
+          {t('about.title.part2')}
+        </h2>
+        <p className="mb-14 max-w-[760px] text-lg leading-[1.55] text-navy/80">
+          {t('about.lede')}
+        </p>
+
+        {/* Problem / Solution side-by-side */}
+        <div className="mb-12 grid grid-cols-1 gap-5 md:grid-cols-2">
+          <div className="rounded-3xl border-l-4 border-burgundy bg-white p-7">
+            <div className="mb-3 text-xs font-bold uppercase tracking-[0.14em] text-burgundy">
+              {t('about.problem.label')}
+            </div>
+            <p className="text-base leading-[1.6] text-navy/85">{t('about.problem.desc')}</p>
+          </div>
+          <div className="rounded-3xl border-l-4 border-teal bg-white p-7">
+            <div className="mb-3 text-xs font-bold uppercase tracking-[0.14em] text-teal">
+              {t('about.solution.label')}
+            </div>
+            <p className="text-base leading-[1.6] text-navy/85">{t('about.solution.desc')}</p>
+          </div>
+        </div>
+
+        {/* Three concrete features */}
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          <FeatureCard
+            badge="01"
+            title={t('about.cleaning.title')}
+            desc={t('about.cleaning.desc')}
+          />
+          <FeatureCard
+            badge="02"
+            title={t('about.channels.title')}
+            desc={t('about.channels.desc')}
+          />
+          <FeatureCard
+            badge="03"
+            title={t('about.reporting.title')}
+            desc={t('about.reporting.desc')}
+          />
+        </div>
+
+        {/* Footnote + CTA */}
+        <div className="mt-14 rounded-2xl border border-line bg-white p-6 md:flex md:items-center md:justify-between md:gap-6">
+          <p className="mb-3 max-w-[640px] text-sm leading-[1.55] text-navy/70 md:mb-0">
+            {t('about.footnote')}
+          </p>
+          <a
+            href={elev8Link('landing-about-cta')}
+            target="_blank"
+            rel="noopener"
+            className="inline-flex flex-shrink-0 items-center gap-2 rounded-full border border-navy bg-white px-5 py-2.5 text-xs font-bold text-navy transition-all hover:bg-navy hover:text-cream"
+          >
+            {t('about.cta')} →
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FeatureCard({ badge, title, desc }: { badge: string; title: string; desc: string }) {
+  return (
+    <div className="rounded-3xl bg-white p-7 ring-1 ring-line">
+      <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-navy font-mono text-xs font-bold text-gold">
+        {badge}
+      </div>
+      <h3
+        className="mb-2 font-serif text-xl text-navy"
+        dangerouslySetInnerHTML={{ __html: title }}
+      />
+      <p className="text-sm leading-relaxed text-navy/75">{desc}</p>
+    </div>
+  );
+}
+
+// ============================================================================
 // CATEGORIES
 // ============================================================================
 

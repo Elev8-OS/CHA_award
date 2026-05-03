@@ -135,6 +135,42 @@ export const translations = {
     // ----- Hero extra (PartnershipStrip) -----
     'hero.hosted_at': 'Hosted at',
 
+    // ----- What You Win -----
+    'win.eyebrow': '01 — What you win',
+    'win.title.part1': 'Three winners.',
+    'win.title.part2': 'One year of',
+    'win.title.italic': 'real change.',
+    'win.lede': 'Each category winner walks away with a glass trophy, a year of operations software, and the stage at Bali Villa Connect 2026.',
+    'win.trophy.label': 'Glass trophy',
+    'win.trophy.desc': 'Hand-crafted in Bali. Engraved with your name, your category, and the year. The kind that lives in a lobby.',
+    'win.software.label': '1 year of Elev8 Suite OS',
+    'win.software.desc': 'Operations software for 2 villas, fully set up. Worth USD 2,155. No catches, no upsell, no expiry tricks.',
+    'win.onboarding.label': 'Personal onboarding',
+    'win.onboarding.desc': 'A 1:1 setup with Reto Wyss (CTO of Elev8 Suite OS). Your existing systems, your team, your real schedule.',
+    'win.stage.label': 'The stage at Villa Connect',
+    'win.stage.desc': 'Live reveal in front of 200+ industry pros at Bali Sunset Road Convention Center. Your story, told well.',
+    'win.assets.label': 'Press kit + video',
+    'win.assets.desc': 'Professional photos and a winner video filmed at the live reveal. Yours to use forever.',
+
+    // ----- About Elev8 -----
+    'about.eyebrow': '02 — Powered by',
+    'about.title.part1': 'Built',
+    'about.title.italic': 'with',
+    'about.title.part2': 'villa hosts, not for them.',
+    'about.lede': 'Elev8 Suite OS is the operations software behind the prize. Below: what it actually does, in language villa hosts use.',
+    'about.problem.label': 'The headache today',
+    'about.problem.desc': 'Cleaning sheets in WhatsApp. Bookings in five tabs. Channel sync that breaks at 3am. Reporting in a spreadsheet you stopped trusting in March.',
+    'about.solution.label': 'What changes with Elev8',
+    'about.solution.desc': 'One operations dashboard. Cleaning runs itself with QR check-ins. Channels stay in sync. Reports your accountant can actually read. Your team stops asking the same questions.',
+    'about.cleaning.title': 'Cleaning &amp; tasks',
+    'about.cleaning.desc': 'Auto-generated cleaning schedules based on bookings. QR check-ins. Photo-verified completion. No more "is room 3 ready?".',
+    'about.channels.title': 'Channel manager',
+    'about.channels.desc': 'Airbnb, Booking.com, direct, agency contracts. One inbox. One calendar. Real-time sync that actually works.',
+    'about.reporting.title': 'Reporting &amp; finance',
+    'about.reporting.desc': 'Owner statements your owners actually understand. Tax-ready exports. Occupancy and ADR trends, not raw spreadsheets.',
+    'about.footnote': 'Elev8 Suite OS is the Diamond Sponsor of Bali Villa Connect 2026 and exclusive Tech Partner of these awards. The CHA jury makes the calls — independently.',
+    'about.cta': 'Learn more about Elev8 Suite OS',
+
     // ----- Stage Section -----
     'stage.dates': '26 — 27 May 2026',
     'stage.venue': 'Bali Sunset Road Convention Center',
@@ -302,6 +338,42 @@ export const translations = {
 
     // ----- Hero extra (PartnershipStrip) -----
     'hero.hosted_at': 'Diadakan di',
+
+    // ----- What You Win -----
+    'win.eyebrow': '01 — Yang Anda menangkan',
+    'win.title.part1': 'Tiga pemenang.',
+    'win.title.part2': 'Satu tahun',
+    'win.title.italic': 'perubahan nyata.',
+    'win.lede': 'Setiap pemenang kategori membawa pulang trofi kaca, satu tahun software operasional, dan panggung di Bali Villa Connect 2026.',
+    'win.trophy.label': 'Trofi kaca',
+    'win.trophy.desc': 'Dibuat tangan di Bali. Diukir dengan nama Anda, kategori Anda, dan tahunnya. Trofi yang pantas dipajang di lobi.',
+    'win.software.label': '1 tahun Elev8 Suite OS',
+    'win.software.desc': 'Software operasional untuk 2 villa, fully set up. Senilai USD 2.155. Tanpa jebakan, tanpa upsell, tanpa trik kedaluwarsa.',
+    'win.onboarding.label': 'Onboarding personal',
+    'win.onboarding.desc': 'Setup 1:1 dengan Reto Wyss (CTO Elev8 Suite OS). Sistem Anda, tim Anda, jadwal nyata Anda.',
+    'win.stage.label': 'Panggung di Villa Connect',
+    'win.stage.desc': 'Pengumuman langsung di hadapan 200+ profesional industri di Bali Sunset Road Convention Center. Cerita Anda, diceritakan dengan baik.',
+    'win.assets.label': 'Press kit + video',
+    'win.assets.desc': 'Foto profesional dan video pemenang dari live reveal. Hak guna selamanya.',
+
+    // ----- About Elev8 -----
+    'about.eyebrow': '02 — Powered by',
+    'about.title.part1': 'Dibangun',
+    'about.title.italic': 'bersama',
+    'about.title.part2': 'host villa, bukan untuk mereka.',
+    'about.lede': 'Elev8 Suite OS adalah software operasional di balik hadiah ini. Berikut apa yang dilakukannya, dalam bahasa yang dipakai host villa sehari-hari.',
+    'about.problem.label': 'Masalah hari ini',
+    'about.problem.desc': 'Lembar cleaning di WhatsApp. Booking di lima tab. Channel sync yang rusak jam 3 pagi. Laporan di spreadsheet yang sudah tidak Anda percaya sejak Maret.',
+    'about.solution.label': 'Apa yang berubah dengan Elev8',
+    'about.solution.desc': 'Satu dashboard operasional. Cleaning berjalan sendiri dengan QR check-in. Channel selalu sinkron. Laporan yang akuntan Anda bisa baca. Tim berhenti bertanya hal yang sama.',
+    'about.cleaning.title': 'Cleaning &amp; tugas',
+    'about.cleaning.desc': 'Jadwal cleaning otomatis berdasarkan booking. QR check-in. Verifikasi selesai dengan foto. Tidak ada lagi "kamar 3 sudah siap?".',
+    'about.channels.title': 'Channel manager',
+    'about.channels.desc': 'Airbnb, Booking.com, direct, kontrak agensi. Satu inbox. Satu kalender. Real-time sync yang benar-benar bekerja.',
+    'about.reporting.title': 'Laporan &amp; keuangan',
+    'about.reporting.desc': 'Owner statement yang dipahami pemilik. Export siap pajak. Tren okupansi dan ADR, bukan spreadsheet mentah.',
+    'about.footnote': 'Elev8 Suite OS adalah Diamond Sponsor Bali Villa Connect 2026 dan Tech Partner eksklusif Awards ini. Juri CHA mengambil keputusan secara independen.',
+    'about.cta': 'Pelajari lebih lanjut tentang Elev8 Suite OS',
 
     // ----- Stage Section -----
     'stage.dates': '26 — 27 Mei 2026',
