@@ -353,16 +353,17 @@ const JURORS = [
 ];
 
 export function Jury() {
+  const { t } = useLang();
   return (
     <section className="mx-auto max-w-[1280px] px-4 py-28 md:px-8">
       <span className="mb-5 inline-block text-xs font-bold uppercase tracking-[0.16em] text-coral">
-        02 — The Jury
+        {t('jury.eyebrow')}
       </span>
       <h2 className="mb-7 font-serif text-display-md leading-[0.98] tracking-[-0.02em] text-navy">
-        Selected by <span className="italic text-coral">peers</span>,<br />not vendors.
+        {t('jury.title.part1')} <span className="italic text-coral">{t('jury.title.peers')}</span>,<br />{t('jury.title.part2')}
       </h2>
       <p className="mb-14 max-w-[720px] text-lg leading-[1.55] text-navy/80">
-        A four-person jury of senior hospitality leaders. Public criteria, public weights, public process.
+        {t('jury.lede')}
       </p>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -372,14 +373,19 @@ export function Jury() {
       </div>
 
       <div className="mt-14 grid grid-cols-1 gap-10 rounded-3xl border border-line bg-white p-12 md:grid-cols-3">
-        <Criterion color="coral" pct="50%" name="Story" desc="The most honest, specific account of where you are and what you're up against." />
+        <Criterion
+          color="coral"
+          pct="50%"
+          name={t('jury.criteria.story.name')}
+          desc={t('jury.criteria.story.desc')}
+        />
         <Criterion
           color="teal"
           pct="30%"
-          name="Growth Potential"
+          name={t('jury.criteria.growth.name')}
           desc={
             <>
-              What 1 year of{' '}
+              {t('jury.criteria.growth.desc.before')}{' '}
               <a
                 href={elev8Link('criteria')}
                 target="_blank"
@@ -388,11 +394,16 @@ export function Jury() {
               >
                 Elev8 Suite OS
               </a>{' '}
-              could realistically unlock for your business.
+              {t('jury.criteria.growth.desc.after')}
             </>
           }
         />
-        <Criterion color="gold" pct="20%" name="Community Wildcard" desc="One winner is chosen by a community vote within the CHA group." />
+        <Criterion
+          color="gold"
+          pct="20%"
+          name={t('jury.criteria.community.name')}
+          desc={t('jury.criteria.community.desc')}
+        />
       </div>
     </section>
   );
@@ -497,6 +508,7 @@ export function FinalCTA() {
 // ============================================================================
 
 export function Footer() {
+  const { t } = useLang();
   return (
     <footer className="bg-navy-dark px-4 py-20 text-cream md:px-8">
       <div className="mx-auto mb-12 grid max-w-[1280px] grid-cols-1 gap-12 md:grid-cols-4">
@@ -511,8 +523,7 @@ export function Footer() {
             </div>
           </div>
           <p className="mb-5 max-w-[340px] text-sm leading-[1.55] text-cream/55">
-            Dedicated to fostering collaboration and excellence in Canggu's hospitality sector by
-            uniting industry leaders.
+            {t('footer.tagline')}
           </p>
           <a
             href={elev8Link('footer-badge')}
@@ -523,13 +534,22 @@ export function Footer() {
             ⬥ Powered by Elev8 Suite OS — Diamond Sponsor
           </a>
         </div>
-        <FooterCol heading="Awards" items={[['Categories', '#prize'], ['Apply', '/apply']]} />
-        <FooterCol heading="Connect" items={[['WhatsApp', '#'], ['LinkedIn', '#'], ['Instagram', '#']]} />
+        <FooterCol
+          heading={t('footer.col.awards')}
+          items={[
+            [t('footer.link.categories'), '#prize'],
+            [t('footer.link.apply'), '/apply'],
+          ]}
+        />
+        <FooterCol
+          heading={t('footer.col.connect')}
+          items={[['WhatsApp', '#'], ['LinkedIn', '#'], ['Instagram', '#']]}
+        />
       </div>
       <div className="mx-auto flex max-w-[1280px] flex-col justify-between gap-3 border-t border-cream/10 pt-7 text-xs text-cream/50 md:flex-row">
-        <span>© 2026 Canggu Hospitality Association</span>
+        <span>{t('footer.copyright')}</span>
         <span>
-          Edition 01 — CHA Hospitality Awards · Powered by{' '}
+          {t('footer.edition')}{' '}
           <a
             href={elev8Link('footer-copyright')}
             target="_blank"

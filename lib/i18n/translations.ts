@@ -131,6 +131,29 @@ export const translations = {
     'vote.discover_others': 'Discover other applicants',
     'vote.about_awards': 'About the Awards',
 
+    // ----- Jury Section -----
+    'jury.eyebrow': '02 — The Jury',
+    'jury.title.part1': 'Selected by',
+    'jury.title.peers': 'peers',
+    'jury.title.part2': 'not vendors.',
+    'jury.lede': 'A four-person jury of senior hospitality leaders. Public criteria, public weights, public process.',
+    'jury.criteria.story.name': 'Story',
+    'jury.criteria.story.desc': 'The most honest, specific account of where you are and what you\'re up against.',
+    'jury.criteria.growth.name': 'Growth Potential',
+    'jury.criteria.growth.desc.before': 'What 1 year of',
+    'jury.criteria.growth.desc.after': 'could realistically unlock for your business.',
+    'jury.criteria.community.name': 'Community Wildcard',
+    'jury.criteria.community.desc': 'One winner is chosen by a community vote within the CHA group.',
+
+    // ----- Footer -----
+    'footer.tagline': 'The annual awards celebrating Canggu\'s most ambitious villa operators. Edition 01 — May 2026.',
+    'footer.col.awards': 'Awards',
+    'footer.col.connect': 'Connect',
+    'footer.link.categories': 'Categories',
+    'footer.link.apply': 'Apply',
+    'footer.copyright': '© 2026 Canggu Hospitality Association',
+    'footer.edition': 'Edition 01 — CHA Hospitality Awards · Powered by',
+
     // ----- Common -----
     'common.loading': 'Loading...',
     'common.error': 'Something went wrong. Please try again.',
@@ -261,6 +284,29 @@ export const translations = {
     'vote.vision_label': 'Visi 12 bulan',
     'vote.discover_others': 'Lihat pendaftar lain',
     'vote.about_awards': 'Tentang Awards',
+
+    // ----- Jury Section -----
+    'jury.eyebrow': '02 — Dewan Juri',
+    'jury.title.part1': 'Dipilih oleh',
+    'jury.title.peers': 'rekan sejawat',
+    'jury.title.part2': 'bukan vendor.',
+    'jury.lede': 'Empat juri dari pemimpin senior industri perhotelan. Kriteria publik, bobot publik, proses publik.',
+    'jury.criteria.story.name': 'Kisah',
+    'jury.criteria.story.desc': 'Cerita paling jujur dan spesifik tentang posisi Anda saat ini dan tantangan yang Anda hadapi.',
+    'jury.criteria.growth.name': 'Potensi Pertumbuhan',
+    'jury.criteria.growth.desc.before': 'Apa yang dapat dibuka oleh 1 tahun',
+    'jury.criteria.growth.desc.after': 'untuk bisnis Anda secara realistis.',
+    'jury.criteria.community.name': 'Wildcard Komunitas',
+    'jury.criteria.community.desc': 'Satu pemenang dipilih melalui voting komunitas di grup CHA.',
+
+    // ----- Footer -----
+    'footer.tagline': 'Award tahunan yang merayakan operator villa paling ambisius di Canggu. Edisi 01 — Mei 2026.',
+    'footer.col.awards': 'Awards',
+    'footer.col.connect': 'Hubungi',
+    'footer.link.categories': 'Kategori',
+    'footer.link.apply': 'Daftar',
+    'footer.copyright': '© 2026 Canggu Hospitality Association',
+    'footer.edition': 'Edisi 01 — CHA Hospitality Awards · Didukung oleh',
 
     // ----- Common -----
     'common.loading': 'Memuat...',
