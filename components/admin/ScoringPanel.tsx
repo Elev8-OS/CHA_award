@@ -125,18 +125,8 @@ export function ScoringPanel({
     }
   };
 
-  // Compute aggregate
-  const myScore = existingScores.find((s) => s.juror_id === currentUserId);
-  const otherScores = existingScores.filter((s) => s.juror_id !== currentUserId);
-
-  const avgStory =
-    otherScores.length > 0
-      ? otherScores.reduce((sum, s) => sum + (s.story_score || 0), 0) / otherScores.length
-      : null;
-  const avgGrowth =
-    otherScores.length > 0
-      ? otherScores.reduce((sum, s) => sum + (s.growth_potential_score || 0), 0) / otherScores.length
-      : null;
+  // myScore reference for state init done above; aggregate is computed inside
+  // the All jurors section below from existingScores directly.
 
   return (
     <div className="space-y-4">
@@ -204,57 +194,135 @@ export function ScoringPanel({
         )}
       </div>
 
-      {/* Other jurors */}
-      {otherScores.length > 0 && (
+      {/* All jurors view — full transparency */}
+      {existingScores.length > 0 && (
         <div className="rounded-2xl border border-line bg-white p-5">
-          <h3 className="mb-4 text-[11px] font-bold uppercase tracking-wider text-warm-gray">
-            Other jurors
+          <h3 className="mb-1 text-[11px] font-bold uppercase tracking-wider text-warm-gray">
+            All juror scores ({existingScores.length})
           </h3>
+          <p className="mb-4 text-[11px] text-warm-gray">
+            Visible to all jury members for transparency. Includes notes.
+          </p>
           <div className="space-y-3">
-            {otherScores.map((s) => (
-              <div key={s.id} className="flex items-start gap-3 rounded-xl bg-cream p-3">
+            {existingScores.map((s) => {
+              const isMe = s.juror_id === currentUserId;
+              const weighted =
+                s.story_score !== null && s.growth_potential_score !== null
+                  ? (s.story_score * 0.5 + s.growth_potential_score * 0.3).toFixed(2)
+                  : null;
+              return (
                 <div
-                  className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold ${
-                    SEAT_COLORS[s.juror?.jury_seat_color || 'coral'] || 'bg-warm-gray text-white'
+                  key={s.id}
+                  className={`rounded-xl p-4 ${
+                    isMe ? 'bg-coral/5 ring-1 ring-coral/30' : 'bg-cream'
                   }`}
                 >
-                  {s.juror?.full_name?.[0] || '?'}
+                  <div className="flex items-start gap-3">
+                    <div
+                      className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold ${
+                        SEAT_COLORS[s.juror?.jury_seat_color || 'coral'] ||
+                        'bg-warm-gray text-white'
+                      }`}
+                    >
+                      {s.juror?.full_name?.[0] || '?'}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <div className="text-sm font-semibold text-navy">
+                          {s.juror?.full_name || 'Unknown juror'}
+                        </div>
+                        {isMe && (
+                          <span className="rounded-full bg-coral px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
+                            you
+                          </span>
+                        )}
+                      </div>
+                      {s.juror?.organization && (
+                        <div className="text-[11px] text-warm-gray">{s.juror.organization}</div>
+                      )}
+                      <div className="mt-2 flex flex-wrap gap-3 text-xs">
+                        <span className="rounded-md bg-white px-2 py-1">
+                          <span className="text-warm-gray">Story</span>{' '}
+                          <strong className="text-navy">
+                            {s.story_score ?? '—'}
+                            {s.story_score !== null && '/10'}
+                          </strong>
+                        </span>
+                        <span className="rounded-md bg-white px-2 py-1">
+                          <span className="text-warm-gray">Growth</span>{' '}
+                          <strong className="text-navy">
+                            {s.growth_potential_score ?? '—'}
+                            {s.growth_potential_score !== null && '/10'}
+                          </strong>
+                        </span>
+                        {weighted && (
+                          <span className="rounded-md bg-coral/10 px-2 py-1">
+                            <span className="text-warm-gray">Weighted</span>{' '}
+                            <strong className="text-coral">{weighted}</strong>
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  {s.jury_notes && s.jury_notes.trim() && (
+                    <div className="mt-3 rounded-lg border-l-2 border-coral/40 bg-white px-3 py-2">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-warm-gray">
+                        Notes
+                      </div>
+                      <div className="mt-1 whitespace-pre-wrap text-xs leading-relaxed text-navy">
+                        {s.jury_notes}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="flex-1">
-                  <div className="text-sm font-semibold text-navy">{s.juror?.full_name}</div>
-                  <div className="text-[11px] text-warm-gray">{s.juror?.organization}</div>
-                  <div className="mt-1.5 flex gap-3 text-xs">
-                    <span>
-                      <strong className="text-navy">{s.story_score ?? '—'}</strong>
-                      <span className="text-warm-gray"> story</span>
-                    </span>
-                    <span>
-                      <strong className="text-navy">{s.growth_potential_score ?? '—'}</strong>
-                      <span className="text-warm-gray"> growth</span>
-                    </span>
+              );
+            })}
+          </div>
+
+          {/* Aggregate */}
+          {(() => {
+            const completeScores = existingScores.filter(
+              (s) => s.story_score !== null && s.growth_potential_score !== null
+            );
+            if (completeScores.length === 0) return null;
+            const avgStory =
+              completeScores.reduce((sum, s) => sum + (s.story_score || 0), 0) /
+              completeScores.length;
+            const avgGrowth =
+              completeScores.reduce(
+                (sum, s) => sum + (s.growth_potential_score || 0),
+                0
+              ) / completeScores.length;
+            const weighted = avgStory * 0.5 + avgGrowth * 0.3;
+            return (
+              <div className="mt-4 rounded-xl bg-navy p-4 text-cream">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-gold">
+                  Total ({completeScores.length}{' '}
+                  {completeScores.length === 1 ? 'juror' : 'jurors'})
+                </div>
+                <div className="mt-2 grid grid-cols-3 gap-3 text-sm">
+                  <div>
+                    <div className="font-serif text-xl">{avgStory.toFixed(1)}</div>
+                    <div className="text-[10px] uppercase tracking-wider text-cream/60">
+                      Story avg
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-serif text-xl">{avgGrowth.toFixed(1)}</div>
+                    <div className="text-[10px] uppercase tracking-wider text-cream/60">
+                      Growth avg
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-serif text-xl text-gold">{weighted.toFixed(2)}</div>
+                    <div className="text-[10px] uppercase tracking-wider text-cream/60">
+                      Weighted
+                    </div>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-
-          {avgStory !== null && avgGrowth !== null && (
-            <div className="mt-4 rounded-xl bg-navy p-3 text-cream">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-gold">
-                Aggregate (excl. you)
-              </div>
-              <div className="mt-1 flex gap-4 text-sm">
-                <span>
-                  <strong>{avgStory.toFixed(1)}</strong>
-                  <span className="text-cream/70"> story</span>
-                </span>
-                <span>
-                  <strong>{avgGrowth.toFixed(1)}</strong>
-                  <span className="text-cream/70"> growth</span>
-                </span>
-              </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
       )}
     </div>
