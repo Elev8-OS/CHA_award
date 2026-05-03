@@ -8,12 +8,14 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { getSupabaseBrowser } from '@/lib/supabase/browser';
 
-export default function AuthCallbackClient() {
-  const router = useRouter();
+// Tell Next.js: don't try to prerender this page (it uses search params)
+export const dynamic = 'force-dynamic';
+
+function CallbackInner() {
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
 
@@ -72,5 +74,22 @@ export default function AuthCallbackClient() {
         <p className="text-sm text-warm-gray">Signing you in...</p>
       </div>
     </div>
+  );
+}
+
+export default function AuthCallbackClient() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen flex-col items-center justify-center bg-cream">
+          <div className="text-center">
+            <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-coral border-t-transparent" />
+            <p className="text-sm text-warm-gray">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <CallbackInner />
+    </Suspense>
   );
 }

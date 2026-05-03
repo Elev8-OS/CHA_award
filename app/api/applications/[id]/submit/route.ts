@@ -10,10 +10,7 @@ import {
   sendApplicationConfirmationEmail,
   sendAdminNotificationEmail,
 } from '@/lib/email/resend';
-import {
-  sendApplicationConfirmation,
-  sendFollowupQuestion,
-} from '@/lib/whatsapp/templates';
+import { sendApplicationConfirmation } from '@/lib/whatsapp/templates';
 import { generateApplicationAssessment } from '@/lib/ai/assessment';
 import { z } from 'zod';
 
@@ -158,46 +155,37 @@ export async function POST(
           assessment,
         });
 
-        // ----- Follow-up trigger: only if assessment generated, score < 7,
-        // and we haven't sent one yet (to avoid spamming on resubmit) -----
+        // ----- Follow-up trigger: schedule for 30 min later if score < 7 -----
         if (assessment && assessment.followup_questions.length > 0) {
           const minScore = Math.min(assessment.story_score, assessment.growth_score);
 
           if (minScore < 7) {
-            // Get continue_token + check if followup was already sent
+            // Get continue_token + check if followup was already scheduled/sent
             const { data: appCheck } = await supabaseAdmin
               .from('applications')
-              .select('continue_token, followup_sent_at, whatsapp')
+              .select('continue_token, followup_sent_at, followup_scheduled_at, whatsapp')
               .eq('id', updated.id)
               .single();
 
-            if (appCheck && !appCheck.followup_sent_at && appCheck.whatsapp) {
-              // Persist questions for reference + mark as sent
+            // Only schedule if not already scheduled AND not already sent
+            if (
+              appCheck &&
+              !appCheck.followup_sent_at &&
+              !appCheck.followup_scheduled_at &&
+              appCheck.whatsapp
+            ) {
+              const sendAt = new Date(Date.now() + 30 * 60 * 1000); // +30 min
+
               await supabaseAdmin
                 .from('applications')
                 .update({
                   followup_questions: assessment.followup_questions,
-                  followup_sent_at: new Date().toISOString(),
+                  followup_scheduled_at: sendAt.toISOString(),
                 })
                 .eq('id', updated.id);
 
-              // Send only the FIRST question (most important per AI ranking)
-              const q = assessment.followup_questions[0];
-              await sendFollowupQuestion({
-                to: appCheck.whatsapp,
-                locale,
-                applicantName,
-                questionEn: q.question,
-                questionId: q.question_id,
-                continueToken: appCheck.continue_token,
-                fieldFocus: q.field,
-                applicationId: updated.id,
-              }).catch((err) =>
-                console.error('Follow-up WA send failed:', err)
-              );
-
               console.log(
-                `Follow-up sent to ${appCheck.whatsapp}: ${q.field} (scores ${assessment.story_score}/${assessment.growth_score})`
+                `Follow-up scheduled for ${sendAt.toISOString()} — ${assessment.followup_questions[0].field} (scores ${assessment.story_score}/${assessment.growth_score})`
               );
             }
           }
