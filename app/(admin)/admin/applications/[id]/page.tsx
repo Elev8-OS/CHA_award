@@ -4,6 +4,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin';
 import { getSupabaseServer } from '@/lib/supabase/server';
 import { ScoringPanel } from '@/components/admin/ScoringPanel';
 import { StatusTransition } from '@/components/admin/StatusTransition';
+import { ReassessButton } from '@/components/admin/ReassessButton';
 import { categoryColors, formatDate } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
@@ -278,9 +279,10 @@ function AIAssessmentPanel({ app }: { app: any }) {
         <h3 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-warm-gray">
           AI Assessment
         </h3>
-        <p className="text-xs text-warm-gray">
+        <p className="mb-4 text-xs text-warm-gray">
           Not yet assessed. AI runs automatically on submit. Older submissions before this feature won't have one.
         </p>
+        <ReassessButton applicationId={app.id} hasExisting={false} />
       </div>
     );
   }
@@ -371,8 +373,13 @@ function AIAssessmentPanel({ app }: { app: any }) {
         </div>
       )}
 
-      <div className="mt-3 text-[10px] text-warm-gray">
-        Assessed {formatDate(app.ai_assessed_at)}
+      <div className="mt-3 flex items-center justify-between gap-3 border-t border-line pt-3">
+        <div className="text-[10px] text-warm-gray">
+          Assessed {formatDate(app.ai_assessed_at)}
+        </div>
+      </div>
+      <div className="mt-2">
+        <ReassessButton applicationId={app.id} hasExisting={true} />
       </div>
     </div>
   );
