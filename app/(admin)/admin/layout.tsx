@@ -25,6 +25,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <NavLink href="/admin/finalists" icon="🏆" label="Finalists" />
           <NavLink href="/admin/whatsapp" icon="💬" label="WhatsApp" />
           <NavLink href="/admin/analytics" icon="📈" label="Analytics" />
+          <NavLink href="/admin/users" icon="👥" label="Users" />
         </nav>
 
         <div className="border-t border-line px-4 py-4">

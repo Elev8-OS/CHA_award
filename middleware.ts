@@ -41,13 +41,15 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Check email is in admin list
-  const allowedEmails = (process.env.ADMIN_ALLOWED_EMAILS || '')
-    .split(',')
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
+  // Check user is an active admin in admin_users table
+  // (this replaces the older ADMIN_ALLOWED_EMAILS env var approach)
+  const { data: adminRow } = await supabase
+    .from('admin_users')
+    .select('id, is_active')
+    .eq('id', user.id)
+    .maybeSingle();
 
-  if (allowedEmails.length > 0 && !allowedEmails.includes(user.email?.toLowerCase() || '')) {
+  if (!adminRow || !adminRow.is_active) {
     return NextResponse.redirect(new URL('/login?error=unauthorized', req.url));
   }
 
