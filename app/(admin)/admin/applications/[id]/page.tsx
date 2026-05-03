@@ -5,6 +5,7 @@ import { getSupabaseServer } from '@/lib/supabase/server';
 import { ScoringPanel } from '@/components/admin/ScoringPanel';
 import { StatusTransition } from '@/components/admin/StatusTransition';
 import { ReassessButton } from '@/components/admin/ReassessButton';
+import { SendFollowupButton } from '@/components/admin/SendFollowupButton';
 import { categoryColors, formatDate } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
@@ -451,6 +452,16 @@ function FollowupPanel({ app }: { app: any }) {
         <div className="mt-3 text-[10px] text-warm-gray">
           Applicant last edited: {formatDate(app.last_edited_at)}
           {app.edit_count ? ` · ${app.edit_count} edits` : ''}
+        </div>
+      )}
+
+      {/* Send Now button — visible when there are questions to send */}
+      {hasFollowup && (
+        <div className="mt-3 border-t border-line pt-3">
+          <SendFollowupButton
+            applicationId={app.id}
+            alreadySent={!!app.followup_sent_at}
+          />
         </div>
       )}
     </div>
