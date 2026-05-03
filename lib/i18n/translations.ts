@@ -171,6 +171,27 @@ export const translations = {
     'about.footnote': 'Elev8 Suite OS is the Diamond Sponsor of Bali Villa Connect 2026 and exclusive Tech Partner of these awards. The CHA jury makes the calls — independently.',
     'about.cta': 'Learn more about Elev8 Suite OS',
 
+    // ----- FAQ -----
+    'faq.eyebrow': '04 — Common questions',
+    'faq.title.part1': 'Before you',
+    'faq.title.italic': 'apply',
+    'faq.title.part2': 'know this.',
+    'faq.lede': 'No fine print, no surprises. The honest answers to the questions hosts actually ask us.',
+    'faq.q1.q': 'Is there a fee to apply?',
+    'faq.q1.a': 'No. Free to apply. Free to win. There\'s no entry fee, no submission fee, no processing fee, no anything-fee. The CHA covers operations, Elev8 Suite OS sponsors the prize.',
+    'faq.q2.q': 'Who can apply?',
+    'faq.q2.a': 'Any villa operator hosting in Canggu, Uluwatu, Ubud, Seminyak, or anywhere in Bali. Whether you run 2 villas or 50, there\'s a category for you. Boutique (1-3), Growing (4-9), or Scaled (10+). Members and non-members of the CHA both welcome.',
+    'faq.q3.q': 'How long does the application take?',
+    'faq.q3.a': 'Quick Apply takes about 3 minutes — name, business, category, one short pitch. Deep Story takes about 12 minutes and asks you about your operational reality. Both paths are eligible to win. Pick what suits your time.',
+    'faq.q4.q': 'Can I apply in Bahasa Indonesia?',
+    'faq.q4.a': 'Yes. The whole platform — application form, your public page, jury communications — works in English or Bahasa Indonesia. Pick whichever feels natural. The jury reads both.',
+    'faq.q5.q': 'What happens after I submit?',
+    'faq.q5.a': 'You get a public page (you can share with your network for community votes), AI-generated assessment for the jury, and a personalized voting URL. If anything in your application is unclear, the jury sends a single follow-up question. Top 5 finalists get a free Villa Connect ticket. Three winners revealed live on stage 26-27 May.',
+    'faq.q6.q': 'If I win, am I forced to use Elev8 Suite OS?',
+    'faq.q6.a': 'No. The software is yours to use or not. There\'s no contract, no commitment beyond the year, no auto-renewal trap. If after 12 months it\'s working for you, you can choose to continue. If not, you walk away owing nothing.',
+    'faq.q7.q': 'Who actually decides the winners?',
+    'faq.q7.a': 'A four-person independent jury of senior hospitality leaders. Pak Prima Hartawan (CHA Founder), Maya Susanti (Lifestyle Residence), Florian Holm (Grün Resorts), and Reto Wyss (Elev8 Suite OS). Scoring is 50% Story / 30% Growth / 20% Community Wildcard. The Wildcard is decided by public vote — anyone, anywhere can vote, so applicants share their page with their own network. All scoring is visible to all jurors for transparency.',
+
     // ----- Stage Section -----
     'stage.dates': '26 — 27 May 2026',
     'stage.venue': 'Bali Sunset Road Convention Center',
@@ -194,7 +215,7 @@ export const translations = {
     'jury.criteria.growth.desc.before': 'What 1 year of',
     'jury.criteria.growth.desc.after': 'could realistically unlock for your business.',
     'jury.criteria.community.name': 'Community Wildcard',
-    'jury.criteria.community.desc': 'One winner is chosen by a community vote within the CHA group.',
+    'jury.criteria.community.desc': 'One winner is chosen by a public community vote — open to anyone, anywhere. Applicants share their page, their network votes.',
 
     // ----- Footer -----
     'footer.tagline': 'The annual awards celebrating Canggu\'s most ambitious villa operators. Edition 01 — May 2026.',
@@ -375,6 +396,27 @@ export const translations = {
     'about.footnote': 'Elev8 Suite OS adalah Diamond Sponsor Bali Villa Connect 2026 dan Tech Partner eksklusif Awards ini. Juri CHA mengambil keputusan secara independen.',
     'about.cta': 'Pelajari lebih lanjut tentang Elev8 Suite OS',
 
+    // ----- FAQ -----
+    'faq.eyebrow': '04 — Pertanyaan umum',
+    'faq.title.part1': 'Sebelum Anda',
+    'faq.title.italic': 'mendaftar',
+    'faq.title.part2': 'ketahui ini.',
+    'faq.lede': 'Tanpa syarat tersembunyi, tanpa kejutan. Jawaban jujur untuk pertanyaan yang sering ditanyakan host villa.',
+    'faq.q1.q': 'Apakah ada biaya pendaftaran?',
+    'faq.q1.a': 'Tidak. Gratis daftar. Gratis menang. Tidak ada biaya pendaftaran, biaya submission, biaya proses, atau biaya apa pun. CHA menanggung operasional, Elev8 Suite OS mensponsori hadiahnya.',
+    'faq.q2.q': 'Siapa yang bisa mendaftar?',
+    'faq.q2.a': 'Operator villa yang beroperasi di Canggu, Uluwatu, Ubud, Seminyak, atau di mana pun di Bali. Mau 2 villa atau 50 villa, ada kategori untuk Anda. Boutique (1-3), Growing (4-9), atau Scaled (10+). Anggota dan non-anggota CHA sama-sama dipersilakan.',
+    'faq.q3.q': 'Berapa lama proses pendaftaran?',
+    'faq.q3.a': 'Quick Apply sekitar 3 menit — nama, bisnis, kategori, satu pitch singkat. Deep Story sekitar 12 menit dan menanyakan realita operasional Anda. Kedua jalur sama-sama bisa menang. Pilih yang sesuai waktu Anda.',
+    'faq.q4.q': 'Bisa daftar dalam Bahasa Indonesia?',
+    'faq.q4.a': 'Ya. Seluruh platform — formulir pendaftaran, halaman publik Anda, komunikasi juri — tersedia dalam Bahasa Indonesia atau English. Pilih yang nyaman. Juri membaca keduanya.',
+    'faq.q5.q': 'Apa yang terjadi setelah saya submit?',
+    'faq.q5.a': 'Anda mendapat halaman publik (bisa dibagikan ke jaringan Anda untuk Community Vote), AI-assessment untuk juri, dan URL voting personal. Jika ada yang kurang jelas, juri akan kirim satu pertanyaan tindak lanjut. 5 finalis teratas dapat tiket Villa Connect gratis. Tiga pemenang diumumkan langsung di panggung 26-27 Mei.',
+    'faq.q6.q': 'Kalau menang, wajib pakai Elev8 Suite OS?',
+    'faq.q6.a': 'Tidak. Software-nya milik Anda untuk dipakai atau tidak. Tidak ada kontrak, tidak ada komitmen di luar satu tahun, tidak ada jebakan auto-renewal. Setelah 12 bulan, kalau cocok Anda bisa lanjut. Kalau tidak, Anda pergi tanpa kewajiban apa pun.',
+    'faq.q7.q': 'Siapa yang menentukan pemenang?',
+    'faq.q7.a': 'Empat juri independen dari pemimpin senior industri perhotelan. Pak Prima Hartawan (Pendiri CHA), Maya Susanti (Lifestyle Residence), Florian Holm (Grün Resorts), dan Reto Wyss (Elev8 Suite OS). Bobot penilaian: 50% Cerita / 30% Pertumbuhan / 20% Community Wildcard. Wildcard ditentukan oleh voting publik — siapa pun, di mana pun bisa voting, jadi pendaftar membagikan halamannya ke jaringan mereka sendiri. Semua skor terlihat oleh semua juri demi transparansi.',
+
     // ----- Stage Section -----
     'stage.dates': '26 — 27 Mei 2026',
     'stage.venue': 'Bali Sunset Road Convention Center',
@@ -398,7 +440,7 @@ export const translations = {
     'jury.criteria.growth.desc.before': 'Apa yang dapat dibuka oleh 1 tahun',
     'jury.criteria.growth.desc.after': 'untuk bisnis Anda secara realistis.',
     'jury.criteria.community.name': 'Wildcard Komunitas',
-    'jury.criteria.community.desc': 'Satu pemenang dipilih melalui voting komunitas di grup CHA.',
+    'jury.criteria.community.desc': 'Satu pemenang dipilih melalui voting komunitas terbuka — bisa diikuti siapa saja, di mana saja. Pendaftar membagikan halaman mereka, jaringan mereka memberikan suara.',
 
     // ----- Footer -----
     'footer.tagline': 'Award tahunan yang merayakan operator villa paling ambisius di Canggu. Edisi 01 — Mei 2026.',

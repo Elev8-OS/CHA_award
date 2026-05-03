@@ -10,6 +10,7 @@ import {
   StageSection,
   Endorsement,
   Jury,
+  FAQ,
   FinalCTA,
   Footer,
 } from '@/components/landing/Sections';
@@ -27,6 +28,7 @@ export default function HomePage() {
         <StageSection />
         <Endorsement />
         <Jury />
+        <FAQ />
         <FinalCTA />
       </main>
       <Footer />

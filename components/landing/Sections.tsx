@@ -679,6 +679,72 @@ function Criterion({ color, pct, name, desc }: { color: string; pct: string; nam
 }
 
 // ============================================================================
+// FAQ — Common questions
+// Placed right before FinalCTA: applicant has seen everything, this catches
+// last-minute hesitation before the apply click.
+// ============================================================================
+
+export function FAQ() {
+  const { t } = useLang();
+  const items = [
+    { q: t('faq.q1.q'), a: t('faq.q1.a') },
+    { q: t('faq.q2.q'), a: t('faq.q2.a') },
+    { q: t('faq.q3.q'), a: t('faq.q3.a') },
+    { q: t('faq.q4.q'), a: t('faq.q4.a') },
+    { q: t('faq.q5.q'), a: t('faq.q5.a') },
+    { q: t('faq.q6.q'), a: t('faq.q6.a') },
+    { q: t('faq.q7.q'), a: t('faq.q7.a') },
+  ];
+  return (
+    <section id="faq" className="bg-white">
+      <div className="mx-auto max-w-[920px] px-4 py-24 md:px-8 md:py-28">
+        <span className="mb-5 inline-block text-xs font-bold uppercase tracking-[0.16em] text-coral">
+          {t('faq.eyebrow')}
+        </span>
+        <h2 className="mb-7 font-serif text-display-md leading-[0.98] tracking-[-0.02em] text-navy">
+          {t('faq.title.part1')}{' '}
+          <span className="italic text-coral">{t('faq.title.italic')}</span>{' '}
+          {t('faq.title.part2')}
+        </h2>
+        <p className="mb-12 max-w-[640px] text-lg leading-[1.55] text-navy/80">
+          {t('faq.lede')}
+        </p>
+
+        <div className="divide-y divide-line border-y border-line">
+          {items.map((item, i) => (
+            <FAQItem key={i} q={item.q} a={item.a} index={i} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FAQItem({ q, a, index }: { q: string; a: string; index: number }) {
+  return (
+    <details className="group">
+      <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-6 transition-colors hover:bg-cream/40">
+        <div className="flex items-start gap-4">
+          <span className="mt-0.5 font-mono text-xs font-bold tracking-wider text-warm-gray">
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          <h3 className="font-serif text-xl leading-tight text-navy md:text-2xl">{q}</h3>
+        </div>
+        <span
+          aria-hidden
+          className="mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-line text-lg font-light text-navy transition-transform group-open:rotate-45"
+        >
+          +
+        </span>
+      </summary>
+      <div className="pb-6 pl-10 pr-12">
+        <p className="text-base leading-[1.65] text-navy/80">{a}</p>
+      </div>
+    </details>
+  );
+}
+
+// ============================================================================
 // FINAL CTA
 // ============================================================================
 
