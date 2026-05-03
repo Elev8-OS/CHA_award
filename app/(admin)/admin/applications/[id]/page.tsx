@@ -118,6 +118,85 @@ export default async function AdminApplicationDetailPage({
             )}
           </div>
 
+          {/* Media — hero photo + voice note */}
+          {(app.hero_photo_url || app.voice_note_url) && (
+            <div className="rounded-2xl border border-line bg-white p-5">
+              <h3 className="mb-4 text-[11px] font-bold uppercase tracking-wider text-warm-gray">
+                Media submitted
+              </h3>
+
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                {app.hero_photo_url && (
+                  <div>
+                    <div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-coral">
+                      Hero photo
+                    </div>
+                    <a href={app.hero_photo_url} target="_blank" rel="noopener" className="block">
+                      <img
+                        src={app.hero_photo_url}
+                        alt="Hero submitted by applicant"
+                        className="w-full rounded-xl object-cover transition-opacity hover:opacity-90"
+                        style={{ aspectRatio: '4 / 3' }}
+                      />
+                    </a>
+                    <a
+                      href={app.hero_photo_url}
+                      target="_blank"
+                      rel="noopener"
+                      className="mt-2 inline-block text-[11px] text-warm-gray underline-offset-2 hover:underline"
+                    >
+                      Open full size →
+                    </a>
+                  </div>
+                )}
+
+                {app.voice_note_url && (
+                  <div>
+                    <div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-teal">
+                      Voice note
+                      {app.voice_note_duration_sec
+                        ? ` · ${app.voice_note_duration_sec}s`
+                        : ''}
+                    </div>
+                    <div className="rounded-xl border border-line bg-cream p-4">
+                      <audio
+                        src={app.voice_note_url}
+                        controls
+                        className="w-full"
+                        style={{ height: 40 }}
+                      />
+                      <a
+                        href={app.voice_note_url}
+                        download
+                        className="mt-2 inline-block text-[11px] text-warm-gray underline-offset-2 hover:underline"
+                      >
+                        Download audio →
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {!app.hero_photo_url && (
+                <div className="mt-3 text-xs text-warm-gray">
+                  No hero photo uploaded.
+                </div>
+              )}
+              {!app.voice_note_url && (
+                <div className="mt-3 text-xs text-warm-gray">
+                  No voice note recorded.
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* If neither media exists, show a small note instead */}
+          {!app.hero_photo_url && !app.voice_note_url && (
+            <div className="rounded-2xl border border-dashed border-line bg-cream/30 p-4 text-center text-xs text-warm-gray">
+              No photo or voice note submitted (Quick Apply mode or skipped).
+            </div>
+          )}
+
           <div className="rounded-2xl border border-line bg-white p-5">
             <h3 className="mb-3 text-[11px] font-bold uppercase tracking-wider text-warm-gray">
               Consents

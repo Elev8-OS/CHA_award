@@ -20,6 +20,8 @@ interface Applicant {
   hero_photo_url: string | null;
   logo_url: string | null;
   short_pitch: string | null;
+  voice_note_url: string | null;
+  voice_note_duration_sec: number | null;
   share_voice_message_url: string | null;
   biggest_headache: string | null;
   first_attack: string | null;
@@ -230,8 +232,8 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
               </span>
             </div>
 
-            {/* Voice plea — if recorded */}
-            {applicant.share_voice_message_url && (
+            {/* Voice note — recorded during application */}
+            {(applicant.voice_note_url || applicant.share_voice_message_url) && (
               <div className="mb-5 rounded-2xl border-l-4 border-coral bg-coral/5 p-4">
                 <div className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-coral">
                   <span>🎙️</span>
@@ -242,7 +244,7 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
                   </span>
                 </div>
                 <audio
-                  src={applicant.share_voice_message_url}
+                  src={applicant.voice_note_url || applicant.share_voice_message_url || undefined}
                   controls
                   preload="metadata"
                   className="w-full"
