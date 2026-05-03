@@ -94,21 +94,21 @@ export function ScoringPanel({
     setSaving(true);
     setSaveError(null);
     try {
-      const supabase = getSupabaseBrowser();
-      const { error } = await supabase.from('jury_scores').upsert(
-        {
+      const res = await fetch('/api/admin/scores', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           application_id: applicationId,
-          juror_id: currentUserId,
           story_score: storyScore,
-          growth_potential_score: growthScore,
+          growth_score: growthScore,
           jury_notes: notes,
-        },
-        { onConflict: 'application_id,juror_id' }
-      );
+        }),
+      });
 
-      if (error) {
-        console.error('Save score error:', error);
-        setSaveError(`Save failed: ${error.message}`);
+      const data = await res.json();
+      if (!res.ok) {
+        console.error('Save score error:', data);
+        setSaveError(`Save failed: ${data.error || 'Unknown error'}`);
         return;
       }
 
