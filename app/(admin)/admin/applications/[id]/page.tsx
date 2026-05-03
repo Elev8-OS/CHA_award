@@ -81,10 +81,13 @@ export default async function AdminApplicationDetailPage({
           <Link
             href={`/v/${app.public_slug}`}
             target="_blank"
-            className="rounded-full border border-line bg-white px-4 py-2 text-xs font-bold text-navy hover:bg-cream"
+            className="inline-flex items-center gap-2 rounded-full bg-coral px-5 py-2.5 text-xs font-bold text-white transition-all hover:bg-burgundy"
           >
-            View public page →
+            🔗 View public page →
           </Link>
+          <div className="mt-2 break-all font-mono text-[10px] text-warm-gray">
+            awards.elev8-suite.com/v/{app.public_slug}
+          </div>
           <div className="mt-3 text-xs text-warm-gray">
             <strong className="text-navy">{voteCount || 0}</strong> verified votes ·{' '}
             <strong className="text-navy">{app.view_count || 0}</strong> views ·{' '}

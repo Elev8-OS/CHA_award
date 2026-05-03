@@ -137,12 +137,22 @@ export default async function AdminJuryPage() {
                     {weighted?.toFixed(2) || '—'}
                   </td>
                   <td className="px-5 py-3.5 text-right">
-                    <Link
-                      href={`/admin/applications/${a.id}`}
-                      className="text-xs font-bold text-coral hover:text-burgundy"
-                    >
-                      Score →
-                    </Link>
+                    <div className="flex items-center justify-end gap-3">
+                      <Link
+                        href={`/v/${a.public_slug}`}
+                        target="_blank"
+                        className="text-xs font-semibold text-warm-gray hover:text-navy"
+                        title="View public page"
+                      >
+                        🔗 Public
+                      </Link>
+                      <Link
+                        href={`/admin/applications/${a.id}`}
+                        className="text-xs font-bold text-coral hover:text-burgundy"
+                      >
+                        Score →
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               );

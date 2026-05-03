@@ -227,7 +227,7 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
           <div className="rounded-3xl bg-white p-6 shadow-sm">
             <div className="mb-5 flex items-center justify-between">
               <h2 className="font-serif text-2xl text-navy">
-                {locale === 'id' ? 'Bantu mereka menang' : 'Help them win'}
+                {locale === 'id' ? 'Bantu kami menang' : 'Help us win'}
               </h2>
               <span className="text-xs text-warm-gray">
                 {shareCount > 0 && `${shareCount} ${locale === 'id' ? 'kali dibagikan' : 'shares'}`}
@@ -257,8 +257,8 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
 
             <p className="mb-5 text-sm leading-relaxed text-navy/75">
               {locale === 'id'
-                ? 'Bagikan halaman ini dengan jaringan Anda. Setiap suara membantu mereka maju ke panggung di Villa Connect 2026.'
-                : 'Share this page with your network. Every vote helps them get on the Villa Connect 2026 stage.'}
+                ? 'Bagikan halaman ini dengan jaringan Anda. Setiap suara membantu kami naik ke panggung di Villa Connect 2026.'
+                : 'Share this page with your network. Every vote helps us get on the Villa Connect 2026 stage.'}
             </p>
 
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
@@ -287,7 +287,7 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
         </div>
       </section>
 
-      {/* ===== Their Story ===== */}
+      {/* ===== Our Story (first-person — applicant page) ===== */}
       {(applicant.biggest_headache || applicant.first_attack || applicant.why_you) && (
         <section className="px-5 pb-12">
           <div className="mx-auto max-w-2xl">
@@ -318,7 +318,7 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
               {applicant.why_you && (
                 <StoryCard
                   color="gold"
-                  label={locale === 'id' ? 'Mengapa mereka' : 'Why they should win'}
+                  label={locale === 'id' ? 'Mengapa kami' : 'Why we should win'}
                   text={applicant.why_you}
                 />
               )}

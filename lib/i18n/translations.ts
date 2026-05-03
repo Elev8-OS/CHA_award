@@ -112,11 +112,12 @@ export const translations = {
     'field.twelve_month_vision': 'Where do you want to be in 12 months?',
     'field.why_you': 'Why you?',
 
-    // ----- Voting Page -----
+    // ----- Voting Page (written from APPLICANT's first-person perspective,
+    //                   since they share this page with their network) -----
     'vote.title': 'Vote for',
     'vote.cast_vote': 'Cast your vote',
     'vote.you_voted': "You've voted",
-    'vote.share_help': 'Help them win',
+    'vote.share_help': 'Help us win',
     'vote.deadline': 'Voting closes',
     'vote.current_position': 'Currently #',
     'vote.in_category': 'in',
@@ -124,10 +125,10 @@ export const translations = {
     'vote.share_linkedin': 'Share on LinkedIn',
     'vote.copy_link': 'Copy link',
     'vote.link_copied': 'Link copied!',
-    'vote.story_title': 'Their story',
-    'vote.headache_label': 'Biggest headache',
-    'vote.attack_label': 'First move with Elev8 Suite OS',
-    'vote.vision_label': '12-month vision',
+    'vote.story_title': 'Our story',
+    'vote.headache_label': 'Our biggest headache',
+    'vote.attack_label': 'Our first move with Elev8 Suite OS',
+    'vote.vision_label': 'Our 12-month vision',
     'vote.discover_others': 'Discover other applicants',
     'vote.about_awards': 'About the Awards',
 
@@ -280,11 +281,11 @@ export const translations = {
     'field.twelve_month_vision': 'Di mana Anda ingin berada dalam 12 bulan?',
     'field.why_you': 'Mengapa Anda?',
 
-    // ----- Voting Page -----
+    // ----- Voting Page (first-person — applicant shares with their network) -----
     'vote.title': 'Pilih',
     'vote.cast_vote': 'Berikan suara Anda',
     'vote.you_voted': 'Anda sudah memilih',
-    'vote.share_help': 'Bantu mereka menang',
+    'vote.share_help': 'Bantu kami menang',
     'vote.deadline': 'Voting ditutup',
     'vote.current_position': 'Saat ini #',
     'vote.in_category': 'di',
@@ -292,10 +293,10 @@ export const translations = {
     'vote.share_linkedin': 'Bagikan di LinkedIn',
     'vote.copy_link': 'Salin tautan',
     'vote.link_copied': 'Tautan disalin!',
-    'vote.story_title': 'Cerita mereka',
-    'vote.headache_label': 'Tantangan terbesar',
-    'vote.attack_label': 'Langkah pertama dengan Elev8 Suite OS',
-    'vote.vision_label': 'Visi 12 bulan',
+    'vote.story_title': 'Cerita kami',
+    'vote.headache_label': 'Tantangan terbesar kami',
+    'vote.attack_label': 'Langkah pertama kami dengan Elev8 Suite OS',
+    'vote.vision_label': 'Visi 12 bulan kami',
     'vote.discover_others': 'Lihat pendaftar lain',
     'vote.about_awards': 'Tentang Awards',
 
