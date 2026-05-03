@@ -15,6 +15,14 @@ export interface ApplicationAssessment {
   recommendation: string;
   red_flags: string | null;
   category_fit: 'strong' | 'borderline' | 'weak';
+  followup_questions: FollowupQuestion[];
+}
+
+export interface FollowupQuestion {
+  field: string; // form field name to focus on
+  question: string; // the actual question text (English)
+  question_id: string; // bilingual translation key for the question
+  reason: string; // why we're asking (admin-only, not shown to applicant)
 }
 
 interface AssessmentInput {
@@ -62,8 +70,25 @@ Return your assessment as a JSON object with this exact structure:
   "growth_score": 0-10 integer (clarity of vision, realistic ambition, potential impact of better tooling),
   "recommendation": "1-2 sentences. Direct take. Examples: 'Strong story, fast-track to shortlist.' / 'Generic answers, low priority.' / 'Borderline — review story manually.'",
   "red_flags": "Null OR a single sentence noting concerns: spam-like answers, AI-generated text, missing required info, suspicious claims. Be conservative — only flag clear issues.",
-  "category_fit": "strong" | "borderline" | "weak"
+  "category_fit": "strong" | "borderline" | "weak",
+  "followup_questions": [
+    {
+      "field": "biggest_headache" | "first_attack" | "twelve_month_vision" | "why_you" | "current_tools_pros" | "current_tools_cons" | "short_pitch",
+      "question": "Direct, friendly question text in English. 1-2 sentences. Should help applicant be more specific.",
+      "question_id": "Same question in Bahasa Indonesia, formal but warm.",
+      "reason": "1 sentence explaining what gap this fills (admin-only, never sent to applicant)"
+    }
+  ]
 }
+
+Follow-up questions guidance:
+- Only suggest if you'd give 7 or below in either score
+- Suggest 1-3 questions max, focused on the WEAKEST areas
+- Each question must point to a SPECIFIC form field they can edit
+- Make questions easy to answer in 2-3 sentences (no essays)
+- Tone: warm, curious, supportive — never accusatory ("Could you tell us more about..." not "You didn't explain...")
+- If story_score AND growth_score are both 8+, return empty array []
+- Always provide question in BOTH English (question) and Bahasa Indonesia (question_id)
 
 Scoring guidance:
 - 9-10: Exceptional — vivid specifics, mature thinking, clear differentiation
@@ -122,6 +147,11 @@ export async function generateApplicationAssessment(
     // Validate ranges
     assessment.story_score = clamp(Math.round(assessment.story_score || 0), 0, 10);
     assessment.growth_score = clamp(Math.round(assessment.growth_score || 0), 0, 10);
+
+    // Default to empty array if AI omits the field
+    if (!Array.isArray(assessment.followup_questions)) {
+      assessment.followup_questions = [];
+    }
 
     return assessment;
   } catch (error: any) {

@@ -108,9 +108,16 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 404 });
     }
 
-    if (existing.status !== 'draft') {
+    // Allow editing of:
+    // - draft (always, original flow)
+    // - submitted (post-submit edits, e.g. AI follow-up flow)
+    // Block edits once shortlisted/finalist/winner — those are locked
+    if (
+      existing.status !== 'draft' &&
+      existing.status !== 'submitted'
+    ) {
       return NextResponse.json(
-        { error: 'Application already submitted, cannot edit' },
+        { error: 'Application is locked (shortlist/finalist stage)' },
         { status: 409 }
       );
     }
@@ -120,6 +127,18 @@ export async function PATCH(req: NextRequest) {
     if (cleanUpdates.hero_photo_url === '') delete cleanUpdates.hero_photo_url;
     if (cleanUpdates.share_voice_message_url === '') delete cleanUpdates.share_voice_message_url;
     if (cleanUpdates.video_pitch_url === '') delete cleanUpdates.video_pitch_url;
+
+    // Track post-submit edits
+    if (existing.status === 'submitted') {
+      cleanUpdates.last_edited_at = new Date().toISOString();
+      // Increment edit_count
+      const { data: current } = await supabaseAdmin
+        .from('applications')
+        .select('edit_count')
+        .eq('id', existing.id)
+        .single();
+      cleanUpdates.edit_count = (current?.edit_count || 0) + 1;
+    }
 
     const { error: updateError } = await supabaseAdmin
       .from('applications')

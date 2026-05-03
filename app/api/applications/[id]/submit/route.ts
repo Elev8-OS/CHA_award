@@ -10,7 +10,10 @@ import {
   sendApplicationConfirmationEmail,
   sendAdminNotificationEmail,
 } from '@/lib/email/resend';
-import { sendApplicationConfirmation } from '@/lib/whatsapp/templates';
+import {
+  sendApplicationConfirmation,
+  sendFollowupQuestion,
+} from '@/lib/whatsapp/templates';
 import { generateApplicationAssessment } from '@/lib/ai/assessment';
 import { z } from 'zod';
 
@@ -41,8 +44,19 @@ export async function POST(
       return NextResponse.json({ error: 'Application not found' }, { status: 404 });
     }
 
+    // Already submitted? Allow as no-op for follow-up edits (returning success
+    // so the form thank-you flow still works) but skip the full re-trigger.
+    if (app.status === 'submitted') {
+      return NextResponse.json({
+        success: true,
+        already_submitted: true,
+        public_slug: app.public_slug,
+        public_url: `/v/${app.public_slug}`,
+      });
+    }
+
     if (app.status !== 'draft') {
-      return NextResponse.json({ error: 'Already submitted' }, { status: 409 });
+      return NextResponse.json({ error: 'Application is locked' }, { status: 409 });
     }
 
     // Validate required fields
@@ -143,6 +157,51 @@ export async function POST(
           shortPitch: updated.short_pitch,
           assessment,
         });
+
+        // ----- Follow-up trigger: only if assessment generated, score < 7,
+        // and we haven't sent one yet (to avoid spamming on resubmit) -----
+        if (assessment && assessment.followup_questions.length > 0) {
+          const minScore = Math.min(assessment.story_score, assessment.growth_score);
+
+          if (minScore < 7) {
+            // Get continue_token + check if followup was already sent
+            const { data: appCheck } = await supabaseAdmin
+              .from('applications')
+              .select('continue_token, followup_sent_at, whatsapp')
+              .eq('id', updated.id)
+              .single();
+
+            if (appCheck && !appCheck.followup_sent_at && appCheck.whatsapp) {
+              // Persist questions for reference + mark as sent
+              await supabaseAdmin
+                .from('applications')
+                .update({
+                  followup_questions: assessment.followup_questions,
+                  followup_sent_at: new Date().toISOString(),
+                })
+                .eq('id', updated.id);
+
+              // Send only the FIRST question (most important per AI ranking)
+              const q = assessment.followup_questions[0];
+              await sendFollowupQuestion({
+                to: appCheck.whatsapp,
+                locale,
+                applicantName,
+                questionEn: q.question,
+                questionId: q.question_id,
+                continueToken: appCheck.continue_token,
+                fieldFocus: q.field,
+                applicationId: updated.id,
+              }).catch((err) =>
+                console.error('Follow-up WA send failed:', err)
+              );
+
+              console.log(
+                `Follow-up sent to ${appCheck.whatsapp}: ${q.field} (scores ${assessment.story_score}/${assessment.growth_score})`
+              );
+            }
+          }
+        }
       } catch (err) {
         console.error('Admin notification flow failed:', err);
       }

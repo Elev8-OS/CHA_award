@@ -453,3 +453,71 @@ Congratulations! 🎉`;
     return await sendText({ to: opts.to, body, applicationId: opts.applicationId });
   }
 }
+
+// ---------- Follow-up Question (after AI pre-screening) ----------
+
+interface FollowupQuestionOpts {
+  to: string;
+  locale: Locale;
+  applicantName: string;
+  questionEn: string;
+  questionId: string;
+  continueToken: string;
+  fieldFocus: string;
+  applicationId: string;
+}
+
+export async function sendFollowupQuestion(opts: FollowupQuestionOpts) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com';
+  const editUrl = `${siteUrl}/apply/${opts.continueToken}?focus=${encodeURIComponent(opts.fieldFocus)}`;
+
+  // Try template first (Meta-approved version with variables)
+  try {
+    return await sendTemplate({
+      to: opts.to,
+      templateName: 'award_followup_question',
+      languageCode: opts.locale,
+      components: [
+        {
+          type: 'body',
+          parameters: [
+            { type: 'text', text: opts.applicantName },
+            { type: 'text', text: opts.locale === 'id' ? opts.questionId : opts.questionEn },
+            { type: 'text', text: editUrl },
+          ],
+        },
+      ],
+      applicationId: opts.applicationId,
+    });
+  } catch (error) {
+    // Fall back to plain text (only works within 24h session)
+    const body =
+      opts.locale === 'id'
+        ? `Halo *${opts.applicantName}*,
+
+Terima kasih telah mendaftar untuk CHA Hospitality Awards 2026 🏆
+
+Untuk membantu juri menilai dengan lebih baik, kami ingin meminta Anda menambahkan sedikit detail:
+
+*${opts.questionId}*
+
+Anda dapat memperbarui profil Anda di sini:
+${editUrl}
+
+(Cukup 2-3 kalimat — tidak perlu panjang)`
+        : `Hi *${opts.applicantName}*,
+
+Thanks for applying to the CHA Hospitality Awards 2026 🏆
+
+To help our jury evaluate your application better, we'd love a bit more detail on one thing:
+
+*${opts.questionEn}*
+
+You can update your profile here:
+${editUrl}
+
+(Just 2-3 sentences — no need for an essay)`;
+
+    return await sendText({ to: opts.to, body, applicationId: opts.applicationId });
+  }
+}

@@ -1,13 +1,34 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CHALogo } from '@/components/common/CHALogo';
 import { LangProvider, LangToggle, useLang } from '@/components/common/LangProvider';
 import { PhotoUpload } from '@/components/apply/PhotoUpload';
 import { VoiceRecorder } from '@/components/apply/VoiceRecorder';
 import type { Locale } from '@/lib/i18n/translations';
+
+// Maps field name -> step number (for ?focus=field_name routing)
+const FIELD_TO_STEP: Record<string, { quick: number; deep: number }> = {
+  full_name: { quick: 1, deep: 1 },
+  business_name: { quick: 1, deep: 1 },
+  email: { quick: 1, deep: 1 },
+  whatsapp: { quick: 1, deep: 1 },
+  location: { quick: 2, deep: 2 },
+  villa_count: { quick: 2, deep: 2 },
+  years_hosting: { quick: 2, deep: 2 },
+  team_size: { quick: 2, deep: 2 },
+  channels: { quick: 2, deep: 2 },
+  current_tools: { quick: 2, deep: 2 },
+  current_tools_pros: { quick: 3, deep: 3 },
+  current_tools_cons: { quick: 3, deep: 3 },
+  short_pitch: { quick: 3, deep: 3 },
+  biggest_headache: { quick: 3, deep: 4 },
+  first_attack: { quick: 3, deep: 4 },
+  twelve_month_vision: { quick: 3, deep: 4 },
+  why_you: { quick: 3, deep: 4 },
+};
 
 interface Application {
   id: string;
@@ -50,9 +71,23 @@ export function ApplicationFormClient({ initialApplication }: { initialApplicati
 
 function FormShell({ app: initialApp }: { app: Application }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t, locale } = useLang();
   const [app, setApp] = useState<Application>(initialApp);
-  const [step, setStep] = useState(1);
+
+  // Detect ?focus=field_name param (from AI follow-up WhatsApp link)
+  const focusField = searchParams.get('focus');
+  const isPostSubmitEdit = initialApp.status === 'submitted';
+
+  // Compute initial step: if focus param given, jump to that step; else 1
+  const computeInitialStep = (): number => {
+    if (focusField && FIELD_TO_STEP[focusField]) {
+      return FIELD_TO_STEP[focusField][initialApp.mode];
+    }
+    return 1;
+  };
+
+  const [step, setStep] = useState(computeInitialStep);
   const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -89,6 +124,21 @@ function FormShell({ app: initialApp }: { app: Application }) {
       setApp((s) => ({ ...s, language: locale }));
     }
   }, [locale, app.language, saveDraft]);
+
+  // On mount, if focusField param given, scroll to + highlight that field
+  useEffect(() => {
+    if (!focusField) return;
+    const timer = setTimeout(() => {
+      const el = document.querySelector(`[data-field="${focusField}"]`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('field-highlight');
+        // Remove highlight after animation finishes
+        setTimeout(() => el.classList.remove('field-highlight'), 4000);
+      }
+    }, 400); // wait for step content to render
+    return () => clearTimeout(timer);
+  }, [focusField, step]);
 
   const updateField = (field: keyof Application, value: any) => {
     setApp((s) => ({ ...s, [field]: value }));
@@ -209,6 +259,25 @@ function FormShell({ app: initialApp }: { app: Application }) {
               ))}
             </div>
           </div>
+
+          {/* AI Follow-up banner — only when arriving via ?focus=field_name */}
+          {focusField && isPostSubmitEdit && (
+            <div className="mb-7 rounded-2xl border-l-4 border-gold bg-gold/10 p-5">
+              <div className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-gold">
+                {locale === 'id' ? '💬 Permintaan dari Juri' : '💬 A note from our jury'}
+              </div>
+              <p className="text-sm leading-relaxed text-navy">
+                {locale === 'id'
+                  ? 'Terima kasih telah mendaftar! Untuk membantu juri menilai dengan lebih baik, kami ingin Anda menambahkan sedikit detail di kolom yang ditandai di bawah. Cukup 2-3 kalimat — tidak perlu panjang.'
+                  : "Thanks for applying! To help our jury evaluate your application better, we'd love a bit more detail in the highlighted field below. Just 2-3 sentences — no need for an essay."}
+              </p>
+              <p className="mt-2 text-xs text-warm-gray">
+                {locale === 'id'
+                  ? 'Perubahan disimpan otomatis. Tekan Submit di akhir untuk mengunci pembaruan.'
+                  : 'Changes auto-save. Press Submit at the end to lock in your update.'}
+              </p>
+            </div>
+          )}
 
           {/* Step content */}
           <div className="rounded-3xl border border-line bg-white p-7 md:p-10">
@@ -432,6 +501,7 @@ function Step3Quick({ app, update, locale }: StepProps) {
 
       <div className="space-y-7">
         <Textarea
+          name="short_pitch"
           label={locale === 'id' ? 'Pitch Anda (maks 280 karakter)' : 'Your pitch (max 280 chars)'}
           value={app.short_pitch || ''}
           onChange={(v) => update('short_pitch', v)}
@@ -501,6 +571,7 @@ function Step3Deep({ app, update, errors, locale }: StepProps) {
           }
         />
         <Textarea
+          name="current_tools_pros"
           label={locale === 'id' ? 'Apa yang berjalan baik?' : 'What works well?'}
           value={app.current_tools_pros || ''}
           onChange={(v) => update('current_tools_pros', v)}
@@ -508,6 +579,7 @@ function Step3Deep({ app, update, errors, locale }: StepProps) {
           rows={3}
         />
         <Textarea
+          name="current_tools_cons"
           label={locale === 'id' ? 'Apa yang tidak?' : "What doesn't?"}
           value={app.current_tools_cons || ''}
           onChange={(v) => update('current_tools_cons', v)}
@@ -533,6 +605,7 @@ function Step4Deep({ app, update, errors, locale }: StepProps) {
 
       <div className="space-y-5">
         <Textarea
+          name="biggest_headache"
           label={locale === 'id' ? 'Masalah operasional terbesar Anda' : 'Your biggest operational headache'}
           value={app.biggest_headache || ''}
           onChange={(v) => update('biggest_headache', v)}
@@ -545,6 +618,7 @@ function Step4Deep({ app, update, errors, locale }: StepProps) {
           }
         />
         <Textarea
+          name="first_attack"
           label={locale === 'id' ? 'Apa yang akan Anda tangani pertama dengan Elev8 Suite OS?' : 'What would you attack first with Elev8 Suite OS?'}
           value={app.first_attack || ''}
           onChange={(v) => update('first_attack', v)}
@@ -552,6 +626,7 @@ function Step4Deep({ app, update, errors, locale }: StepProps) {
           max={500}
         />
         <Textarea
+          name="twelve_month_vision"
           label={locale === 'id' ? 'Visi 12 bulan' : '12-month vision'}
           value={app.twelve_month_vision || ''}
           onChange={(v) => update('twelve_month_vision', v)}
@@ -559,6 +634,7 @@ function Step4Deep({ app, update, errors, locale }: StepProps) {
           rows={3}
         />
         <Textarea
+          name="why_you"
           label={locale === 'id' ? 'Mengapa Anda?' : 'Why you?'}
           value={app.why_you || ''}
           onChange={(v) => update('why_you', v)}
@@ -694,6 +770,7 @@ function Textarea({
   hint,
   max = 500,
   rows = 5,
+  name,
 }: {
   label: string;
   value: string;
@@ -703,9 +780,10 @@ function Textarea({
   hint?: string;
   max?: number;
   rows?: number;
+  name?: string;
 }) {
   return (
-    <div>
+    <div data-field={name}>
       <label className="mb-1.5 block text-xs font-bold text-navy">{label}</label>
       <textarea
         value={value}
