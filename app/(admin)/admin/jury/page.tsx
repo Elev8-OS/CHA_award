@@ -12,13 +12,19 @@ export default async function AdminJuryPage() {
 
   const { data: scores } = await supabaseAdmin
     .from('jury_scores')
-    .select('application_id, juror_id, story_score, growth_potential_score, juror:admin_users(full_name, jury_seat_color)');
+    .select('application_id, juror_id, story_score, growth_potential_score');
 
   const { data: jurors } = await supabaseAdmin
     .from('admin_users')
     .select('id, full_name, organization, jury_seat_color')
-    .eq('role', 'jury')
+    .in('role', ['jury', 'admin'])
     .eq('is_active', true);
+
+  // DEBUG: Log raw data to Railway so we can verify in production
+  console.log(`[JURY-PAGE] Loaded: ${applications?.length || 0} applications, ${scores?.length || 0} scores, ${jurors?.length || 0} jurors`);
+  if (scores && scores.length > 0) {
+    console.log('[JURY-PAGE] First score:', JSON.stringify(scores[0]));
+  }
 
   // Build progress matrix: per juror, count of scored applications
   const progress: Record<string, { name: string; scored: number; total: number; color: string | null }> = {};

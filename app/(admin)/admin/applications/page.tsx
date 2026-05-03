@@ -22,6 +22,36 @@ export default async function AdminApplicationsPage() {
     voteMap.set(v.application_id, (voteMap.get(v.application_id) || 0) + 1);
   });
 
+  // Get jury scores aggregated per application
+  const { data: juryScores } = await supabaseAdmin
+    .from('jury_scores')
+    .select('application_id, story_score, growth_potential_score');
+
+  type ScoreAgg = { storySum: number; growthSum: number; count: number };
+  const scoreMap = new Map<string, ScoreAgg>();
+  juryScores?.forEach((s) => {
+    if (s.story_score == null || s.growth_potential_score == null) return;
+    const cur = scoreMap.get(s.application_id) || { storySum: 0, growthSum: 0, count: 0 };
+    cur.storySum += s.story_score;
+    cur.growthSum += s.growth_potential_score;
+    cur.count += 1;
+    scoreMap.set(s.application_id, cur);
+  });
+
+  const getScores = (appId: string) => {
+    const agg = scoreMap.get(appId);
+    if (!agg || agg.count === 0) return null;
+    return {
+      story: (agg.storySum / agg.count).toFixed(1),
+      growth: (agg.growthSum / agg.count).toFixed(1),
+      weighted: (
+        (agg.storySum / agg.count) * 0.5 +
+        (agg.growthSum / agg.count) * 0.3
+      ).toFixed(2),
+      count: agg.count,
+    };
+  };
+
   const stats = {
     total: applications?.length || 0,
     boutique: applications?.filter((a) => a.category === 'boutique').length || 0,
@@ -47,9 +77,11 @@ export default async function AdminApplicationsPage() {
               <th className="px-5 py-3">Applicant</th>
               <th className="px-5 py-3">Category</th>
               <th className="px-5 py-3">Location</th>
+              <th className="px-5 py-3 text-center" title="Story score (avg of jury)">Story</th>
+              <th className="px-5 py-3 text-center" title="Growth potential score (avg of jury)">Growth</th>
+              <th className="px-5 py-3 text-center" title="Weighted: Story×0.5 + Growth×0.3">Jury</th>
               <th className="px-5 py-3 text-right">Votes</th>
               <th className="px-5 py-3 text-right">Views</th>
-              <th className="px-5 py-3 text-right">Shares</th>
               <th className="px-5 py-3">Submitted</th>
               <th className="px-5 py-3"></th>
             </tr>
@@ -58,6 +90,7 @@ export default async function AdminApplicationsPage() {
             {applications?.map((a) => {
               const cat = a.category || 'boutique';
               const colors = categoryColors[cat as keyof typeof categoryColors];
+              const scores = getScores(a.id);
               return (
                 <tr key={a.id} className="border-b border-line last:border-b-0 hover:bg-cream/40">
                   <td className="px-5 py-4">
@@ -73,14 +106,35 @@ export default async function AdminApplicationsPage() {
                     <div className="mt-1 text-xs text-warm-gray">{a.villa_count} villas</div>
                   </td>
                   <td className="px-5 py-4 text-sm text-navy">{a.location || '—'}</td>
+                  <td className="px-5 py-4 text-center">
+                    {scores ? (
+                      <span className="font-mono text-sm font-bold text-navy">{scores.story}</span>
+                    ) : (
+                      <span className="text-xs text-warm-gray/60">—</span>
+                    )}
+                  </td>
+                  <td className="px-5 py-4 text-center">
+                    {scores ? (
+                      <span className="font-mono text-sm font-bold text-navy">{scores.growth}</span>
+                    ) : (
+                      <span className="text-xs text-warm-gray/60">—</span>
+                    )}
+                  </td>
+                  <td className="px-5 py-4 text-center">
+                    {scores ? (
+                      <div>
+                        <span className="font-serif text-base font-bold text-coral">{scores.weighted}</span>
+                        <div className="text-[10px] text-warm-gray">{scores.count} {scores.count === 1 ? 'juror' : 'jurors'}</div>
+                      </div>
+                    ) : (
+                      <span className="text-xs text-warm-gray/60">—</span>
+                    )}
+                  </td>
                   <td className="px-5 py-4 text-right font-mono text-sm font-bold text-navy">
                     {voteMap.get(a.id) || 0}
                   </td>
                   <td className="px-5 py-4 text-right font-mono text-sm text-warm-gray">
                     {a.view_count || 0}
-                  </td>
-                  <td className="px-5 py-4 text-right font-mono text-sm text-warm-gray">
-                    {a.share_count || 0}
                   </td>
                   <td className="px-5 py-4 text-xs text-warm-gray">
                     {a.submitted_at ? formatDate(a.submitted_at) : '—'}
@@ -98,7 +152,7 @@ export default async function AdminApplicationsPage() {
             })}
             {(!applications || applications.length === 0) && (
               <tr>
-                <td colSpan={8} className="px-5 py-12 text-center text-sm text-warm-gray">
+                <td colSpan={10} className="px-5 py-12 text-center text-sm text-warm-gray">
                   No submitted applications yet.
                 </td>
               </tr>
