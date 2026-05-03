@@ -43,6 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title,
     description,
+    metadataBase: new URL(siteUrl),
     openGraph: {
       title,
       description,
@@ -51,18 +52,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: [
         {
           url: ogImageUrl,
+          secureUrl: ogImageUrl,
           width: 1200,
           height: 630,
           alt: displayName,
+          type: 'image/png',
         },
       ],
       type: 'website',
+      locale: 'en_US',
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
       images: [ogImageUrl],
+    },
+    other: {
+      // WhatsApp specifically looks at these meta tags
+      'og:image:width': '1200',
+      'og:image:height': '630',
+      'og:image:type': 'image/png',
     },
   };
 }

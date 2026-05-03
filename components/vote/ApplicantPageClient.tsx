@@ -85,10 +85,12 @@ function ApplicantPageInner({ applicant }: { applicant: Applicant }) {
   // Share URL — appends ?ref=THIS_APPLICANT so we can attribute conversions
   const shareUrl = pageUrl ? `${pageUrl}?ref=${applicant.public_slug}` : '';
 
+  // Share text — written from the applicant's perspective ("vote for me and..."),
+  // works equally well when shared by supporters who can edit before sending.
   const shareText =
     locale === 'id'
-      ? `Saya mendukung ${applicant.business_name} di CHA Hospitality Awards 2026 🏆\n\nBerikan suara Anda di:\n${shareUrl}`
-      : `I'm supporting ${applicant.business_name} in the CHA Hospitality Awards 2026 🏆\n\nCast your vote here:\n${shareUrl}`;
+      ? `🏆 Saya berkompetisi di CHA Hospitality Awards 2026!\n\nVote untuk saya dan bantu saya tampil di panggung Bali Villa Connect 2026 — acara villa terbesar di Bali (26-27 Mei).\n\nKlik di sini untuk memberikan suara:\n${shareUrl}`
+      : `🏆 I'm competing in the CHA Hospitality Awards 2026!\n\nVote for me and help me stand on the stage at Bali Villa Connect 2026 — Bali's biggest villa industry event (26-27 May).\n\nCast your vote here:\n${shareUrl}`;
 
   return (
     <>
