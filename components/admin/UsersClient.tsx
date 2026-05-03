@@ -81,6 +81,16 @@ export function UsersClient({ initialUsers, currentUserId }: Props) {
 
       // Add to list
       setUsers((u) => [data.user, ...u]);
+
+      // Quick toast feedback
+      if (data.welcomeSent) {
+        alert(`✓ ${fullName} created. Welcome email sent to ${email}.`);
+      } else {
+        alert(
+          `⚠ ${fullName} created, but welcome email could not be sent. They can still sign in via /login. You may want to notify them manually.`
+        );
+      }
+
       resetForm();
       setShowForm(false);
     } catch (err: any) {
@@ -236,7 +246,7 @@ export function UsersClient({ initialUsers, currentUserId }: Props) {
                 {submitting ? 'Creating...' : 'Create user →'}
               </button>
               <p className="mt-3 text-center text-[11px] text-warm-gray">
-                User will be auto-confirmed and can sign in immediately at /login.
+                User will be auto-confirmed and receive a welcome email with sign-in instructions.
               </p>
             </div>
           </form>

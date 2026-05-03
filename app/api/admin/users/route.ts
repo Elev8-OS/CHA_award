@@ -11,6 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { getSupabaseServer } from '@/lib/supabase/server';
+import { sendAdminWelcomeEmail } from '@/lib/email/resend';
 
 const VALID_ROLES = ['admin', 'jury', 'viewer'] as const;
 const VALID_COLORS = ['coral', 'teal', 'burgundy', 'gold'] as const;
@@ -25,7 +26,7 @@ async function requireAdmin() {
 
   const { data: admin } = await supabaseAdmin
     .from('admin_users')
-    .select('id, role, is_active')
+    .select('id, role, is_active, full_name')
     .eq('id', user.id)
     .single();
 
@@ -148,7 +149,24 @@ export async function POST(req: NextRequest) {
     `[ADMIN-USERS] Created user: ${normalizedEmail} (role=${role}, id=${authUserId})`
   );
 
-  return NextResponse.json({ ok: true, user: adminRow });
+  // ---------- Step 3: Send welcome email (best-effort, non-blocking) ----------
+  let welcomeSent = false;
+  try {
+    await sendAdminWelcomeEmail({
+      to: normalizedEmail,
+      fullName: full_name.trim(),
+      role,
+      organization: organization?.trim() || null,
+      invitedBy: auth.admin.full_name || 'The CHA Awards team',
+    });
+    welcomeSent = true;
+    console.log(`[ADMIN-USERS] Welcome email sent to ${normalizedEmail}`);
+  } catch (emailErr: any) {
+    // Don't fail the whole operation — user is created, email can be re-sent later
+    console.error(`[ADMIN-USERS] Welcome email failed:`, emailErr?.message);
+  }
+
+  return NextResponse.json({ ok: true, user: adminRow, welcomeSent });
 }
 
 // ---------- DELETE: deactivate user ----------

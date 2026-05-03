@@ -789,3 +789,238 @@ Powered by Elev8 Suite OS`;
     text,
   });
 }
+
+// ============================================================================
+// Admin / Jury Welcome Email
+// Sent when a new admin/jury user is created via /admin/users
+// ============================================================================
+
+interface AdminWelcomeEmailOpts {
+  to: string;
+  fullName: string;
+  role: 'admin' | 'jury' | 'viewer';
+  organization: string | null;
+  invitedBy: string; // Name of the admin who created the user
+}
+
+export async function sendAdminWelcomeEmail(opts: AdminWelcomeEmailOpts) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com';
+  const loginUrl = `${siteUrl}/login`;
+
+  const roleConfig = {
+    admin: {
+      title: 'Admin',
+      eyebrow: 'ADMIN ACCESS',
+      eyebrowColor: COLORS.coral,
+      summary:
+        'You have full access to the awards platform — applications, jury scores, finalists, analytics, and user management.',
+    },
+    jury: {
+      title: 'Jury Member',
+      eyebrow: 'JURY SEAT',
+      eyebrowColor: COLORS.teal,
+      summary:
+        'You will be reviewing applications and scoring them on Story (50%) and Growth Potential (30%). The Community Wildcard contributes 20% from public votes. Your scores are private — only you and the admin team can see them.',
+    },
+    viewer: {
+      title: 'Observer',
+      eyebrow: 'READ-ONLY ACCESS',
+      eyebrowColor: COLORS.warmGray,
+      summary:
+        'You have read-only access to the awards platform — you can view applications, jury progress, and analytics, but cannot score or modify data.',
+    },
+  };
+
+  const cfg = roleConfig[opts.role];
+
+  const subject = `Welcome to The CHA Hospitality Awards 2026 — your ${cfg.title} access is ready`;
+
+  const html = `<!doctype html>
+<html><body style="margin:0;padding:32px 16px;background:${COLORS.cream};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:${COLORS.navy};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+  <tr><td align="center">
+    <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFFFF;border-radius:16px;overflow:hidden;box-shadow:0 8px 30px -10px rgba(31,58,79,0.12);">
+
+      <!-- Brand bar -->
+      <tr><td style="height:6px;background:linear-gradient(90deg,${COLORS.coral} 0%,${COLORS.teal} 33%,${COLORS.burgundy} 66%,${COLORS.gold} 100%);"></td></tr>
+
+      <!-- Header -->
+      <tr><td style="padding:36px 36px 8px 36px;text-align:center;">
+        <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;color:${COLORS.navy};">CHA HOSPITALITY AWARDS 2026</div>
+        <div style="font-size:9px;font-weight:600;letter-spacing:0.14em;color:${COLORS.warmGray};margin-top:4px;">EDITION 01 · BALI VILLA CONNECT · 26-27 MAY</div>
+      </td></tr>
+
+      <!-- Title -->
+      <tr><td style="padding:24px 36px 8px 36px;">
+        <div style="display:inline-block;background:${cfg.eyebrowColor};color:#FFFFFF;font-size:10px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;padding:5px 12px;border-radius:100px;margin-bottom:16px;">
+          ✨ ${cfg.eyebrow}
+        </div>
+        <h1 style="margin:0;font-family:Georgia,serif;font-size:30px;line-height:1.15;color:${COLORS.navy};font-weight:normal;letter-spacing:-0.5px;">
+          Welcome, <span style="font-style:italic;color:${COLORS.coral};">${opts.fullName.split(' ')[0]}</span>
+        </h1>
+      </td></tr>
+
+      <!-- Body -->
+      <tr><td style="padding:18px 36px 8px 36px;">
+        <p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;color:${COLORS.navy};">
+          ${opts.invitedBy} has invited you to join <strong>The CHA Hospitality Awards 2026</strong> as a <strong>${cfg.title}</strong>${opts.organization ? ` representing <strong>${opts.organization}</strong>` : ''}.
+        </p>
+        <p style="margin:0 0 22px 0;font-size:14px;line-height:1.6;color:${COLORS.warmGray};">${cfg.summary}</p>
+      </td></tr>
+
+      <!-- About the Awards -->
+      <tr><td style="padding:0 36px 8px 36px;">
+        <div style="background:${COLORS.cream};border-radius:12px;padding:20px 22px;">
+          <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;color:${COLORS.coral};text-transform:uppercase;margin-bottom:8px;">
+            About the Awards
+          </div>
+          <p style="margin:0 0 10px 0;font-size:13px;line-height:1.55;color:${COLORS.navy};">
+            The CHA Hospitality Awards are an initiative of the <strong>Canggu Hospitality Association</strong> (500+ members) to recognize the most exceptional villa operators in Bali. Three winners — one per category — receive a glass trophy, a year of operations software, and the stage at <strong>Bali Villa Connect 2026</strong>.
+          </p>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:${COLORS.warmGray};font-style:italic;">
+            Powered by <a href="https://elev8-suite.com/?utm_source=cha-awards&utm_medium=welcome-email&utm_campaign=edition01" style="color:${COLORS.warmGray};text-decoration:underline;">Elev8 Suite OS</a> as Diamond Sponsor.
+          </p>
+        </div>
+      </td></tr>
+
+      <!-- How to sign in -->
+      <tr><td style="padding:24px 36px 8px 36px;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;color:${COLORS.navy};text-transform:uppercase;margin-bottom:14px;">
+          How to sign in
+        </div>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="vertical-align:top;width:36px;padding-top:2px;">
+              <div style="width:24px;height:24px;background:${COLORS.coral};color:#FFFFFF;border-radius:50%;text-align:center;line-height:24px;font-size:12px;font-weight:700;">1</div>
+            </td>
+            <td style="vertical-align:top;padding-bottom:14px;">
+              <div style="font-size:13px;line-height:1.5;color:${COLORS.navy};">
+                Go to <a href="${loginUrl}" style="color:${COLORS.coral};text-decoration:underline;font-weight:600;">awards.elev8-suite.com/login</a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align:top;width:36px;padding-top:2px;">
+              <div style="width:24px;height:24px;background:${COLORS.coral};color:#FFFFFF;border-radius:50%;text-align:center;line-height:24px;font-size:12px;font-weight:700;">2</div>
+            </td>
+            <td style="vertical-align:top;padding-bottom:14px;">
+              <div style="font-size:13px;line-height:1.5;color:${COLORS.navy};">
+                Enter <strong>${opts.to}</strong> and click "Send code"
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align:top;width:36px;padding-top:2px;">
+              <div style="width:24px;height:24px;background:${COLORS.coral};color:#FFFFFF;border-radius:50%;text-align:center;line-height:24px;font-size:12px;font-weight:700;">3</div>
+            </td>
+            <td style="vertical-align:top;padding-bottom:0;">
+              <div style="font-size:13px;line-height:1.5;color:${COLORS.navy};">
+                Check your email for the 8-digit code, enter it, and you're in.
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+
+      <!-- CTA -->
+      <tr><td style="padding:24px 36px 8px 36px;text-align:center;">
+        <a href="${loginUrl}" style="display:inline-block;background:${COLORS.coral};color:#FFFFFF;font-weight:700;font-size:14px;padding:14px 32px;border-radius:100px;text-decoration:none;letter-spacing:0.02em;">Sign in now →</a>
+        <p style="margin:14px 0 0 0;font-size:11px;color:${COLORS.warmGray};">
+          Bookmark this URL — that's your single entry point.
+        </p>
+      </td></tr>
+
+      <!-- Timeline preview (jury only) -->
+      ${opts.role === 'jury' ? `
+      <tr><td style="padding:24px 36px 8px 36px;">
+        <div style="border-top:1px solid rgba(31,58,79,0.08);padding-top:22px;">
+          <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;color:${COLORS.burgundy};text-transform:uppercase;margin-bottom:12px;">
+            What's coming
+          </div>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:12px;line-height:1.5;color:${COLORS.navy};">
+            <tr>
+              <td style="padding:4px 0;width:90px;color:${COLORS.warmGray};font-weight:600;">12 May</td>
+              <td style="padding:4px 0;">Applications open</td>
+            </tr>
+            <tr>
+              <td style="padding:4px 0;color:${COLORS.warmGray};font-weight:600;">22 May</td>
+              <td style="padding:4px 0;">Submissions close — scoring begins</td>
+            </tr>
+            <tr>
+              <td style="padding:4px 0;color:${COLORS.warmGray};font-weight:600;">23-24 May</td>
+              <td style="padding:4px 0;"><strong>Jury scoring window</strong> (about 2 hours of your time)</td>
+            </tr>
+            <tr>
+              <td style="padding:4px 0;color:${COLORS.warmGray};font-weight:600;">25 May</td>
+              <td style="padding:4px 0;">Top 5 finalists revealed publicly</td>
+            </tr>
+            <tr>
+              <td style="padding:4px 0;color:${COLORS.warmGray};font-weight:600;">26-27 May</td>
+              <td style="padding:4px 0;">Live stage reveal · Bali Villa Connect 2026</td>
+            </tr>
+          </table>
+        </div>
+      </td></tr>` : ''}
+
+      <!-- Closing -->
+      <tr><td style="padding:24px 36px 28px 36px;border-top:1px solid rgba(31,58,79,0.08);">
+        <p style="margin:18px 0 0 0;font-size:14px;line-height:1.6;color:${COLORS.navy};">
+          Questions? Just reply to this email.<br>
+          <strong>See you on stage,</strong><br>
+          The CHA Hospitality Awards Team
+        </p>
+      </td></tr>
+
+      <!-- Footer -->
+      <tr><td style="background:${COLORS.navy};padding:24px 32px;text-align:center;color:${COLORS.cream};">
+        <div style="font-size:13px;line-height:1.6;">
+          <strong>Canggu Hospitality Association</strong><br>
+          <span style="color:${COLORS.gold};font-size:11px;">Powered by <a href="https://elev8-suite.com/?utm_source=cha-awards&utm_medium=welcome-email&utm_campaign=edition01" style="color:${COLORS.gold};text-decoration:underline;">Elev8 Suite OS</a> — Diamond Sponsor</span>
+        </div>
+      </td></tr>
+
+    </table>
+    <div style="margin-top:16px;font-size:11px;color:${COLORS.warmGray};text-align:center;">© 2026 Canggu Hospitality Association · Edition 01</div>
+  </td></tr>
+</table>
+</body></html>`;
+
+  const text = `Welcome, ${opts.fullName.split(' ')[0]}!
+
+${opts.invitedBy} has invited you to join The CHA Hospitality Awards 2026 as ${cfg.title}${opts.organization ? ` representing ${opts.organization}` : ''}.
+
+${cfg.summary}
+
+ABOUT THE AWARDS
+The CHA Hospitality Awards are an initiative of the Canggu Hospitality Association (500+ members) to recognize the most exceptional villa operators in Bali. Three winners — one per category — receive a glass trophy, a year of operations software, and the stage at Bali Villa Connect 2026 (26-27 May).
+
+Powered by Elev8 Suite OS as Diamond Sponsor.
+
+HOW TO SIGN IN
+1. Go to ${loginUrl}
+2. Enter ${opts.to} and click "Send code"
+3. Check your email for the 8-digit code, enter it, and you're in.
+
+Sign in now: ${loginUrl}
+
+${opts.role === 'jury' ? `WHAT'S COMING
+- 12 May: Applications open
+- 22 May: Submissions close — scoring begins
+- 23-24 May: Jury scoring window (about 2 hours of your time)
+- 25 May: Top 5 finalists revealed publicly
+- 26-27 May: Live stage reveal · Bali Villa Connect 2026
+
+` : ''}Questions? Just reply to this email.
+
+See you on stage,
+The CHA Hospitality Awards Team`;
+
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: opts.to,
+    replyTo: REPLY_TO,
+    subject,
+    html,
+    text,
+  });
+}
