@@ -3,21 +3,17 @@
 //
 // HOW TO REPLACE WITH YOUR LOGO:
 // Drop ANY of these files in public/brand/ — first match wins:
-//   1. logo.svg  ← preferred (scales crisply, smallest filesize)
-//   2. logo.png  ← good for raster logos with transparent background
+//   1. logo.png  ← preferred for raster logos with transparent background
+//   2. logo.svg  ← if you have a vector logo (smallest, scales crisply)
 //   3. logo.jpg  ← OK for photographic logos
 //
 // No code changes needed. Component tries each format in order, falls back
 // to inline SVG (4-heart fallback) if none found.
-//
-// IF YOUR LOGO LOOKS TOO SMALL: it likely has whitespace/padding inside
-// the file. Best fix: crop the file tightly so the logo content fills the
-// entire image edge-to-edge. Online tool: https://squoosh.app
 // ============================================================================
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface CHALogoProps {
   className?: string;
@@ -25,33 +21,74 @@ interface CHALogoProps {
 }
 
 // Order matters: tried left-to-right, first that loads wins.
-const LOGO_PATHS = ['/brand/logo.svg', '/brand/logo.png', '/brand/logo.jpg'];
+// PNG first because most users will have raster logos.
+const LOGO_PATHS = ['/brand/logo.png', '/brand/logo.svg', '/brand/logo.jpg'];
 
 export function CHALogo({ className = '', size = 40 }: CHALogoProps) {
-  const [pathIndex, setPathIndex] = useState(0);
-  const [showFallback, setShowFallback] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
-  if (!showFallback && pathIndex < LOGO_PATHS.length) {
-    return (
-      <img
-        src={LOGO_PATHS[pathIndex]}
-        alt="CHA"
-        width={size}
-        height={size}
-        className={className}
-        style={{ width: size, height: size, objectFit: 'contain' }}
-        onError={() => {
-          if (pathIndex + 1 < LOGO_PATHS.length) {
-            setPathIndex(pathIndex + 1);
-          } else {
-            setShowFallback(true);
-          }
-        }}
-      />
-    );
+  // On mount: try each logo path until one loads
+  useEffect(() => {
+    let cancelled = false;
+
+    async function findLogo() {
+      for (const path of LOGO_PATHS) {
+        const exists = await checkImageExists(path);
+        if (cancelled) return;
+        if (exists) {
+          setLogoUrl(path);
+          setLoaded(true);
+          return;
+        }
+      }
+      // Nothing found — show inline SVG fallback
+      if (!cancelled) {
+        setLoaded(true);
+      }
+    }
+
+    findLogo();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // While loading: show inline SVG fallback (so layout doesn't shift)
+  if (!loaded || !logoUrl) {
+    if (loaded && !logoUrl) {
+      // Confirmed: no external logo, show fallback permanently
+      return <InlineFallback size={size} className={className} />;
+    }
+    // Still loading: show fallback temporarily
+    return <InlineFallback size={size} className={className} />;
   }
 
-  // Fallback: inline SVG (4 colored heart-pills)
+  // Found an external logo
+  return (
+    <img
+      src={logoUrl}
+      alt="CHA"
+      width={size}
+      height={size}
+      className={className}
+      style={{ width: size, height: size, objectFit: 'contain' }}
+    />
+  );
+}
+
+// Helper: check if image exists by attempting to load it
+function checkImageExists(url: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = url;
+  });
+}
+
+// Inline 4-heart SVG fallback
+function InlineFallback({ size, className }: { size: number; className: string }) {
   return (
     <svg
       width={size}
