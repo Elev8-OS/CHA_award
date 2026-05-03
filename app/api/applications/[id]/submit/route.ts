@@ -155,6 +155,29 @@ export async function POST(
           assessment,
         });
 
+        // ----- Persist AI assessment in DB so admin dashboard can show it -----
+        if (assessment) {
+          const { error: aiPersistErr } = await supabaseAdmin
+            .from('applications')
+            .update({
+              ai_story_score: assessment.story_score,
+              ai_growth_score: assessment.growth_score,
+              ai_summary: assessment.summary,
+              ai_recommendation: assessment.recommendation,
+              ai_red_flags: assessment.red_flags,
+              ai_category_fit: assessment.category_fit,
+              ai_assessed_at: new Date().toISOString(),
+            })
+            .eq('id', updated.id);
+          if (aiPersistErr) {
+            console.error('[AI] Failed to persist assessment:', aiPersistErr);
+          } else {
+            console.log(
+              `[AI] Persisted: app=${updated.id} story=${assessment.story_score} growth=${assessment.growth_score} fit=${assessment.category_fit}`
+            );
+          }
+        }
+
         // ----- Follow-up trigger: schedule for 30 min later if score < 7 -----
         if (assessment && assessment.followup_questions.length > 0) {
           const minScore = Math.min(assessment.story_score, assessment.growth_score);

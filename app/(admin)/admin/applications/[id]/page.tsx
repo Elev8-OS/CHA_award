@@ -235,6 +235,9 @@ export default async function AdminApplicationDetailPage({
 
         {/* Scoring column */}
         <div className="space-y-5">
+          <AIAssessmentPanel app={app} />
+          <FollowupPanel app={app} />
+
           <ScoringPanel
             applicationId={app.id}
             existingScores={scores || []}
@@ -260,6 +263,189 @@ export default async function AdminApplicationDetailPage({
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// AI Assessment Panel
+// ============================================================================
+function AIAssessmentPanel({ app }: { app: any }) {
+  // Show empty state if not yet assessed
+  if (!app.ai_assessed_at) {
+    return (
+      <div className="rounded-2xl border border-dashed border-line bg-white p-5">
+        <h3 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-warm-gray">
+          AI Assessment
+        </h3>
+        <p className="text-xs text-warm-gray">
+          Not yet assessed. AI runs automatically on submit. Older submissions before this feature won't have one.
+        </p>
+      </div>
+    );
+  }
+
+  const fitColors: Record<string, string> = {
+    strong: 'bg-teal/15 text-teal',
+    borderline: 'bg-gold/20 text-burgundy',
+    weak: 'bg-burgundy/15 text-burgundy',
+  };
+  const scoreColor = (score: number | null) => {
+    if (score === null || score === undefined) return 'text-warm-gray';
+    if (score >= 8) return 'text-teal';
+    if (score >= 6) return 'text-gold';
+    return 'text-burgundy';
+  };
+
+  const story = app.ai_story_score;
+  const growth = app.ai_growth_score;
+  const weighted =
+    story !== null && story !== undefined && growth !== null && growth !== undefined
+      ? (story * 0.5 + growth * 0.3).toFixed(2)
+      : null;
+
+  return (
+    <div className="rounded-2xl border-l-4 border-coral bg-white p-5">
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-[11px] font-bold uppercase tracking-wider text-coral">
+          🤖 AI Assessment
+        </h3>
+        {app.ai_category_fit && (
+          <span
+            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${fitColors[app.ai_category_fit] || 'bg-cream text-navy'}`}
+          >
+            {app.ai_category_fit} fit
+          </span>
+        )}
+      </div>
+
+      {/* Scores */}
+      <div className="mb-4 grid grid-cols-3 gap-3 rounded-xl bg-cream p-3 text-center">
+        <div>
+          <div className={`font-serif text-2xl ${scoreColor(story)}`}>
+            {story ?? '—'}
+            {story !== null && <span className="text-xs text-warm-gray">/10</span>}
+          </div>
+          <div className="text-[10px] uppercase tracking-wider text-warm-gray">Story</div>
+        </div>
+        <div>
+          <div className={`font-serif text-2xl ${scoreColor(growth)}`}>
+            {growth ?? '—'}
+            {growth !== null && <span className="text-xs text-warm-gray">/10</span>}
+          </div>
+          <div className="text-[10px] uppercase tracking-wider text-warm-gray">Growth</div>
+        </div>
+        <div>
+          <div className="font-serif text-2xl text-coral">{weighted ?? '—'}</div>
+          <div className="text-[10px] uppercase tracking-wider text-warm-gray">Weighted</div>
+        </div>
+      </div>
+
+      {/* Summary */}
+      {app.ai_summary && (
+        <div className="mb-3">
+          <div className="mb-1 text-[10px] font-bold uppercase tracking-wider text-warm-gray">
+            Summary
+          </div>
+          <p className="text-sm leading-relaxed text-navy/85">{app.ai_summary}</p>
+        </div>
+      )}
+
+      {/* Recommendation */}
+      {app.ai_recommendation && (
+        <div className="mb-3 rounded-xl border-l-2 border-coral/50 bg-coral/5 px-3 py-2">
+          <div className="mb-1 text-[10px] font-bold uppercase tracking-wider text-coral">
+            Recommendation
+          </div>
+          <p className="text-sm leading-relaxed text-navy/85">{app.ai_recommendation}</p>
+        </div>
+      )}
+
+      {/* Red Flags */}
+      {app.ai_red_flags && (
+        <div className="rounded-xl border-l-2 border-burgundy bg-burgundy/5 px-3 py-2">
+          <div className="mb-1 text-[10px] font-bold uppercase tracking-wider text-burgundy">
+            ⚠ Red flags
+          </div>
+          <p className="text-sm leading-relaxed text-navy/85">{app.ai_red_flags}</p>
+        </div>
+      )}
+
+      <div className="mt-3 text-[10px] text-warm-gray">
+        Assessed {formatDate(app.ai_assessed_at)}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// Followup Panel
+// ============================================================================
+function FollowupPanel({ app }: { app: any }) {
+  const hasFollowup = app.followup_questions && Array.isArray(app.followup_questions) && app.followup_questions.length > 0;
+
+  if (!hasFollowup && !app.followup_scheduled_at && !app.followup_sent_at) {
+    return null; // Nothing to show
+  }
+
+  // Status determination
+  let statusLabel = '';
+  let statusColor = '';
+  if (app.followup_sent_at) {
+    statusLabel = `Sent ${formatDate(app.followup_sent_at)}`;
+    statusColor = 'bg-teal/15 text-teal';
+  } else if (app.followup_scheduled_at) {
+    const isOverdue = new Date(app.followup_scheduled_at) < new Date();
+    statusLabel = isOverdue
+      ? `Overdue (was ${formatDate(app.followup_scheduled_at)})`
+      : `Scheduled ${formatDate(app.followup_scheduled_at)}`;
+    statusColor = isOverdue ? 'bg-burgundy/15 text-burgundy' : 'bg-gold/20 text-burgundy';
+  }
+
+  return (
+    <div className="rounded-2xl border-l-4 border-teal bg-white p-5">
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-[11px] font-bold uppercase tracking-wider text-teal">
+          💬 Follow-up
+        </h3>
+        {statusLabel && (
+          <span
+            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${statusColor}`}
+          >
+            {statusLabel}
+          </span>
+        )}
+      </div>
+
+      {hasFollowup && (
+        <div className="space-y-3">
+          {(app.followup_questions as Array<any>).map((q, i) => (
+            <div key={i} className="rounded-xl bg-cream p-3">
+              <div className="mb-1 flex items-center gap-2">
+                <span className="font-mono text-[10px] font-bold text-warm-gray">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="rounded-full bg-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-coral">
+                  {q.field}
+                </span>
+              </div>
+              <p className="text-sm leading-relaxed text-navy">{q.question}</p>
+              {q.reason && (
+                <p className="mt-1.5 text-[11px] italic text-warm-gray">
+                  Why: {q.reason}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {app.last_edited_at && (
+        <div className="mt-3 text-[10px] text-warm-gray">
+          Applicant last edited: {formatDate(app.last_edited_at)}
+          {app.edit_count ? ` · ${app.edit_count} edits` : ''}
+        </div>
+      )}
     </div>
   );
 }

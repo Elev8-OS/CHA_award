@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 export default async function AdminApplicationsPage() {
   const { data: applications } = await supabaseAdmin
     .from('applications')
-    .select('id, public_slug, full_name, business_name, email, location, category, status, mode, language, villa_count, view_count, share_count, submitted_at, created_at')
+    .select('id, public_slug, full_name, business_name, email, location, category, status, mode, language, villa_count, view_count, share_count, submitted_at, created_at, ai_story_score, ai_growth_score, ai_category_fit, followup_scheduled_at, followup_sent_at')
     .neq('status', 'draft')
     .order('submitted_at', { ascending: false });
 
@@ -77,6 +77,7 @@ export default async function AdminApplicationsPage() {
               <th className="px-5 py-3">Applicant</th>
               <th className="px-5 py-3">Category</th>
               <th className="px-5 py-3">Location</th>
+              <th className="px-5 py-3 text-center" title="AI weighted score">🤖 AI</th>
               <th className="px-5 py-3 text-center" title="Story score (avg of jury)">Story</th>
               <th className="px-5 py-3 text-center" title="Growth potential score (avg of jury)">Growth</th>
               <th className="px-5 py-3 text-center" title="Weighted: Story×0.5 + Growth×0.3">Jury</th>
@@ -106,6 +107,26 @@ export default async function AdminApplicationsPage() {
                     <div className="mt-1 text-xs text-warm-gray">{a.villa_count} villas</div>
                   </td>
                   <td className="px-5 py-4 text-sm text-navy">{a.location || '—'}</td>
+                  <td className="px-5 py-4 text-center">
+                    {a.ai_story_score !== null && a.ai_growth_score !== null ? (
+                      <div>
+                        <span className="font-mono text-sm font-bold text-coral">
+                          {(a.ai_story_score * 0.5 + a.ai_growth_score * 0.3).toFixed(2)}
+                        </span>
+                        <div className="text-[10px] text-warm-gray">
+                          {a.ai_story_score}/{a.ai_growth_score}
+                          {a.followup_scheduled_at && !a.followup_sent_at && (
+                            <span className="ml-1 text-burgundy" title="Follow-up scheduled">●</span>
+                          )}
+                          {a.followup_sent_at && (
+                            <span className="ml-1 text-teal" title="Follow-up sent">●</span>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-xs text-warm-gray/60">—</span>
+                    )}
+                  </td>
                   <td className="px-5 py-4 text-center">
                     {scores ? (
                       <span className="font-mono text-sm font-bold text-navy">{scores.story}</span>
@@ -162,7 +183,7 @@ export default async function AdminApplicationsPage() {
             })}
             {(!applications || applications.length === 0) && (
               <tr>
-                <td colSpan={10} className="px-5 py-12 text-center text-sm text-warm-gray">
+                <td colSpan={11} className="px-5 py-12 text-center text-sm text-warm-gray">
                   No submitted applications yet.
                 </td>
               </tr>
