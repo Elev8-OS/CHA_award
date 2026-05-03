@@ -30,10 +30,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const applicant = await getApplicant(params.slug);
   if (!applicant) return { title: 'Not found' };
 
-  const title = `Vote for ${applicant.business_name || applicant.full_name} — CHA Host Awards 2026`;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://awards.elev8-suite.com';
+  const ogImageUrl = `${siteUrl}/api/og/applicant/${params.slug}`;
+  const pageUrl = `${siteUrl}/v/${params.slug}`;
+
+  const displayName = applicant.business_name || applicant.full_name || 'this applicant';
+  const title = `Vote for ${displayName} — CHA Hospitality Awards 2026`;
   const description =
     applicant.short_pitch ||
-    `${applicant.business_name} is competing in the ${applicant.category} category of the CHA Hospitality Awards 2026. Cast your vote now.`;
+    `${displayName} is competing in the ${applicant.category} category of the CHA Hospitality Awards 2026. Cast your vote now.`;
 
   return {
     title,
@@ -41,14 +46,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title,
       description,
-      images: [`/api/og/applicant/${params.slug}`],
+      url: pageUrl,
+      siteName: 'CHA Hospitality Awards',
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: displayName,
+        },
+      ],
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [`/api/og/applicant/${params.slug}`],
+      images: [ogImageUrl],
     },
   };
 }
